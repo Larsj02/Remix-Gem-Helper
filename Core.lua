@@ -276,6 +276,7 @@ function scrollView:UpdateTree(data)
     for category, categoryData in pairs(data) do
         if #categoryData > 0 then
             dataProvider:Insert({ text = category, isHeader = true, icon = ICONS[category], index = 0 })
+            sort(categoryData)
             for itemIndex, itemID in ipairs(categoryData) do
                 local icon = select(5, C_Item.GetItemInfoInstant(itemID))
                 dataProvider:Insert({ id = itemID, icon = icon, index = itemIndex })
