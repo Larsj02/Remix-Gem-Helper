@@ -1,0 +1,19 @@
+{
+    "Lua.diagnostics.globals": [
+        "ButtonFrameTemplate_HidePortrait",
+        "UIDropDownMenu_Initialize",
+        "CharacterFrame",
+        "TALENT_FRAME_APPLY_BUTTON_TEXT",
+        "ScrollUtil",
+        "UIDropDownMenu_SetText",
+        "CloseDropDownMenus",
+        "CreateScrollBoxListLinearView",
+        "UIDropDownMenu_AddButton",
+        "CreateDataProvider",
+        "UIDropDownMenu_CreateInfo",
+        "HIGH",
+        "CharacterStatsPane",
+        "TokenFrame",
+        "GameTooltip_SetDefaultAnchor"
+    ]
+}
