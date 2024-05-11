@@ -1,5 +1,4 @@
 local ADDON_NAME = ...
-local selectedCategory = 0
 local EXTRACT_GEM = GetSpellInfo(433397)
 local CATEGORIES = {
     "META",
@@ -9,7 +8,6 @@ local CATEGORIES = {
     "PRIMORDIAL",
     [0] = "ALL"
 }
-
 local GEM_CATEGORY = {
     [221982] = "META",       -- Bulwark of the Black Ox
     [221977] = "META",       -- Funeral Pyre
@@ -153,6 +151,16 @@ local GEM_SLOTS = {
     INVSLOT_TRINKET1,
     INVSLOT_TRINKET2,
 }
+local ICONS = {
+    META = 630620,
+    COGWHEEL = 134063,
+    TINKER = 133871,
+    PRISMATIC = 133259,
+}
+local COLORS = {
+    POSITIVE = CreateColorFromHexString("FF2ecc71"),
+    NEGATIVE = CreateColorFromHexString("FFe74c3c"),
+}
 local GEM_NAME = {}
 local ownedGems = {}
 
@@ -163,17 +171,7 @@ for itemID in pairs(GEM_CATEGORY) do
     end)
 end
 
-local ICONS = {
-    META = 630620,
-    COGWHEEL = 134063,
-    TINKER = 133871,
-    PRISMATIC = 133259,
-}
-
-local COLORS = {
-    POSITIVE = CreateColorFromHexString("FF2ecc71"),
-    NEGATIVE = CreateColorFromHexString("FFe74c3c"),
-}
+local selectedCategory = 0
 
 local function getCatString(index)
     index = index or selectedCategory
@@ -203,6 +201,8 @@ local function getFreeSlot(searchType)
 end
 
 local function createExtractBtn(parent)
+    ---@class ExtractButton : Button
+    ---@field UpdateInfo fun(self:ExtractButton, infoType:"SOCKET"|"BAG", infoIndex:number, infoSlot:number, infoGemType:"Meta"|"Cogwheel"|"Tinker"|"Prismatic"|"Primordial")
     local btn = CreateFrame("Button", nil, parent, "InsecureActionButtonTemplate")
     btn:SetScript("PreClick", function(self)
         if not self.info then return end
@@ -263,6 +263,11 @@ local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function()
     eventFrame:UnregisterAllEvents()
+    ---@class GemsFrame : Frame
+    ---@field CloseButton Button
+    ---@field SetTitle fun(self:GemsFrame, title:string)
+    ---@field Inset Frame
+    ---@field TopTileStreaks Frame
     local gems = CreateFrame("Frame", nil, CharacterStatsPane, "ButtonFrameTemplate")
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
     ButtonFrameTemplate_HidePortrait(gems)
@@ -279,6 +284,8 @@ eventFrame:SetScript("OnEvent", function()
     gems.Inset:SetPoint("LEFT", 20, 0)
     gems.Inset:SetPoint("RIGHT", -20, 0)
 
+    ---@class SearchFrame : EditBox
+    ---@field Instructions FontString
     local search = CreateFrame("EditBox", nil, gems, "InputBoxInstructionsTemplate")
     search.Instructions:SetText("Search Gems")
     search:ClearFocus()
@@ -286,6 +293,8 @@ eventFrame:SetScript("OnEvent", function()
     search:SetPoint("TOPRIGHT", gems.TopTileStreaks, -5, -15)
     search:SetPoint("BOTTOMLEFT", gems.TopTileStreaks, "BOTTOM", 0, 15)
 
+    ---@class Dropdown : Frame
+    ---@field SetValue fun(self:Dropdown, ...:any)
     local dropDown = CreateFrame("Frame", nil, gems, "UIDropDownMenuTemplate")
     dropDown:SetPoint("TOPLEFT", gems.TopTileStreaks, -10, -10)
     dropDown:SetPoint("RIGHT", search, "LEFT", -15, 0)
@@ -311,49 +320,64 @@ eventFrame:SetScript("OnEvent", function()
         updateText()
     end)
 
+    ---@class ScrollBox : Frame
+    ---@field GetScrollPercentage fun(self:ScrollBox)
+    ---@field SetScrollPercentage fun(self:ScrollBox, percentage:number)
     local scrollBox = CreateFrame("Frame", nil, gems, "WowScrollBoxList")
     scrollBox:SetAllPoints(gems.Inset)
 
+    ---@class MinimalScrollBar : EventFrame
+    ---@field SetHideIfUnscrollable fun(self:MinimalScrollBar, state:boolean)
     local scrollBar = CreateFrame("EventFrame", nil, gems, "MinimalScrollBar")
     scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 5, 0)
     scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT")
     scrollBar:SetHideIfUnscrollable(true)
 
     local scrollView = CreateScrollBoxListLinearView()
-    scrollView:SetElementInitializer("BackDropTemplate", function(button, data)
-        ---@cast button Frame
+    scrollView:SetElementInitializer("BackDropTemplate", function(frame, data)
+        ---@class GemListEntry : Frame
+        ---@field Name FontString
+        ---@field Icon Texture
+        ---@field Highlight Texture
+        ---@field Stripe Texture
+        ---@field Extract ExtractButton
+        ---@field initialized boolean
+        ---@field index number
+        ---@field isHeader boolean|?
+        ---@field id number|?
+        ---@cast frame GemListEntry
         local index = data.index
         local isHeader = data.isHeader or false
         local icon = data.icon
         local name = data.text
 
-        if not button.initialized then
-            local font = button:CreateFontString(nil, "ARTWORK", "GameFontHighlightLeft")
+        if not frame.initialized then
+            local font = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLeft")
             font:SetPoint("LEFT", 5, 0)
-            button.Name = font
+            frame.Name = font
 
-            local texture = button:CreateTexture(nil, "OVERLAY")
+            local texture = frame:CreateTexture(nil, "OVERLAY")
             texture:SetPoint("RIGHT", -5, 0)
             texture:SetSize(16, 16)
-            button.Icon = texture
+            frame.Icon = texture
 
-            local highlight = button:CreateTexture()
+            local highlight = frame:CreateTexture()
             highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
             highlight:SetPoint("BOTTOMLEFT", 5, 0)
             highlight:SetPoint("TOPRIGHT", -5, 0)
-            button.Highlight = highlight
+            frame.Highlight = highlight
             highlight:Hide()
 
-            local stripe = button:CreateTexture()
+            local stripe = frame:CreateTexture()
             stripe:SetColorTexture(1, 1, 1, .08)
             stripe:SetPoint("BOTTOMLEFT", 5, 0)
             stripe:SetPoint("TOPRIGHT", -5, 0)
-            button.Stripe = stripe
+            frame.Stripe = stripe
 
-            local extractButton = createExtractBtn(button)
-            button.Extract = extractButton
+            local extractButton = createExtractBtn(frame)
+            frame.Extract = extractButton
 
-            button:SetScript("OnEnter", function(self)
+            frame:SetScript("OnEnter", function(self)
                 self.Highlight:Show()
                 if self.id then
                     GameTooltip:ClearLines()
@@ -363,7 +387,7 @@ eventFrame:SetScript("OnEvent", function()
                 end
             end)
 
-            button:SetScript("OnLeave", function(self)
+            frame:SetScript("OnLeave", function(self)
                 self.Highlight:Hide()
                 if self.id then
                     GameTooltip:Hide()
@@ -371,25 +395,25 @@ eventFrame:SetScript("OnEvent", function()
             end)
 
             extractButton:HookScript("OnEnter", function()
-                button:GetScript("OnEnter")(button)
+                frame:GetScript("OnEnter")(frame)
             end)
             extractButton:HookScript("OnLeave", function()
-                button:GetScript("OnLeave")(button)
+                frame:GetScript("OnLeave")(frame)
             end)
 
-            button.initialized = true
+            frame.initialized = true
         end
 
-        button.Name:SetText(name)
-        button.Name:SetFontObject("GameFontHighlightLeft")
-        button.Icon:SetTexture(icon)
+        frame.Name:SetText(name)
+        frame.Name:SetFontObject("GameFontHighlightLeft")
+        frame.Icon:SetTexture(icon)
         if (isHeader) then
-            button.Name:SetFontObject("GameFontNormal")
-            button.Extract:Hide()
+            frame.Name:SetFontObject("GameFontNormal")
+            frame.Extract:Hide()
         else
-            button.Extract:Show()
+            frame.Extract:Show()
             local exInf = data.info
-            button.Extract:UpdateInfo(
+            frame.Extract:UpdateInfo(
                 exInf.type,
                 exInf.index,
                 exInf.slot,
@@ -401,13 +425,13 @@ eventFrame:SetScript("OnEvent", function()
             else
                 state, color = "In Bag", COLORS.NEGATIVE
             end
-            button.Name:SetText(string.format("%s (%s)", GEM_NAME[data.id], color:WrapTextInColorCode(state)))
+            frame.Name:SetText(string.format("%s (%s)", GEM_NAME[data.id], color:WrapTextInColorCode(state)))
         end
 
-        button.index = index
-        button.isHeader = isHeader
-        button.id = data.id
-        button.Stripe:SetShown(data.index % 2 == 1)
+        frame.index = index
+        frame.isHeader = isHeader
+        frame.id = data.id
+        frame.Stripe:SetShown(data.index % 2 == 1)
     end)
     ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
 
