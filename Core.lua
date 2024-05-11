@@ -5,23 +5,9 @@ local const = Private.constants
 local gemUtil = Private.GemUtil
 local cache = Private.Cache
 
-local EXTRACT_GEM = const.EXTRACT_GEM_SPELL
-local CATEGORIES = const.SOCKET_TYPES_INDEX
-local GEM_CATEGORY = const.GEM_SOCKET_TYPE
-local GEM_SLOTS = const.SOCKET_EQUIPMENT_SLOTS
-local COLORS =const.COLORS
-
-local GEM_NAME = {}
-local ownedGems = {}
-
-for itemID in pairs(GEM_CATEGORY) do
+for itemID in pairs(const.GEM_SOCKET_TYPE) do
     cache:CacheItemInfo(itemID)
 end
-
-local selectedCategory = 0
-
-local getCatString = gemUtil.GetSocketTypeName
-local getFreeSlot = gemUtil.GetFreeSocket
 
 local function createExtractBtn(parent)
     ---@class ExtractButton : Button
@@ -33,7 +19,7 @@ local function createExtractBtn(parent)
         if info.type == "SOCKET" then
             SocketInventoryItem(info.index)
         elseif info.type == "BAG" then
-            local equipSlot, equipSocket = getFreeSlot(info.gemType)
+            local equipSlot, equipSocket = gemUtil.GetFreeSocket(info.gemType)
             C_Container.PickupContainerItem(info.index, info.slot)
             SocketInventoryItem(equipSlot)
             info.gemSlot = equipSocket
@@ -71,7 +57,7 @@ local function createExtractBtn(parent)
         }
         local txt = ""
         if infoType == "SOCKET" then
-            txt = "/cast " .. EXTRACT_GEM
+            txt = "/cast " .. const.EXTRACT_GEM_SPELL
             if infoGemType == "Primordial" then
                 txt = "/click ExtraActionButton1"
             end
@@ -92,15 +78,14 @@ eventFrame:SetScript("OnEvent", function()
     ---@field Inset Frame
     ---@field TopTileStreaks Frame
     local gems = CreateFrame("Frame", nil, CharacterStatsPane, "ButtonFrameTemplate")
+    gems:SetTitle("Remix Gems Manager")
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
-    ButtonFrameTemplate_HidePortrait(gems)
-    gems:ClearAllPoints()
+    gems:SetWidth(300)
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
-    gems:SetWidth(300)
-    gems:Show()
+
+    ButtonFrameTemplate_HidePortrait(gems)
     gems.CloseButton:Hide()
-    gems:SetTitle("Remix Gems Manager")
     gems.Inset:ClearAllPoints()
     gems.Inset:SetPoint("TOP", 0, -65)
     gems.Inset:SetPoint("BOTTOM", 0, 35)
@@ -118,28 +103,30 @@ eventFrame:SetScript("OnEvent", function()
 
     ---@class Dropdown : Frame
     ---@field SetValue fun(self:Dropdown, ...:any)
+    ---@field Text FontString
     local dropDown = CreateFrame("Frame", nil, gems, "UIDropDownMenuTemplate")
     dropDown:SetPoint("TOPLEFT", gems.TopTileStreaks, -10, -10)
     dropDown:SetPoint("RIGHT", search, "LEFT", -15, 0)
+    function dropDown:UpdateSelection(selection)
+        self.selection = selection
+        self.Text:SetText(gemUtil.GetSocketTypeName(selection))
+        CloseDropDownMenus()
+    end
 
     local version = gems:CreateFontString(nil, "ARTWORK", "GameFontDisableSmallLeft")
     version:SetPoint("BOTTOMLEFT", 22, 15)
     version:SetText(string.format("v%s By Rasu", const.ADDON_VERSION))
 
-    local function updateText()
-        UIDropDownMenu_SetText(dropDown, getCatString(selectedCategory))
-    end
-
     UIDropDownMenu_Initialize(dropDown, function(self)
         local info = UIDropDownMenu_CreateInfo()
-        for i = 0, #CATEGORIES do
+        for i = 0, #const.SOCKET_TYPES_INDEX do
             info.func = self.SetValue
             info.arg1 = i
-            info.checked = selectedCategory == i
-            info.text = getCatString(i)
+            info.checked = dropDown.selection == i
+            info.text = gemUtil.GetSocketTypeName(i)
             UIDropDownMenu_AddButton(info)
         end
-        updateText()
+        dropDown:UpdateSelection(dropDown.selection or 0)
     end)
 
     ---@class ScrollBox : Frame
@@ -243,11 +230,11 @@ eventFrame:SetScript("OnEvent", function()
             )
             local state, color
             if exInf.type == "SOCKET" then
-                state, color = "Socketed", COLORS.POSITIVE
+                state, color = "Socketed", const.COLORS.POSITIVE
             else
-                state, color = "In Bag", COLORS.NEGATIVE
+                state, color = "In Bag", const.COLORS.NEGATIVE
             end
-            frame.Name:SetText(string.format("%s (%s)", GEM_NAME[data.id], color:WrapTextInColorCode(state)))
+            frame.Name:SetText(string.format("%s (%s)", data.name, color:WrapTextInColorCode(state)))
         end
 
         frame.index = index
@@ -272,101 +259,36 @@ eventFrame:SetScript("OnEvent", function()
                     return a.itemID > b.itemID
                 end)
                 for itemIndex, itemInfo in ipairs(categoryData) do
-                    local itemID = itemInfo.itemID
-                    local icon = select(5, C_Item.GetItemInfoInstant(itemID))
-                    dataProvider:Insert({ id = itemID, icon = icon, index = itemIndex, info = itemInfo })
+                    local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
+                    dataProvider:Insert({
+                        id = itemInfo.itemID,
+                        icon = cachedInfo.icon,
+                        name = cachedInfo.name,
+                        index =
+                            itemIndex,
+                        info = itemInfo
+                    })
                 end
             end
         end
         scrollBox:SetScrollPercentage(scrollPercent or 1)
     end
 
-    local function addGems(itemInfo, locType, locIndex, locSlot)
-        ---@cast itemInfo ContainerItemInfo
-        if not itemInfo then return end
-        local itemType = select(6, C_Item.GetItemInfoInstant(itemInfo.hyperlink))
-        if itemType == 3 and GEM_CATEGORY[itemInfo.itemID] then
-            for i = 1, itemInfo.stackCount do
-                tinsert(ownedGems, {
-                    itemID = itemInfo.itemID,
-                    type = locType,
-                    index = locIndex,
-                    slot = locSlot,
-                    gemType = getCatString(GEM_CATEGORY[itemInfo.itemID]),
-                })
-                GEM_NAME[itemInfo.itemID] = itemInfo.itemName
-            end
-        end
-    end
-
-    local function scanForGems()
-        wipe(ownedGems)
-        for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
-            for slot = 1, C_Container.GetContainerNumSlots(bag) do
-                addGems(C_Container.GetContainerItemInfo(bag, slot), "BAG", bag, slot)
-            end
-        end
-        for _, itemSlot in ipairs(GEM_SLOTS) do
-            local itemLoc = ItemLocation:CreateFromEquipmentSlot(itemSlot)
-
-            if itemLoc:IsValid() then
-                local itemLink = C_Item.GetItemLink(itemLoc)
-                if itemLink then
-                    for gemIndex = 1, 3 do
-                        local gemName, gemLink = C_Item.GetItemGem(itemLink, gemIndex)
-                        if gemName and gemLink then
-                            addGems({
-                                itemName = gemName,
-                                itemID = C_Item.GetItemInfoInstant(gemLink),
-                                stackCount = 1,
-                                hyperlink = gemLink
-                            }, "SOCKET", itemSlot, gemIndex)
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    local function getFilteredGems(category, nameFilter)
-        scanForGems()
-        if nameFilter then nameFilter = nameFilter:lower() end
-        category = category or CATEGORIES[selectedCategory] or "ALL"
-        category = category:upper()
-        local validGems = {}
-        for _, cat in ipairs(CATEGORIES) do
-            validGems[cat] = {}
-        end
-        for _, gemInfo in pairs(ownedGems) do
-            local gemID = gemInfo.itemID
-            local gemCategory = GEM_CATEGORY[gemID]
-            if category == "ALL" or gemCategory == category then
-                local gemName = (GEM_NAME[gemID] or ""):lower()
-                if not (nameFilter and not gemName:match(nameFilter)) then
-                    tinsert(validGems[gemCategory], gemInfo)
-                end
-            end
-        end
-        return validGems
-    end
-
     function dropDown:SetValue(selIndex)
-        selectedCategory = selIndex
-        updateText()
-        CloseDropDownMenus()
-        scrollView:UpdateTree(getFilteredGems())
+        dropDown:UpdateSelection(selIndex)
+        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection))
     end
 
     search:HookScript("OnTextChanged", function(self)
-        scrollView:UpdateTree(getFilteredGems(nil, self:GetText() or ""))
+        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, self:GetText() or ""))
     end)
 
-    gems:SetScript("OnEvent", function(self, event)
+    gems:SetScript("OnEvent", function(_, event)
         if event == "BAG_UPDATE_DELAYED" then
-            scrollView:UpdateTree(getFilteredGems(nil, search:GetText() or ""))
+            scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
         end
     end)
 
 
-    scrollView:UpdateTree(getFilteredGems())
+    scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection))
 end)
