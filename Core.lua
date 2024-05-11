@@ -112,10 +112,30 @@ local GEM_CATEGORY = {
     [211124] = "PRISMATIC",  -- Swift Opal
     [211101] = "PRISMATIC",  -- Perfect Swift Opal
 
-    [204000] = "PRIMORDIAL", --
-    [204027] = "PRIMORDIAL", --
-    [204029] = "PRIMORDIAL", --
-    [204018] = "PRIMORDIAL", --
+    [204019] = "PRIMORDIAL", -- Harmonic Music Stone
+    [204018] = "PRIMORDIAL", -- Humming Arcane Stone
+    [204025] = "PRIMORDIAL", -- Obscure Pastel Stone
+    [204014] = "PRIMORDIAL", -- Sparkling Mana Stone
+    [204009] = "PRIMORDIAL", -- Gleaming Iron Stone
+    [204006] = "PRIMORDIAL", -- Indomitable Earth Stone
+    [204007] = "PRIMORDIAL", -- Shining Obsidian Stone
+    [204005] = "PRIMORDIAL", -- Entropic Fel Stone
+    [204002] = "PRIMORDIAL", -- Flame Licked Stone
+    [204003] = "PRIMORDIAL", -- Raging Magma Stone
+    [204004] = "PRIMORDIAL", -- Searing Smokey Stone
+    [204012] = "PRIMORDIAL", -- Cold Frost Stone
+    [204010] = "PRIMORDIAL", -- Deluging Water Stone
+    [204013] = "PRIMORDIAL", -- Exuding Steam Stone
+    [204011] = "PRIMORDIAL", -- Freezing Ice Stone
+    [204001] = "PRIMORDIAL", -- Echoing Thunder Stone
+    [204022] = "PRIMORDIAL", -- Pestilent Plague Stone
+    [204000] = "PRIMORDIAL", -- Storm-Infused Stone
+    [204020] = "PRIMORDIAL", -- Wild Spirit Stone
+    [204030] = "PRIMORDIAL", -- Wind Sculpted Stone
+    [204027] = "PRIMORDIAL", -- Desirous Blood Stone
+    [204021] = "PRIMORDIAL", -- Necromantic Death Stone
+    [204029] = "PRIMORDIAL", -- Prophetic Twilight Stone
+    [204015] = "PRIMORDIAL", -- Swirling Mojo Stone
 
 }
 local GEM_SLOTS = {
