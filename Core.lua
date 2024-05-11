@@ -1,204 +1,27 @@
-local ADDON_NAME = ...
-local EXTRACT_GEM = GetSpellInfo(433397)
-local CATEGORIES = {
-    "META",
-    "COGWHEEL",
-    "TINKER",
-    "PRISMATIC",
-    "PRIMORDIAL",
-    [0] = "ALL"
-}
-local GEM_CATEGORY = {
-    [221982] = "META",       -- Bulwark of the Black Ox
-    [221977] = "META",       -- Funeral Pyre
-    [220211] = "META",       -- Precipice of Madness
-    [220120] = "META",       -- Soul Tether
-    [220117] = "META",       -- Ward of Salvation
-    [219878] = "META",       -- Tireless Spirit
-    [219386] = "META",       -- Locus of Power
-    --[216974] = "META",      -- Morphing Elements
-    [216711] = "META",       -- Chi-ji, the Red Crane
-    [216695] = "META",       -- Lifestorm
-    [216671] = "META",       -- Thundering Orb
-    [216663] = "META",       -- Oblivion Sphere
+---@class RemixGemHelperPrivate
+local Private = select(2, ...)
 
-    [218110] = "COGWHEEL",   -- Soulshape
-    [218109] = "COGWHEEL",   -- Death's Advance
-    [218108] = "COGWHEEL",   -- Dark Pact
-    [218082] = "COGWHEEL",   -- Spiritwalker's Grace
-    [218046] = "COGWHEEL",   -- Spirit Walk
-    [218045] = "COGWHEEL",   -- Door of Shadows
-    [218044] = "COGWHEEL",   -- Pursuit of Justice
-    [218043] = "COGWHEEL",   -- Wild Charge
-    [218005] = "COGWHEEL",   -- Stampeding Roar
-    [218004] = "COGWHEEL",   -- Vanish
-    [218003] = "COGWHEEL",   -- Leap of Faith
-    [217989] = "COGWHEEL",   -- Trailblazer
-    [217983] = "COGWHEEL",   -- Disengage
-    [216632] = "COGWHEEL",   -- Sprint
-    [216631] = "COGWHEEL",   -- Roll
-    [216630] = "COGWHEEL",   -- Heroic Leap
-    [216629] = "COGWHEEL",   -- Blink
+local const = Private.constants
+local gemUtil = Private.GemUtil
+local cache = Private.Cache
 
-    [219801] = "TINKER",     -- Ankh of Reincarnation
-    [212366] = "TINKER",     -- Arcanist's Edge
-    [219944] = "TINKER",     -- Bloodthirsty Coral
-    [219818] = "TINKER",     -- Brilliance
-    [216649] = "TINKER",     -- Brittle
-    [216648] = "TINKER",     -- Cold Front
-    [217957] = "TINKER",     -- Deliverance
-    [212694] = "TINKER",     -- Enkindle
-    [212749] = "TINKER",     -- Explosive Barrage
-    [212365] = "TINKER",     -- Fervor
-    [219817] = "TINKER",     -- Freedom
-    [212916] = "TINKER",     -- Frost Armor
-    [219777] = "TINKER",     -- Grounding
-    [217964] = "TINKER",     -- Holy Martyr
-    [216647] = "TINKER",     -- Hailstorm
-    [212758] = "TINKER",     -- Incendiary Terror
-    [219389] = "TINKER",     -- Lightning Rod
-    [216624] = "TINKER",     -- Mark of Arrogance
-    [216650] = "TINKER",     -- Memory of Vengeance
-    [212759] = "TINKER",     -- Meteor Storm
-    [212361] = "TINKER",     -- Opportunist
-    [216625] = "TINKER",     -- Quick Strike
-    [217961] = "TINKER",     -- Righteous Frenzy
-    [217927] = "TINKER",     -- Savior
-    [216651] = "TINKER",     -- Searing Light
-    [216626] = "TINKER",     -- Slay
-    [219452] = "TINKER",     -- Static Charge
-    [219523] = "TINKER",     -- Storm Overload
-    [212362] = "TINKER",     -- Sunstrider's Flourish
-    [216627] = "TINKER",     -- Tinkmaster's Shield
-    [219527] = "TINKER",     -- Vampiric Aura
-    [216628] = "TINKER",     -- Victory Fire
-    [217903] = "TINKER",     -- Vindication
-    [217907] = "TINKER",     -- Warmth
-    [212760] = "TINKER",     -- Wildfire
-    [219516] = "TINKER",     -- Windweaver
+local EXTRACT_GEM = const.EXTRACT_GEM_SPELL
+local CATEGORIES = const.SOCKET_TYPES_INDEX
+local GEM_CATEGORY = const.GEM_SOCKET_TYPE
+local GEM_SLOTS = const.SOCKET_EQUIPMENT_SLOTS
+local COLORS =const.COLORS
 
-    [210715] = "PRISMATIC",  -- Chipped Masterful Amethyst
-    [216640] = "PRISMATIC",  -- Flawed Masterful Amethyst
-    [211106] = "PRISMATIC",  -- Masterful Amethyst
-    [211108] = "PRISMATIC",  -- Perfect Masterful Amethyst
-    [210714] = "PRISMATIC",  -- Chipped Deadly Sapphire
-    [216644] = "PRISMATIC",  -- Flawed Deadly Sapphire
-    [211123] = "PRISMATIC",  -- Deadly Sapphire
-    [211102] = "PRISMATIC",  -- Perfect Deadly Sapphire
-    [210681] = "PRISMATIC",  -- Chipped Quick Topaz
-    [216643] = "PRISMATIC",  -- Flawed Quick Topaz
-    [211107] = "PRISMATIC",  -- Quick Topaz
-    [211110] = "PRISMATIC",  -- Perfect Quick Topaz
-    [220371] = "PRISMATIC",  -- Chipped Versatile Diamond
-    [220372] = "PRISMATIC",  -- Flawed Versatile Diamond
-    [220374] = "PRISMATIC",  -- Versatile Diamond
-    [220373] = "PRISMATIC",  -- Perfect Versatile Diamond
-    [220367] = "PRISMATIC",  -- Chipped Stalwart Pearl
-    [220368] = "PRISMATIC",  -- Flawed Stalwart Pearl
-    [220370] = "PRISMATIC",  -- Stalwart Pearl
-    [220369] = "PRISMATIC",  -- Perfect Stalwart Pearl
-    [211109] = "PRISMATIC",  -- Chipped Sustaining Emerald
-    [216642] = "PRISMATIC",  -- Flawed Sustaining Emerald
-    [211125] = "PRISMATIC",  -- Sustaining Emerald
-    [211105] = "PRISMATIC",  -- Perfect Sustaining Emerald
-    [210717] = "PRISMATIC",  -- Chipped Hungering Ruby
-    [216641] = "PRISMATIC",  -- Flawed Hungering Ruby
-    [210718] = "PRISMATIC",  -- Hungering Ruby
-    [211103] = "PRISMATIC",  -- Perfect Hungering Ruby
-    [210716] = "PRISMATIC",  -- Chipped Swift Opal
-    [216639] = "PRISMATIC",  -- Flawed Swift Opal
-    [211124] = "PRISMATIC",  -- Swift Opal
-    [211101] = "PRISMATIC",  -- Perfect Swift Opal
-
-    [204019] = "PRIMORDIAL", -- Harmonic Music Stone
-    [204018] = "PRIMORDIAL", -- Humming Arcane Stone
-    [204025] = "PRIMORDIAL", -- Obscure Pastel Stone
-    [204014] = "PRIMORDIAL", -- Sparkling Mana Stone
-    [204009] = "PRIMORDIAL", -- Gleaming Iron Stone
-    [204006] = "PRIMORDIAL", -- Indomitable Earth Stone
-    [204007] = "PRIMORDIAL", -- Shining Obsidian Stone
-    [204005] = "PRIMORDIAL", -- Entropic Fel Stone
-    [204002] = "PRIMORDIAL", -- Flame Licked Stone
-    [204003] = "PRIMORDIAL", -- Raging Magma Stone
-    [204004] = "PRIMORDIAL", -- Searing Smokey Stone
-    [204012] = "PRIMORDIAL", -- Cold Frost Stone
-    [204010] = "PRIMORDIAL", -- Deluging Water Stone
-    [204013] = "PRIMORDIAL", -- Exuding Steam Stone
-    [204011] = "PRIMORDIAL", -- Freezing Ice Stone
-    [204001] = "PRIMORDIAL", -- Echoing Thunder Stone
-    [204022] = "PRIMORDIAL", -- Pestilent Plague Stone
-    [204000] = "PRIMORDIAL", -- Storm-Infused Stone
-    [204020] = "PRIMORDIAL", -- Wild Spirit Stone
-    [204030] = "PRIMORDIAL", -- Wind Sculpted Stone
-    [204027] = "PRIMORDIAL", -- Desirous Blood Stone
-    [204021] = "PRIMORDIAL", -- Necromantic Death Stone
-    [204029] = "PRIMORDIAL", -- Prophetic Twilight Stone
-    [204015] = "PRIMORDIAL", -- Swirling Mojo Stone
-
-}
-local GEM_SLOTS = {
-    INVSLOT_HEAD,
-    INVSLOT_NECK,
-    INVSLOT_SHOULDER,
-    INVSLOT_CHEST,
-    INVSLOT_WAIST,
-    INVSLOT_LEGS,
-    INVSLOT_FEET,
-    INVSLOT_WRIST,
-    INVSLOT_HAND,
-    INVSLOT_FINGER1,
-    INVSLOT_FINGER2,
-    INVSLOT_TRINKET1,
-    INVSLOT_TRINKET2,
-}
-local ICONS = {
-    META = 630620,
-    COGWHEEL = 134063,
-    TINKER = 133871,
-    PRISMATIC = 133259,
-}
-local COLORS = {
-    POSITIVE = CreateColorFromHexString("FF2ecc71"),
-    NEGATIVE = CreateColorFromHexString("FFe74c3c"),
-}
 local GEM_NAME = {}
 local ownedGems = {}
 
 for itemID in pairs(GEM_CATEGORY) do
-    local item = Item:CreateFromItemID(itemID)
-    item:ContinueOnItemLoad(function()
-        GEM_NAME[itemID] = item:GetItemName()
-    end)
+    cache:CacheItemInfo(itemID)
 end
 
 local selectedCategory = 0
 
-local function getCatString(index)
-    index = index or selectedCategory
-    if type(index) == "string" then
-        for i, catName in ipairs(CATEGORIES) do
-            if catName == index then
-                index = i
-                break
-            end
-        end
-    end
-    return (CATEGORIES[index] or "?"):lower():gsub("^%l", string.upper)
-end
-
-local function getFreeSlot(searchType)
-    searchType = searchType:lower()
-    for _, invSlot in ipairs(GEM_SLOTS) do
-        SocketInventoryItem(invSlot)
-        for socketSlot = 1, GetNumSockets() do
-            local socketType = GetSocketTypes(socketSlot)
-            socketType = socketType and socketType:lower() or ""
-            if (not GetExistingSocketInfo(socketSlot)) and (socketType == searchType) then
-                return invSlot, socketSlot
-            end
-        end
-    end
-end
+local getCatString = gemUtil.GetSocketTypeName
+local getFreeSlot = gemUtil.GetFreeSocket
 
 local function createExtractBtn(parent)
     ---@class ExtractButton : Button
@@ -301,11 +124,10 @@ eventFrame:SetScript("OnEvent", function()
 
     local version = gems:CreateFontString(nil, "ARTWORK", "GameFontDisableSmallLeft")
     version:SetPoint("BOTTOMLEFT", 22, 15)
-    local verNum = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version")
-    version:SetText(string.format("v%s By Rasu", verNum))
+    version:SetText(string.format("v%s By Rasu", const.ADDON_VERSION))
 
     local function updateText()
-        UIDropDownMenu_SetText(dropDown, getCatString())
+        UIDropDownMenu_SetText(dropDown, getCatString(selectedCategory))
     end
 
     UIDropDownMenu_Initialize(dropDown, function(self)
@@ -445,7 +267,7 @@ eventFrame:SetScript("OnEvent", function()
         self:SetDataProvider(dataProvider)
         for category, categoryData in pairs(data) do
             if #categoryData > 0 then
-                dataProvider:Insert({ text = category, isHeader = true, icon = ICONS[category], index = 0 })
+                dataProvider:Insert({ text = category, isHeader = true, icon = const.SOCKET_TYPE_INFO[category].icon, index = 0 })
                 sort(categoryData, function(a, b)
                     return a.itemID > b.itemID
                 end)

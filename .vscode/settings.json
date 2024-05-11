@@ -84,6 +84,9 @@
         "GRAY_FONT_COLOR",
         "CALENDAR_STATUS_TENTATIVE",
         "UIErrorsFrame",
-        "COLORS"
+        "COLORS",
+        "ADD",
+        "ExtraActionButton1",
+        "CATEGORIES"
     ]
 }

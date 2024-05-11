@@ -1,7 +1,10 @@
 ## Interface: 100207
-## Version: 1.0.0
+## Version: 1.1.0
 ## Title: Remix Gem Helper
 ## Author: Rasu | Larsj_02
 ## DefaultState: enabled
 
+Cache.lua
+Constants.lua
+GemUtil.lua
 Core.lua
