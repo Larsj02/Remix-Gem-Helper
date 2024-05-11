@@ -246,15 +246,14 @@ local function createExtractBtn(parent)
             gemType = infoGemType,
             gemSlot = 0,
         }
+        local txt = ""
         if infoType == "SOCKET" then
-            local txt = "/cast " .. EXTRACT_GEM
+            txt = "/cast " .. EXTRACT_GEM
             if infoGemType == "Primordial" then
                 txt = "/click ExtraActionButton1"
             end
-            self:SetAttribute("macrotext", txt)
-        else
-            self:SetAttribute("macrotext", "")
         end
+        self:SetAttribute("macrotext", txt)
     end
 
     return btn
