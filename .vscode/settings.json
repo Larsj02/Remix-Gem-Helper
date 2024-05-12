@@ -87,6 +87,7 @@
         "COLORS",
         "ADD",
         "ExtraActionButton1",
-        "CATEGORIES"
+        "CATEGORIES",
+        "show"
     ]
 }

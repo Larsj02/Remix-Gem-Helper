@@ -19,7 +19,7 @@ local function createExtractBtn(parent)
         if info.type == "SOCKET" then
             SocketInventoryItem(info.index)
         elseif info.type == "BAG" then
-            local equipSlot, equipSocket = gemUtil.GetFreeSocket(info.gemType)
+            local equipSlot, equipSocket = gemUtil:GetFreeSocket(info.gemType)
             C_Container.PickupContainerItem(info.index, info.slot)
             SocketInventoryItem(equipSlot)
             info.gemSlot = equipSocket
@@ -78,7 +78,7 @@ eventFrame:SetScript("OnEvent", function()
     ---@field Inset Frame
     ---@field TopTileStreaks Frame
     local gems = CreateFrame("Frame", nil, CharacterStatsPane, "ButtonFrameTemplate")
-    gems:SetTitle("Remix Gems Manager")
+    gems:SetTitle(const.ADDON_NAME)
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
     gems:SetWidth(300)
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
@@ -109,7 +109,7 @@ eventFrame:SetScript("OnEvent", function()
     dropDown:SetPoint("RIGHT", search, "LEFT", -15, 0)
     function dropDown:UpdateSelection(selection)
         self.selection = selection
-        self.Text:SetText(gemUtil.GetSocketTypeName(selection))
+        self.Text:SetText(gemUtil:GetSocketTypeName(selection))
         CloseDropDownMenus()
     end
 
@@ -117,14 +117,37 @@ eventFrame:SetScript("OnEvent", function()
     version:SetPoint("BOTTOMLEFT", 22, 15)
     version:SetText(string.format("v%s By Rasu", const.ADDON_VERSION))
 
+    ---@class CheckButton
+    ---@field Text FontString
+    ---@field tooltip string
+
+    local showUnowned = CreateFrame("CheckButton", nil, gems, "ChatConfigCheckButtonTemplate")
+    showUnowned:SetPoint("BOTTOMRIGHT", -75, 7.5)
+    showUnowned.Text:SetText("Unowned")
+    showUnowned.tooltip = "Show Unowned Gems in the List."
+    showUnowned:HookScript("OnClick", function(self)
+        Private.Settings:UpdateSetting("show_unowned", self:GetChecked())
+    end)
+
+    local showPrimordial = CreateFrame("CheckButton", nil, gems, "ChatConfigCheckButtonTemplate")
+    showPrimordial:SetPoint("BOTTOMRIGHT", -175, 7.5)
+    showPrimordial.Text:SetText("Primordial")
+    showPrimordial.tooltip = "Show Primordial Gems in the List."
+    showPrimordial:HookScript("OnClick", function(self)
+        Private.Settings:UpdateSetting("show_primordial", self:GetChecked())
+    end)
+
     UIDropDownMenu_Initialize(dropDown, function(self)
         local info = UIDropDownMenu_CreateInfo()
         for i = 0, #const.SOCKET_TYPES_INDEX do
-            info.func = self.SetValue
-            info.arg1 = i
-            info.checked = dropDown.selection == i
-            info.text = gemUtil.GetSocketTypeName(i)
-            UIDropDownMenu_AddButton(info)
+            local socketType = gemUtil:GetSocketTypeName(i)
+            if socketType ~= "Primordial" or Private.Settings:GetSetting("show_primordial") then
+                info.func = self.SetValue
+                info.arg1 = i
+                info.checked = dropDown.selection == i
+                info.text = socketType
+                UIDropDownMenu_AddButton(info)
+            end
         end
         dropDown:UpdateSelection(dropDown.selection or 0)
     end)
@@ -142,6 +165,7 @@ eventFrame:SetScript("OnEvent", function()
     scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT")
     scrollBar:SetHideIfUnscrollable(true)
 
+
     local scrollView = CreateScrollBoxListLinearView()
     scrollView:SetElementInitializer("BackDropTemplate", function(frame, data)
         ---@class GemListEntry : Frame
@@ -155,33 +179,28 @@ eventFrame:SetScript("OnEvent", function()
         ---@field isHeader boolean|?
         ---@field id number|?
         ---@cast frame GemListEntry
-        local index = data.index
-        local isHeader = data.isHeader or false
-        local icon = data.icon
-        local name = data.text
-
         if not frame.initialized then
-            local font = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightLeft")
-            font:SetPoint("LEFT", 5, 0)
-            frame.Name = font
+            local rowName = frame:CreateFontString(nil, "ARTWORK", const.FONT_OBJECTS.NORMAL)
+            rowName:SetPoint("LEFT", 5, 0)
+            frame.Name = rowName
 
-            local texture = frame:CreateTexture(nil, "OVERLAY")
-            texture:SetPoint("RIGHT", -5, 0)
-            texture:SetSize(16, 16)
-            frame.Icon = texture
+            local iconTexture = frame:CreateTexture(nil, "OVERLAY")
+            iconTexture:SetPoint("RIGHT", -5, 0)
+            iconTexture:SetSize(16, 16)
+            frame.Icon = iconTexture
 
-            local highlight = frame:CreateTexture()
-            highlight:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-            highlight:SetPoint("BOTTOMLEFT", 5, 0)
-            highlight:SetPoint("TOPRIGHT", -5, 0)
-            frame.Highlight = highlight
-            highlight:Hide()
+            local highlightTexture = frame:CreateTexture()
+            highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+            highlightTexture:SetPoint("BOTTOMLEFT", 5, 0)
+            highlightTexture:SetPoint("TOPRIGHT", -5, 0)
+            highlightTexture:Hide()
+            frame.Highlight = highlightTexture
 
-            local stripe = frame:CreateTexture()
-            stripe:SetColorTexture(1, 1, 1, .08)
-            stripe:SetPoint("BOTTOMLEFT", 5, 0)
-            stripe:SetPoint("TOPRIGHT", -5, 0)
-            frame.Stripe = stripe
+            local unevenStripe = frame:CreateTexture()
+            unevenStripe:SetColorTexture(1, 1, 1, .08)
+            unevenStripe:SetPoint("BOTTOMLEFT", 5, 0)
+            unevenStripe:SetPoint("TOPRIGHT", -5, 0)
+            frame.Stripe = unevenStripe
 
             local extractButton = createExtractBtn(frame)
             frame.Extract = extractButton
@@ -212,39 +231,55 @@ eventFrame:SetScript("OnEvent", function()
 
             frame.initialized = true
         end
+        local index = data.index
+        local isHeader = data.isHeader or false
+        local icon = data.icon
+        local name = data.text
+        local rowColor = data.color or CreateColor(1, 1, 1)
 
-        frame.Name:SetText(name)
-        frame.Name:SetFontObject("GameFontHighlightLeft")
         frame.Icon:SetTexture(icon)
-        if (isHeader) then
-            frame.Name:SetFontObject("GameFontNormal")
+        frame.Name:SetTextColor(rowColor:GetRGBA())
+        if isHeader then
+            frame.Icon:SetDesaturated(false)
+            frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
+            frame.Name:SetText(name)
             frame.Extract:Hide()
         else
-            frame.Extract:Show()
+            frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
             local exInf = data.info
-            frame.Extract:UpdateInfo(
-                exInf.type,
-                exInf.index,
-                exInf.slot,
-                exInf.gemType
-            )
+            if exInf and exInf.type ~= "UNCOLLECTED" then
+                frame.Icon:SetDesaturated(false)
+                frame.Extract:Show()
+                frame.Extract:UpdateInfo(
+                    exInf.type,
+                    exInf.index,
+                    exInf.slot,
+                    exInf.gemType
+                )
+            else
+                frame.Icon:SetDesaturated(true)
+                frame.Extract:Hide()
+            end
+
             local state, color
             if exInf.type == "SOCKET" then
                 state, color = "Socketed", const.COLORS.POSITIVE
-            else
+            elseif exInf.type == "BAG" then
                 state, color = "In Bag", const.COLORS.NEGATIVE
+            else
+                state, color = "Uncollected", const.COLORS.GREY
+                name = color:WrapTextInColorCode(name)
             end
-            frame.Name:SetText(string.format("%s (%s)", data.name, color:WrapTextInColorCode(state)))
+            frame.Name:SetText(string.format("%s (%s)", name, color:WrapTextInColorCode(state)))
         end
 
         frame.index = index
-        frame.isHeader = isHeader
         frame.id = data.id
         frame.Stripe:SetShown(data.index % 2 == 1)
     end)
     ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
 
-    scrollView:SetElementExtent(20)
+    scrollView:SetElementExtent(25)
 
     function scrollView:UpdateTree(data)
         if not data then return end
@@ -252,43 +287,59 @@ eventFrame:SetScript("OnEvent", function()
         self:Flush()
         local dataProvider = CreateDataProvider()
         self:SetDataProvider(dataProvider)
-        for category, categoryData in pairs(data) do
-            if #categoryData > 0 then
-                dataProvider:Insert({ text = category, isHeader = true, icon = const.SOCKET_TYPE_INFO[category].icon, index = 0 })
-                sort(categoryData, function(a, b)
-                    return a.itemID > b.itemID
-                end)
-                for itemIndex, itemInfo in ipairs(categoryData) do
-                    local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
+        for socketType, socketTypeData in pairs(data) do
+            if #socketTypeData > 0 then
+                local typeInfo = gemUtil:GetSocketTypeInfo(socketType)
+                if typeInfo then
                     dataProvider:Insert({
-                        id = itemInfo.itemID,
-                        icon = cachedInfo.icon,
-                        name = cachedInfo.name,
-                        index =
-                            itemIndex,
-                        info = itemInfo
+                        text = typeInfo.name,
+                        isHeader = true,
+                        icon = typeInfo.icon,
+                        index = 0
                     })
+                    sort(socketTypeData, function(a, b)
+                        return a.itemID > b.itemID
+                    end)
+                    for itemIndex, itemInfo in ipairs(socketTypeData) do
+                        local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
+                        dataProvider:Insert({
+                            id = itemInfo.itemID,
+                            icon = cachedInfo.icon,
+                            text = cachedInfo.name,
+                            index = itemIndex,
+                            info = itemInfo
+                        })
+                    end
                 end
             end
         end
         scrollBox:SetScrollPercentage(scrollPercent or 1)
     end
 
-    function dropDown:SetValue(selIndex)
-        dropDown:UpdateSelection(selIndex)
-        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection))
+    local function selectionTreeUpdate()
+        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
     end
 
-    search:HookScript("OnTextChanged", function(self)
-        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, self:GetText() or ""))
-    end)
+    function dropDown:SetValue(selIndex)
+        dropDown:UpdateSelection(selIndex)
+        selectionTreeUpdate()
+    end
+
+    search:HookScript("OnTextChanged", selectionTreeUpdate)
 
     gems:SetScript("OnEvent", function(_, event)
         if event == "BAG_UPDATE_DELAYED" then
-            scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
+            selectionTreeUpdate()
         end
     end)
 
-
-    scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection))
+    selectionTreeUpdate()
+    Private.Settings:CreateSettingCallback("show_unowned", function(_, newState)
+        selectionTreeUpdate()
+        showUnowned:SetChecked(newState)
+    end)
+    Private.Settings:CreateSettingCallback("show_primordial", function(_, newState)
+        selectionTreeUpdate()
+        showPrimordial:SetChecked(newState)
+    end)
 end)

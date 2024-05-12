@@ -2,26 +2,38 @@
 local Private = select(2, ...)
 local const = Private.constants
 
+---@class SocketTypeInfo
+---@field name string
+---@field icon integer
+---@field color colorRGB
+
 local gemUtil = {
-    ownedGems = {}
+    owned_gems = {}
 }
 Private.GemUtil = gemUtil
 
 ---@param key number|string|?
----@return string
-function gemUtil.GetSocketTypeName(key)
-    if not key then return "ALL" end
+---@return SocketTypeInfo|?
+function gemUtil:GetSocketTypeInfo(key)
+    if not key then return end
     if type(key) == "number" then
         key = const.SOCKET_TYPES_INDEX[key]
     end
     local category = const.SOCKET_TYPE_INFO[key]
-    return category and category.name or "All"
+    return category
+end
+
+---@param key number|string|?
+---@return string
+function gemUtil:GetSocketTypeName(key)
+    local typeInfo = self:GetSocketTypeInfo(key)
+    return typeInfo and typeInfo.name or "All"
 end
 
 ---@param socketTypeName string
 ---@return integer|? equipmentSlot
 ---@return integer|? socketSlot
-function gemUtil.GetFreeSocket(socketTypeName)
+function gemUtil:GetFreeSocket(socketTypeName)
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
         SocketInventoryItem(equipmentSlot)
         for socketSlot = 1, GetNumSockets() do
@@ -40,14 +52,14 @@ function gemUtil:AddGemData(itemInfo, locType, locIndex, locSlot)
     ---@cast itemInfo ContainerItemInfo
     if not itemInfo then return end
     local itemType = select(6, C_Item.GetItemInfoInstant(itemInfo.hyperlink))
-    if itemType == 3 and self.GetGemSocketType(itemInfo.itemID) then
+    if itemType == 3 and self:GetGemSocketType(itemInfo.itemID) then
         for i = 1, itemInfo.stackCount do
-            tinsert(self.ownedGems, {
+            tinsert(self.owned_gems, {
                 itemID = itemInfo.itemID,
                 type = locType,
                 index = locIndex,
                 slot = locSlot,
-                gemType = self.GetSocketTypeName(self.GetGemSocketType(itemInfo.itemID)),
+                gemType = self:GetSocketTypeName(self:GetGemSocketType(itemInfo.itemID)),
             })
             Private.Cache:CacheItemInfo(itemInfo.itemID)
         end
@@ -55,7 +67,7 @@ function gemUtil:AddGemData(itemInfo, locType, locIndex, locSlot)
 end
 
 function gemUtil:RefreshOwnedGems()
-    wipe(self.ownedGems)
+    wipe(self.owned_gems)
     for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             self:AddGemData(C_Container.GetContainerItemInfo(bag, slot), "BAG", bag, slot)
@@ -85,7 +97,7 @@ end
 
 ---@param itemID integer
 ---@return string|?
-function gemUtil.GetGemSocketType(itemID)
+function gemUtil:GetGemSocketType(itemID)
     return const.GEM_SOCKET_TYPE[itemID]
 end
 
@@ -97,20 +109,47 @@ function gemUtil:GetFilteredGems(category, nameFilter)
     self:RefreshOwnedGems()
     if nameFilter then nameFilter = nameFilter:lower() end
     if type(category) == "number" then
-        category = self.GetSocketTypeName(category)
+        category = self:GetSocketTypeName(category)
     end
     category = category or "ALL"
     category = category:upper()
     for _, socketType in ipairs(const.SOCKET_TYPES_INDEX) do
         validGems[socketType] = {}
     end
-    for _, gemInfo in pairs(self.ownedGems) do
-        local gemCategory = self.GetGemSocketType(gemInfo.itemID)
+    for _, gemInfo in pairs(self.owned_gems) do
+        local gemCategory = self:GetGemSocketType(gemInfo.itemID)
         if category == "ALL" or gemCategory == category then
-            local gemItemInfo = Private.Cache:GetItemInfo(gemInfo.itemID)
-            local gemName = (gemItemInfo and gemItemInfo.name or ""):lower()
-            if not (nameFilter and not gemName:match(nameFilter)) then
-                tinsert(validGems[gemCategory], gemInfo)
+            if gemCategory ~= "PRIMORDIAL" or Private.Settings:GetSetting("show_primordial") then
+                local gemItemInfo = Private.Cache:GetItemInfo(gemInfo.itemID)
+                local gemName = (gemItemInfo and gemItemInfo.name or ""):lower()
+                if not (nameFilter and not gemName:match(nameFilter)) then
+                    tinsert(validGems[gemCategory], gemInfo)
+                end
+            end
+        end
+    end
+
+    if Private.Settings:GetSetting("show_unowned") then
+        for gemItemID, gemCategory in pairs(const.GEM_SOCKET_TYPE) do
+            if category == "ALL" or gemCategory == category then
+                local gemItemInfo = Private.Cache:GetItemInfo(gemItemID)
+                local gemName = (gemItemInfo and gemItemInfo.name or ""):lower()
+                if not (nameFilter and not gemName:match(nameFilter)) then
+                    local dupeID = false
+                    for _, gemInf in ipairs(self.owned_gems) do
+                        if gemInf.itemID == gemItemID then
+                            dupeID = true
+                            break
+                        end
+                    end
+                    if (not dupeID) and (gemCategory ~= "PRIMORDIAL" or Private.Settings:GetSetting("show_primordial")) then
+                        tinsert(validGems[gemCategory], {
+                            itemID = gemItemID,
+                            type = "UNCOLLECTED",
+                            gemType = self:GetSocketTypeName(gemCategory),
+                        })
+                    end
+                end
             end
         end
     end

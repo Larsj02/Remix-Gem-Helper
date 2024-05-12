@@ -3,8 +3,11 @@
 ## Title: Remix Gem Helper
 ## Author: Rasu | Larsj_02
 ## DefaultState: enabled
+## SavedVariables: RemixGemHelperDB
+## X-Curse-Project-ID: 1017030
 
 Cache.lua
 Constants.lua
+Settings.lua
 GemUtil.lua
 Core.lua

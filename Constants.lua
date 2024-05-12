@@ -194,4 +194,31 @@ constants.SOCKET_TYPE_INFO = {
 constants.COLORS = {
     POSITIVE = CreateColorFromHexString("FF2ecc71"),
     NEGATIVE = CreateColorFromHexString("FFe74c3c"),
+    WHITE = CreateColorFromHexString("FFecf0f1"),
+    GREY = CreateColorFromHexString("FFbdc3c7"),
 }
+constants.MEDIA = {
+    FONTS = {
+        DEFAULT = [[Interface\Addons\]] .. constants.ADDON_NAME .. [[\Media\Fonts\Expressway.TTF]]
+    }
+}
+
+constants.FONT_OBJECTS = {
+  NORMAL = constants.ADDON_NAME .. 'Normal',
+  HEADING = constants.ADDON_NAME .. 'Heading'
+}
+
+do
+  local font = CreateFont(constants.FONT_OBJECTS.NORMAL)
+  font:SetFont(constants.MEDIA.FONTS.DEFAULT, 12, "OUTLINE")
+  font:SetJustifyH("LEFT")
+  font:SetJustifyV("MIDDLE")
+  font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
+end
+do
+  local font = CreateFont(constants.FONT_OBJECTS.HEADING)
+  font:SetFont(constants.MEDIA.FONTS.DEFAULT, 16, "OUTLINE")
+  font:SetJustifyH("LEFT")
+  font:SetJustifyV("MIDDLE")
+  font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
+end
