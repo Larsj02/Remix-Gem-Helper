@@ -7,6 +7,7 @@ local settings = {
     db = {
         show_unowned = false,
         show_primordial = false,
+        show_frame = true,
     },
     callbacks = {}
 }

@@ -4,6 +4,7 @@ local Private = select(2, ...)
 local const = Private.constants
 local gemUtil = Private.GemUtil
 local cache = Private.Cache
+local settings = Private.Settings
 
 for itemID in pairs(const.GEM_SOCKET_TYPE) do
     cache:CacheItemInfo(itemID)
@@ -108,11 +109,7 @@ eventFrame:SetScript("OnEvent", function()
         GameTooltip:Hide()
     end)
     frameToggle:SetScript("OnMouseDown", function ()
-        if gems:IsVisible() then
-            gems:Hide()
-        else
-            gems:Show()
-        end
+        settings:UpdateSetting("show_frame", not settings:GetSetting("show_frame"))
     end)
 
     ButtonFrameTemplate_HidePortrait(gems)
@@ -157,7 +154,7 @@ eventFrame:SetScript("OnEvent", function()
     showUnowned.Text:SetText("Unowned")
     showUnowned.tooltip = "Show Unowned Gems in the List."
     showUnowned:HookScript("OnClick", function(self)
-        Private.Settings:UpdateSetting("show_unowned", self:GetChecked())
+        settings:UpdateSetting("show_unowned", self:GetChecked())
     end)
 
     local showPrimordial = CreateFrame("CheckButton", nil, gems, "ChatConfigCheckButtonTemplate")
@@ -165,14 +162,14 @@ eventFrame:SetScript("OnEvent", function()
     showPrimordial.Text:SetText("Primordial")
     showPrimordial.tooltip = "Show Primordial Gems in the List."
     showPrimordial:HookScript("OnClick", function(self)
-        Private.Settings:UpdateSetting("show_primordial", self:GetChecked())
+        settings:UpdateSetting("show_primordial", self:GetChecked())
     end)
 
     UIDropDownMenu_Initialize(dropDown, function(self)
         local info = UIDropDownMenu_CreateInfo()
         for i = 0, #const.SOCKET_TYPES_INDEX do
             local socketType = gemUtil:GetSocketTypeName(i)
-            if socketType ~= "Primordial" or Private.Settings:GetSetting("show_primordial") then
+            if socketType ~= "Primordial" or settings:GetSetting("show_primordial") then
                 info.func = self.SetValue
                 info.arg1 = i
                 info.checked = dropDown.selection == i
@@ -366,11 +363,18 @@ eventFrame:SetScript("OnEvent", function()
     end)
 
     selectionTreeUpdate()
-    Private.Settings:CreateSettingCallback("show_unowned", function(_, newState)
+    settings:CreateSettingCallback("show_frame", function(_, newState)
+        if newState then
+            gems:Show()
+        else
+            gems:Hide()
+        end
+    end)
+    settings:CreateSettingCallback("show_unowned", function(_, newState)
         selectionTreeUpdate()
         showUnowned:SetChecked(newState)
     end)
-    Private.Settings:CreateSettingCallback("show_primordial", function(_, newState)
+    settings:CreateSettingCallback("show_primordial", function(_, newState)
         selectionTreeUpdate()
         showPrimordial:SetChecked(newState)
     end)
