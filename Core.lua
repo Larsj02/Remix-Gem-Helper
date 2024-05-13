@@ -333,6 +333,7 @@ eventFrame:SetScript("OnEvent", function()
                     end)
                     for itemIndex, itemInfo in ipairs(socketTypeData) do
                         local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
+                        if not cachedInfo then return end
                         dataProvider:Insert({
                             id = itemInfo.itemID,
                             icon = cachedInfo.icon,
