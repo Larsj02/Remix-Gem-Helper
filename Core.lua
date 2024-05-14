@@ -69,6 +69,23 @@ local function createExtractBtn(parent)
     return btn
 end
 
+local function createCheckButton(parent, data)
+    local checkButton = CreateFrame("CheckButton", nil, parent, "ChatConfigCheckButtonTemplate")
+    checkButton:SetPoint(unpack(data.point))
+    checkButton.Text:SetText(data.text)
+    checkButton.tooltip = data.tooltip
+    checkButton:HookScript("OnClick", data.onClick)
+    local check = checkButton:CreateTexture()
+    local checkDisable = checkButton:CreateTexture()
+    check:SetAtlas("checkmark-minimal")
+    checkDisable:SetAtlas("checkmark-minimal-disabled")
+    checkButton:SetDisabledCheckedTexture(checkDisable)
+    checkButton:SetCheckedTexture(check)
+    checkButton:SetNormalAtlas("checkbox-minimal")
+    checkButton:SetPushedAtlas("checkbox-minimal")
+    return checkButton
+end
+
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function()
@@ -149,21 +166,23 @@ eventFrame:SetScript("OnEvent", function()
     ---@field Text FontString
     ---@field tooltip string
 
-    local showUnowned = CreateFrame("CheckButton", nil, gems, "ChatConfigCheckButtonTemplate")
-    showUnowned:SetPoint("BOTTOMRIGHT", -75, 7.5)
-    showUnowned.Text:SetText("Unowned")
-    showUnowned.tooltip = "Show Unowned Gems in the List."
-    showUnowned:HookScript("OnClick", function(self)
-        settings:UpdateSetting("show_unowned", self:GetChecked())
-    end)
+    local showUnowned = createCheckButton(gems, {
+        point = {"BOTTOMRIGHT", -75, 7.5},
+        text = "Unowned",
+        tooltip = "Show Unowned Gems in the List.",
+        onClick = function (self)
+            settings:UpdateSetting("show_unowned", self:GetChecked())
+        end
+    })
 
-    local showPrimordial = CreateFrame("CheckButton", nil, gems, "ChatConfigCheckButtonTemplate")
-    showPrimordial:SetPoint("BOTTOMRIGHT", -175, 7.5)
-    showPrimordial.Text:SetText("Primordial")
-    showPrimordial.tooltip = "Show Primordial Gems in the List."
-    showPrimordial:HookScript("OnClick", function(self)
-        settings:UpdateSetting("show_primordial", self:GetChecked())
-    end)
+    local showPrimordial = createCheckButton(gems, {
+        point = {"BOTTOMRIGHT", -175, 7.5},
+        text = "Primordial",
+        tooltip = "Show Primordial Gems in the List.",
+        onClick = function (self)
+            settings:UpdateSetting("show_primordial", self:GetChecked())
+        end
+    })
 
     UIDropDownMenu_Initialize(dropDown, function(self)
         local info = UIDropDownMenu_CreateInfo()

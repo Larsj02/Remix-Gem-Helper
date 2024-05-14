@@ -200,6 +200,9 @@ constants.COLORS = {
 constants.MEDIA = {
     FONTS = {
         DEFAULT = [[Interface\Addons\]] .. constants.ADDON_NAME .. [[\Media\Fonts\Expressway.TTF]]
+    },
+    TEXTURES = {
+        LOGO = [[Interface\Addons\]] .. constants.ADDON_NAME .. [[\Media\Textures\logo.tga]]
     }
 }
 

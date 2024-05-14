@@ -4,6 +4,7 @@
 ## Author: Rasu | Larsj_02
 ## DefaultState: enabled
 ## SavedVariables: RemixGemHelperDB
+## IconTexture: Interface\Addons\Remix Gem Helper\Media\Textures\logo.tga
 ## X-Curse-Project-ID: 1017030
 
 Cache.lua

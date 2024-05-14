@@ -88,6 +88,7 @@
         "ADD",
         "ExtraActionButton1",
         "CATEGORIES",
-        "show"
+        "show",
+        "AddonCompartmentFrame"
     ]
 }
