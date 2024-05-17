@@ -41,7 +41,28 @@ function gemUtil:GetFreeSocket(socketTypeName)
                 return equipmentSlot, socketSlot
             end
         end
+        CloseSocketInfo()
     end
+end
+
+---@param socketTypeName string
+---@return integer usedSlots
+---@return integer maxSlots
+function gemUtil:GetSocketsInfo(socketTypeName)
+    local usedSlots, maxSlots = 0, 0
+    for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
+        SocketInventoryItem(equipmentSlot)
+        for socketSlot = 1, GetNumSockets() do
+            if GetSocketTypes(socketSlot) == socketTypeName then
+                if GetExistingSocketInfo(socketSlot) then
+                    usedSlots = usedSlots + 1
+                end
+                maxSlots = maxSlots + 1
+            end
+        end
+        CloseSocketInfo()
+    end
+    return usedSlots, maxSlots
 end
 
 ---@param itemInfo table

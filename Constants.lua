@@ -208,6 +208,7 @@ constants.SOCKET_TYPE_INFO = {
 }
 constants.COLORS = {
     POSITIVE = CreateColorFromHexString("FF2ecc71"),
+    NEUTRAL = CreateColorFromHexString("FFf1c40f"),
     NEGATIVE = CreateColorFromHexString("FFe74c3c"),
     WHITE = CreateColorFromHexString("FFecf0f1"),
     GREY = CreateColorFromHexString("FFbdc3c7"),

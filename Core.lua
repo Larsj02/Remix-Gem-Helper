@@ -98,6 +98,16 @@ local function getItemGems(link)
     return gemsList
 end
 
+local function getPercentColor(percent)
+    if percent == 100 then
+        return const.COLORS.POSITIVE
+    end
+    if percent >= 50 then
+        return const.COLORS.NEUTRAL
+    end
+    return const.COLORS.NEGATIVE
+end
+
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
@@ -330,9 +340,11 @@ eventFrame:SetScript("OnEvent", function(_, event)
         frame.Icon:SetTexture(icon)
         frame.Name:SetTextColor(rowColor:GetRGBA())
         if isHeader then
+            local used, maxS = gemUtil:GetSocketsInfo(name)
+            local col = getPercentColor(used / maxS * 100)
             frame.Icon:SetDesaturated(false)
             frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
-            frame.Name:SetText(name)
+            frame.Name:SetText(string.format("%s (%s%d/%d|r)", name, col:GenerateHexColorMarkup(), used, maxS))
             frame.Extract:Hide()
         else
             frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
