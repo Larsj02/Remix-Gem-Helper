@@ -162,6 +162,21 @@ constants.SOCKET_EQUIPMENT_SLOTS = {
     INVSLOT_TRINKET1,
     INVSLOT_TRINKET2,
 }
+constants.SOCKET_EQUIPMENT_SLOTS_FRAMES = {
+    [INVSLOT_HEAD] = "CharacterHeadSlot",
+    [INVSLOT_NECK] = "CharacterNeckSlot",
+    [INVSLOT_SHOULDER] = "CharacterShoulderSlot",
+    [INVSLOT_CHEST] = "CharacterChestSlot",
+    [INVSLOT_WAIST] = "CharacterWaistSlot",
+    [INVSLOT_LEGS] = "CharacterLegsSlot",
+    [INVSLOT_FEET] = "CharacterFeetSlot",
+    [INVSLOT_WRIST] = "CharacterWristSlot",
+    [INVSLOT_HAND] = "CharacterHandsSlot",
+    [INVSLOT_FINGER1] = "CharacterFinger0Slot",
+    [INVSLOT_FINGER2] = "CharacterFinger1Slot",
+    [INVSLOT_TRINKET1] = "CharacterTrinket0Slot",
+    [INVSLOT_TRINKET2] = "CharacterTrinket1Slot",
+}
 
 -- https://github.com/Gethe/wow-ui-source/blob/55a42b7a1dc672ebb8e6f19eea3b1d377afe53b9/Interface/AddOns/Blizzard_ItemSocketingUI/Blizzard_ItemSocketingUI.lua#L7
 constants.SOCKET_TYPE_INFO = {

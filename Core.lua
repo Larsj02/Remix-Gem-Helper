@@ -103,6 +103,12 @@ eventFrame:SetScript("OnEvent", function()
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
 
+    local highlightSlot = CreateFrame("Frame", nil, UIParent)
+    highlightSlot:SetFrameStrata("TOOLTIP")
+    local hsTex = highlightSlot:CreateTexture(nil)
+    hsTex:SetAllPoints()
+    hsTex:SetAtlas("CosmeticIconFrame")
+
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
     frameToggle:SetSize(42, 42)
@@ -116,16 +122,16 @@ eventFrame:SetScript("OnEvent", function()
     ftTex:SetPoint("TOPLEFT", 10, -15)
     ftTex:SetPoint("BOTTOMRIGHT", -7.5, 7.5)
     ftTex:SetAtlas("timerunning-glues-icon")
-    frameToggle:SetScript("OnEnter", function (self)
+    frameToggle:SetScript("OnEnter", function(self)
         GameTooltip:ClearLines()
         GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
         GameTooltip:AddLine(string.format("Toggle the %s UI", const.ADDON_NAME), 1, 1, 1)
         GameTooltip:Show()
     end)
-    frameToggle:SetScript("OnLeave", function ()
+    frameToggle:SetScript("OnLeave", function()
         GameTooltip:Hide()
     end)
-    frameToggle:SetScript("OnMouseDown", function ()
+    frameToggle:SetScript("OnMouseDown", function()
         settings:UpdateSetting("show_frame", not settings:GetSetting("show_frame"))
     end)
 
@@ -167,19 +173,19 @@ eventFrame:SetScript("OnEvent", function()
     ---@field tooltip string
 
     local showUnowned = createCheckButton(gems, {
-        point = {"BOTTOMRIGHT", -75, 7.5},
+        point = { "BOTTOMRIGHT", -75, 7.5 },
         text = "Unowned",
         tooltip = "Show Unowned Gems in the List.",
-        onClick = function (self)
+        onClick = function(self)
             settings:UpdateSetting("show_unowned", self:GetChecked())
         end
     })
 
     local showPrimordial = createCheckButton(gems, {
-        point = {"BOTTOMRIGHT", -175, 7.5},
+        point = { "BOTTOMRIGHT", -175, 7.5 },
         text = "Primordial",
         tooltip = "Show Primordial Gems in the List.",
-        onClick = function (self)
+        onClick = function(self)
             settings:UpdateSetting("show_primordial", self:GetChecked())
         end
     })
@@ -259,10 +265,21 @@ eventFrame:SetScript("OnEvent", function()
                     GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT")
                     GameTooltip:SetHyperlink("item:" .. self.id)
                     GameTooltip:Show()
+                    if not self.Extract then return end
+                    local info = self.Extract.info
+                    if not info then return end
+                    if not info.type == "SOCKET" then return end
+                    local eqSlotName = const.SOCKET_EQUIPMENT_SLOTS_FRAMES[info.index]
+                    local eqSlot = _G[eqSlotName]
+                    if not eqSlot then return end
+                    highlightSlot:Show()
+                    highlightSlot:ClearAllPoints()
+                    highlightSlot:SetAllPoints(eqSlot)
                 end
             end)
 
             frame:SetScript("OnLeave", function(self)
+                highlightSlot:Hide()
                 self.Highlight:Hide()
                 if self.id then
                     GameTooltip:Hide()
@@ -406,5 +423,5 @@ eventFrame:SetScript("OnEvent", function()
             gems:Show()
             frameToggle:Show()
         end
-  end)
+    end)
 end)
