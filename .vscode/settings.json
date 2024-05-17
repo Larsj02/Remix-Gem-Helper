@@ -90,6 +90,9 @@
         "CATEGORIES",
         "show",
         "AddonCompartmentFrame",
-        "ItemSocketingSocket1"
+        "ItemSocketingSocket1",
+        "ScrappingMachineFrame",
+        "LinkUtil",
+        "RunNextFrame"
     ]
 }

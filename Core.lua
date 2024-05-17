@@ -85,12 +85,38 @@ local function createCheckButton(parent, data)
     checkButton:SetPushedAtlas("checkbox-minimal")
     return checkButton
 end
+local function getItemGems(link)
+    local _, linkOptions = LinkUtil.ExtractLink(link)
+    local item = { strsplit(":", linkOptions) }
+    local gemsList = {}
+    for i = 1, 4 do
+        local gem = tonumber(item[i + 2])
+        if gem then
+            tinsert(gemsList, gem)
+        end
+    end
+    return gemsList
+end
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:SetScript("OnEvent", function()
-    eventFrame:UnregisterAllEvents()
-    eventFrame:SetScript("OnEvent", nil)
+eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
+eventFrame:SetScript("OnEvent", function(_, event)
+    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
+        RunNextFrame(function()
+            local mun = ScrappingMachineFrame
+            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+                if f.itemLink then
+                    local gemsList = getItemGems(f.itemLink)
+                    if #gemsList > 0 then
+                        UIErrorsFrame:AddExternalErrorMessage("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
+                    end
+                end
+            end
+        end)
+    end
+    if event ~= "PLAYER_ENTERING_WORLD" then return end
+    eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     ---@class GemsFrame : Frame
     ---@field CloseButton Button
     ---@field SetTitle fun(self:GemsFrame, title:string)
@@ -105,7 +131,7 @@ eventFrame:SetScript("OnEvent", function()
 
     local highlightSlot = CreateFrame("Frame", nil, UIParent)
     highlightSlot:SetFrameStrata("TOOLTIP")
-    local hsTex = highlightSlot:CreateTexture(nil)
+    local hsTex = highlightSlot:CreateTexture()
     hsTex:SetAllPoints()
     hsTex:SetAtlas("CosmeticIconFrame")
 
