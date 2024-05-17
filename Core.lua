@@ -103,6 +103,11 @@ eventFrame:SetScript("OnEvent", function()
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
 
+    local highlightSlot = gems:CreateTexture()
+    highlightSlot:SetColorTexture(1, 1, 1, .8)
+    highlightSlot:ClearAllPoints()
+    highlightSlot:SetAllPoints(gems)
+
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
     frameToggle:SetSize(42, 42)
@@ -398,9 +403,8 @@ eventFrame:SetScript("OnEvent", function()
         showPrimordial:SetChecked(newState)
     end)
 
-    hooksecurefunc("CharacterFrameTab_OnClick", function(tab)
-        local tabNum = tonumber(tab:GetName():match("%d"))
-        if tabNum ~= 1 then
+    hooksecurefunc("CharacterFrameTab_OnClick", function()
+        if CharacterFrame.selectedTab ~= 1 then
             gems:Hide()
             frameToggle:Hide()
         else
