@@ -103,11 +103,6 @@ eventFrame:SetScript("OnEvent", function()
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
 
-    local highlightSlot = gems:CreateTexture()
-    highlightSlot:SetColorTexture(1, 1, 1, .8)
-    highlightSlot:ClearAllPoints()
-    highlightSlot:SetAllPoints(gems)
-
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
     frameToggle:SetSize(42, 42)
