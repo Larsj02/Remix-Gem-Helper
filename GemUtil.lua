@@ -122,6 +122,19 @@ function gemUtil:GetGemSocketType(itemID)
     return const.GEM_SOCKET_TYPE[itemID]
 end
 
+function gemUtil:GetItemGems(itemLink)
+    local _, linkOptions = LinkUtil.ExtractLink(itemLink)
+    local item = { strsplit(":", linkOptions) }
+    local gemsList = {}
+    for i = 1, 4 do
+        local gem = tonumber(item[i + 2])
+        if gem then
+            tinsert(gemsList, gem)
+        end
+    end
+    return gemsList
+end
+
 ---@param category string|number|?
 ---@param nameFilter string|?
 ---@return table

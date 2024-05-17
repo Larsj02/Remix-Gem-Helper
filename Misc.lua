@@ -1,0 +1,16 @@
+---@class RemixGemHelperPrivate
+local Private = select(2, ...)
+local const = Private.constants
+
+local misc = {}
+Private.Misc = misc
+
+function misc:getPercentColor(percent)
+    if percent == 100 then
+        return const.COLORS.POSITIVE
+    end
+    if percent >= 50 then
+        return const.COLORS.NEUTRAL
+    end
+    return const.COLORS.NEGATIVE
+end

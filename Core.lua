@@ -5,128 +5,145 @@ local const = Private.constants
 local gemUtil = Private.GemUtil
 local cache = Private.Cache
 local settings = Private.Settings
+local uiElements = Private.UIElements
+local misc = Private.Misc
 
 for itemID in pairs(const.GEM_SOCKET_TYPE) do
     cache:CacheItemInfo(itemID)
 end
 
-local function createExtractBtn(parent)
-    ---@class ExtractButton : Button
-    ---@field UpdateInfo fun(self:ExtractButton, infoType:"SOCKET"|"BAG", infoIndex:number, infoSlot:number, infoGemType:"Meta"|"Cogwheel"|"Tinker"|"Prismatic"|"Primordial")
-    local btn = CreateFrame("Button", nil, parent, "InsecureActionButtonTemplate")
-    btn:SetScript("PreClick", function(self)
-        if not self.info then return end
-        local info = self.info
-        if info.type == "SOCKET" then
-            SocketInventoryItem(info.index)
-        elseif info.type == "BAG" then
-            local equipSlot, equipSocket = gemUtil:GetFreeSocket(info.gemType)
-            C_Container.PickupContainerItem(info.index, info.slot)
-            SocketInventoryItem(equipSlot)
-            info.gemSlot = equipSocket
-        end
-    end)
-    btn:SetScript("PostClick", function(self)
-        if not self.info then return end
-        local info = self.info
-        if info.type == "SOCKET" then
-            ClickSocketButton(info.slot)
-        elseif info.type == "BAG" then
-            ClearCursor()
-            if not info.gemSlot then
-                UIErrorsFrame:AddExternalErrorMessage("You don't have a valid free Slot for this Gem")
-                CloseSocketInfo()
-                return
-            end
-            C_Container.PickupContainerItem(info.index, info.slot)
-            ClickSocketButton(info.gemSlot)
-            AcceptSockets()
-        end
-        CloseSocketInfo()
-    end)
-    btn:SetAllPoints()
-    btn:RegisterForClicks("AnyDown")
-    btn:SetAttribute("type", "macro")
+local highlightSlot = CreateFrame("Frame", nil, UIParent)
+highlightSlot:SetFrameStrata("TOOLTIP")
+local hsTex = highlightSlot:CreateTexture()
+hsTex:SetAllPoints()
+hsTex:SetAtlas("CosmeticIconFrame")
 
-    function btn:UpdateInfo(infoType, infoIndex, infoSlot, infoGemType)
-        self.info = {
-            type = infoType,
-            index = infoIndex,
-            slot = infoSlot,
-            gemType = infoGemType,
-            gemSlot = 0,
-        }
-        local txt = ""
-        if infoType == "SOCKET" then
-            txt = "/cast " .. const.EXTRACT_GEM_SPELL
-            if infoGemType == "Primordial" then
-                txt = "/click ExtraActionButton1"
-            end
-        end
-        self:SetAttribute("macrotext", txt)
-    end
+local function itemListInitializer(frame, data)
+    ---@class GemListEntry : Frame
+    ---@field Name FontString
+    ---@field Icon Texture
+    ---@field Highlight Texture
+    ---@field Stripe Texture
+    ---@field Extract ExtractButton
+    ---@field initialized boolean
+    ---@field index number
+    ---@field isHeader boolean|?
+    ---@field id number|?
+    ---@cast frame GemListEntry
+    if not frame.initialized then
+        local rowName = frame:CreateFontString(nil, "ARTWORK", const.FONT_OBJECTS.NORMAL)
+        rowName:SetPoint("LEFT", 5, 0)
+        frame.Name = rowName
 
-    return btn
-end
+        local iconTexture = frame:CreateTexture(nil, "OVERLAY")
+        iconTexture:SetPoint("RIGHT", -5, 0)
+        iconTexture:SetSize(16, 16)
+        frame.Icon = iconTexture
 
-local function createCheckButton(parent, data)
-    local checkButton = CreateFrame("CheckButton", nil, parent, "ChatConfigCheckButtonTemplate")
-    checkButton:SetPoint(unpack(data.point))
-    checkButton.Text:SetText(data.text)
-    checkButton.tooltip = data.tooltip
-    checkButton:HookScript("OnClick", data.onClick)
-    local check = checkButton:CreateTexture()
-    local checkDisable = checkButton:CreateTexture()
-    check:SetAtlas("checkmark-minimal")
-    checkDisable:SetAtlas("checkmark-minimal-disabled")
-    checkButton:SetDisabledCheckedTexture(checkDisable)
-    checkButton:SetCheckedTexture(check)
-    checkButton:SetNormalAtlas("checkbox-minimal")
-    checkButton:SetPushedAtlas("checkbox-minimal")
-    return checkButton
-end
-local function getItemGems(link)
-    local _, linkOptions = LinkUtil.ExtractLink(link)
-    local item = { strsplit(":", linkOptions) }
-    local gemsList = {}
-    for i = 1, 4 do
-        local gem = tonumber(item[i + 2])
-        if gem then
-            tinsert(gemsList, gem)
-        end
-    end
-    return gemsList
-end
+        local highlightTexture = frame:CreateTexture()
+        highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
+        highlightTexture:SetPoint("BOTTOMLEFT", 5, 0)
+        highlightTexture:SetPoint("TOPRIGHT", -5, 0)
+        highlightTexture:Hide()
+        frame.Highlight = highlightTexture
 
-local function getPercentColor(percent)
-    if percent == 100 then
-        return const.COLORS.POSITIVE
-    end
-    if percent >= 50 then
-        return const.COLORS.NEUTRAL
-    end
-    return const.COLORS.NEGATIVE
-end
+        local unevenStripe = frame:CreateTexture()
+        unevenStripe:SetColorTexture(1, 1, 1, .08)
+        unevenStripe:SetPoint("BOTTOMLEFT", 5, 0)
+        unevenStripe:SetPoint("TOPRIGHT", -5, 0)
+        frame.Stripe = unevenStripe
 
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
-eventFrame:SetScript("OnEvent", function(_, event)
-    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-        RunNextFrame(function()
-            local mun = ScrappingMachineFrame
-            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-                if f.itemLink then
-                    local gemsList = getItemGems(f.itemLink)
-                    if #gemsList > 0 then
-                        UIErrorsFrame:AddExternalErrorMessage("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
-                    end
-                end
+        local extractButton = uiElements:CreateExtractButton(frame)
+        frame.Extract = extractButton
+
+        frame:SetScript("OnEnter", function(self)
+            self.Highlight:Show()
+            if self.id then
+                if not frame:IsVisible() then return end
+                GameTooltip:ClearLines()
+                GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT")
+                GameTooltip:SetHyperlink("item:" .. self.id)
+                GameTooltip:Show()
+                if not self.Extract then return end
+                local info = self.Extract.info
+                if not info then return end
+                if not info.locType == "SOCKET" then return end
+                local eqSlotName = const.SOCKET_EQUIPMENT_SLOTS_FRAMES[info.locIndex]
+                local eqSlot = _G[eqSlotName]
+                if not eqSlot then return end
+                highlightSlot:Show()
+                highlightSlot:ClearAllPoints()
+                highlightSlot:SetAllPoints(eqSlot)
             end
         end)
+
+        frame:SetScript("OnLeave", function(self)
+            highlightSlot:Hide()
+            self.Highlight:Hide()
+            if self.id then
+                GameTooltip:Hide()
+            end
+        end)
+
+        extractButton:HookScript("OnEnter", function()
+            frame:GetScript("OnEnter")(frame)
+        end)
+        extractButton:HookScript("OnLeave", function()
+            frame:GetScript("OnLeave")(frame)
+        end)
+
+        frame.initialized = true
     end
-    if event ~= "PLAYER_ENTERING_WORLD" then return end
-    eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    local index = data.index
+    local isHeader = data.isHeader or false
+    local icon = data.icon
+    local name = data.text
+    local rowColor = data.color or CreateColor(1, 1, 1)
+
+    frame.Icon:SetTexture(icon)
+    frame.Name:SetTextColor(rowColor:GetRGBA())
+    if isHeader then
+        local used, maxS = gemUtil:GetSocketsInfo(name)
+        local col = misc:getPercentColor(used / maxS * 100)
+        frame.Icon:SetDesaturated(false)
+        frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
+        frame.Name:SetText(string.format("%s (%s%d/%d|r)", name, col:GenerateHexColorMarkup(), used, maxS))
+        frame.Extract:Hide()
+    else
+        frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
+        local exInf = data.info
+        if exInf and exInf.type ~= "UNCOLLECTED" then
+            frame.Icon:SetDesaturated(false)
+            frame.Extract:Show()
+            frame.Extract:UpdateInfo(
+                exInf.type,
+                exInf.index,
+                exInf.slot,
+                exInf.gemType
+            )
+        else
+            frame.Icon:SetDesaturated(true)
+            frame.Extract:Hide()
+        end
+
+        local state, color
+        if exInf.type == "SOCKET" then
+            state, color = "Socketed", const.COLORS.POSITIVE
+        elseif exInf.type == "BAG" then
+            state, color = "In Bag", const.COLORS.NEGATIVE
+        else
+            state, color = "Uncollected", const.COLORS.GREY
+            name = color:WrapTextInColorCode(name)
+        end
+        frame.Name:SetText(string.format("%s (%s)", name, color:WrapTextInColorCode(state)))
+    end
+
+    frame.index = index
+    frame.id = data.id
+    frame.Stripe:SetShown(data.index % 2 == 1)
+end
+
+local function createFrame()
     ---@class GemsFrame : Frame
     ---@field CloseButton Button
     ---@field SetTitle fun(self:GemsFrame, title:string)
@@ -138,12 +155,6 @@ eventFrame:SetScript("OnEvent", function(_, event)
     gems:SetWidth(300)
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
-
-    local highlightSlot = CreateFrame("Frame", nil, UIParent)
-    highlightSlot:SetFrameStrata("TOOLTIP")
-    local hsTex = highlightSlot:CreateTexture()
-    hsTex:SetAllPoints()
-    hsTex:SetAtlas("CosmeticIconFrame")
 
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
@@ -208,7 +219,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
     ---@field Text FontString
     ---@field tooltip string
 
-    local showUnowned = createCheckButton(gems, {
+    local showUnowned = uiElements:CreateCheckButton(gems, {
         point = { "BOTTOMRIGHT", -75, 7.5 },
         text = "Unowned",
         tooltip = "Show Unowned Gems in the List.",
@@ -217,7 +228,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
         end
     })
 
-    local showPrimordial = createCheckButton(gems, {
+    local showPrimordial = uiElements:CreateCheckButton(gems, {
         point = { "BOTTOMRIGHT", -175, 7.5 },
         text = "Primordial",
         tooltip = "Show Primordial Gems in the List.",
@@ -256,129 +267,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
 
 
     local scrollView = CreateScrollBoxListLinearView()
-    scrollView:SetElementInitializer("BackDropTemplate", function(frame, data)
-        ---@class GemListEntry : Frame
-        ---@field Name FontString
-        ---@field Icon Texture
-        ---@field Highlight Texture
-        ---@field Stripe Texture
-        ---@field Extract ExtractButton
-        ---@field initialized boolean
-        ---@field index number
-        ---@field isHeader boolean|?
-        ---@field id number|?
-        ---@cast frame GemListEntry
-        if not frame.initialized then
-            local rowName = frame:CreateFontString(nil, "ARTWORK", const.FONT_OBJECTS.NORMAL)
-            rowName:SetPoint("LEFT", 5, 0)
-            frame.Name = rowName
-
-            local iconTexture = frame:CreateTexture(nil, "OVERLAY")
-            iconTexture:SetPoint("RIGHT", -5, 0)
-            iconTexture:SetSize(16, 16)
-            frame.Icon = iconTexture
-
-            local highlightTexture = frame:CreateTexture()
-            highlightTexture:SetTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight")
-            highlightTexture:SetPoint("BOTTOMLEFT", 5, 0)
-            highlightTexture:SetPoint("TOPRIGHT", -5, 0)
-            highlightTexture:Hide()
-            frame.Highlight = highlightTexture
-
-            local unevenStripe = frame:CreateTexture()
-            unevenStripe:SetColorTexture(1, 1, 1, .08)
-            unevenStripe:SetPoint("BOTTOMLEFT", 5, 0)
-            unevenStripe:SetPoint("TOPRIGHT", -5, 0)
-            frame.Stripe = unevenStripe
-
-            local extractButton = createExtractBtn(frame)
-            frame.Extract = extractButton
-
-            frame:SetScript("OnEnter", function(self)
-                self.Highlight:Show()
-                if self.id then
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetOwner(self, "ANCHOR_CURSOR_RIGHT")
-                    GameTooltip:SetHyperlink("item:" .. self.id)
-                    GameTooltip:Show()
-                    if not self.Extract then return end
-                    local info = self.Extract.info
-                    if not info then return end
-                    if not info.type == "SOCKET" then return end
-                    local eqSlotName = const.SOCKET_EQUIPMENT_SLOTS_FRAMES[info.index]
-                    local eqSlot = _G[eqSlotName]
-                    if not eqSlot then return end
-                    highlightSlot:Show()
-                    highlightSlot:ClearAllPoints()
-                    highlightSlot:SetAllPoints(eqSlot)
-                end
-            end)
-
-            frame:SetScript("OnLeave", function(self)
-                highlightSlot:Hide()
-                self.Highlight:Hide()
-                if self.id then
-                    GameTooltip:Hide()
-                end
-            end)
-
-            extractButton:HookScript("OnEnter", function()
-                frame:GetScript("OnEnter")(frame)
-            end)
-            extractButton:HookScript("OnLeave", function()
-                frame:GetScript("OnLeave")(frame)
-            end)
-
-            frame.initialized = true
-        end
-        local index = data.index
-        local isHeader = data.isHeader or false
-        local icon = data.icon
-        local name = data.text
-        local rowColor = data.color or CreateColor(1, 1, 1)
-
-        frame.Icon:SetTexture(icon)
-        frame.Name:SetTextColor(rowColor:GetRGBA())
-        if isHeader then
-            local used, maxS = gemUtil:GetSocketsInfo(name)
-            local col = getPercentColor(used / maxS * 100)
-            frame.Icon:SetDesaturated(false)
-            frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
-            frame.Name:SetText(string.format("%s (%s%d/%d|r)", name, col:GenerateHexColorMarkup(), used, maxS))
-            frame.Extract:Hide()
-        else
-            frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
-            local exInf = data.info
-            if exInf and exInf.type ~= "UNCOLLECTED" then
-                frame.Icon:SetDesaturated(false)
-                frame.Extract:Show()
-                frame.Extract:UpdateInfo(
-                    exInf.type,
-                    exInf.index,
-                    exInf.slot,
-                    exInf.gemType
-                )
-            else
-                frame.Icon:SetDesaturated(true)
-                frame.Extract:Hide()
-            end
-
-            local state, color
-            if exInf.type == "SOCKET" then
-                state, color = "Socketed", const.COLORS.POSITIVE
-            elseif exInf.type == "BAG" then
-                state, color = "In Bag", const.COLORS.NEGATIVE
-            else
-                state, color = "Uncollected", const.COLORS.GREY
-                name = color:WrapTextInColorCode(name)
-            end
-            frame.Name:SetText(string.format("%s (%s)", name, color:WrapTextInColorCode(state)))
-        end
-
-        frame.index = index
-        frame.id = data.id
-        frame.Stripe:SetShown(data.index % 2 == 1)
-    end)
+    scrollView:SetElementInitializer("BackDropTemplate", itemListInitializer)
     ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
 
     scrollView:SetElementExtent(25)
@@ -462,4 +351,38 @@ eventFrame:SetScript("OnEvent", function(_, event)
             frameToggle:Show()
         end
     end)
+    gems:SetScript("OnHide", function ()
+        scrollView:UpdateTree({})
+    end)
+    gems:SetScript("OnShow", function (self)
+        selectionTreeUpdate()
+        if _G["CCSf"] then -- Chonky Character Sheets Frame
+            self:ClearAllPoints()
+            self:SetPoint("BOTTOMLEFT", CharacterFrameBg, "BOTTOMRIGHT")
+            self:SetPoint("TOPLEFT", CharacterFrameBg, "TOPRIGHT")
+            self:SetWidth(1000)
+        end
+    end)
+end
+
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
+eventFrame:SetScript("OnEvent", function(_, event)
+    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
+        RunNextFrame(function()
+            local mun = ScrappingMachineFrame
+            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+                if f.itemLink then
+                    local gemsList = gemUtil:GetItemGems(f.itemLink)
+                    if #gemsList > 0 then
+                        UIErrorsFrame:AddExternalErrorMessage("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
+                    end
+                end
+            end
+        end)
+    end
+    if event ~= "PLAYER_ENTERING_WORLD" then return end
+    eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    createFrame()
 end)
