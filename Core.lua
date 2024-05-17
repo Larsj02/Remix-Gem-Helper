@@ -96,14 +96,14 @@ eventFrame:SetScript("OnEvent", function()
     ---@field SetTitle fun(self:GemsFrame, title:string)
     ---@field Inset Frame
     ---@field TopTileStreaks Frame
-    local gems = CreateFrame("Frame", nil, CharacterStatsPane, "ButtonFrameTemplate")
+    local gems = CreateFrame("Frame", nil, CharacterFrame, "ButtonFrameTemplate")
     gems:SetTitle(const.ADDON_NAME)
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
     gems:SetWidth(300)
     gems:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
     gems:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
 
-    local frameToggle = CreateFrame("Frame", nil, CharacterStatsPane)
+    local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
     frameToggle:SetSize(42, 42)
     frameToggle:SetPoint("BOTTOMRIGHT", CharacterStatsPane, "TOPRIGHT", 5, 0)
@@ -397,4 +397,15 @@ eventFrame:SetScript("OnEvent", function()
         selectionTreeUpdate()
         showPrimordial:SetChecked(newState)
     end)
+
+    hooksecurefunc("CharacterFrameTab_OnClick", function(tab)
+        local tabNum = tonumber(tab:GetName():match("%d"))
+        if tabNum ~= 1 then
+            gems:Hide()
+            frameToggle:Hide()
+        else
+            gems:Show()
+            frameToggle:Show()
+        end
+  end)
 end)
