@@ -19,6 +19,11 @@ function misc:GetPercentColor(percent)
     return const.COLORS.NEGATIVE
 end
 
+function misc:PrintError(message, ...)
+    message = (... and string.format(message, ...) or message or "")
+    UIErrorsFrame:AddExternalErrorMessage(message)
+end
+
 ---@param clickType any
 ---@return boolean
 function misc:IsAllowedForClick(clickType)
@@ -32,7 +37,7 @@ function misc:IsAllowedForClick(clickType)
         return true
     end
     if self.clickThrottles[clickType] + .25 < currentTime then
-        UIErrorsFrame:AddExternalErrorMessage("You're clicking too fast")
+        self:PrintError("You're clicking too fast")
     end
     return false
 end

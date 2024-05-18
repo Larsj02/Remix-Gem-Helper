@@ -27,7 +27,7 @@ local function extractPostClick(self)
     if info.locType == "BAG" then
         ClearCursor()
         if not info.freeSlot then
-            UIErrorsFrame:AddExternalErrorMessage("You don't have a valid free Slot for this Gem")
+            misc:PrintError("You don't have a valid free Slot for this Gem")
             CloseSocketInfo()
             return
         end

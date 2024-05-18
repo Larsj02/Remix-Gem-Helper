@@ -375,7 +375,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
                 if f.itemLink then
                     local gemsList = gemUtil:GetItemGems(f.itemLink)
                     if #gemsList > 0 then
-                        UIErrorsFrame:AddExternalErrorMessage("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
+                        misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
                     end
                 end
             end
