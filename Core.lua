@@ -57,7 +57,7 @@ local function itemListInitializer(frame, data)
                 if not self.Extract then return end
                 local info = self.Extract.info
                 if not info then return end
-                if info.locType ~= "SOCKET" then return end
+                if info.locType ~= "EQUIP_SOCKET" then return end
                 uiElements:HighlightEquipmentSlot(info.locIndex)
             end
         end)
@@ -99,25 +99,22 @@ local function itemListInitializer(frame, data)
     else
         frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
         local exInf = data.info
-        if exInf and exInf.type ~= "UNCOLLECTED" then
+        if exInf and exInf.locType ~= "UNCOLLECTED" then
             frame.Icon:SetDesaturated(false)
             frame.Extract:Show()
-            frame.Extract:UpdateInfo(
-                exInf.type,
-                exInf.index,
-                exInf.slot,
-                exInf.gemType
-            )
+            frame.Extract:UpdateInfo(exInf)
         else
             frame.Icon:SetDesaturated(true)
             frame.Extract:Hide()
         end
 
         local state, color
-        if exInf.type == "SOCKET" then
+        if exInf.locType == "EQUIP_SOCKET" then
             state, color = "Socketed", const.COLORS.POSITIVE
-        elseif exInf.type == "BAG" then
-            state, color = "In Bag", const.COLORS.NEGATIVE
+        elseif exInf.locType == "BAG_GEM" then
+            state, color = "In Bag", const.COLORS.NEUTRAL
+        elseif exInf.locType == "BAG_SOCKET" then
+            state, color = "In Bag Item!", const.COLORS.NEGATIVE
         else
             state, color = "Uncollected", const.COLORS.GREY
             name = color:WrapTextInColorCode(name)
@@ -248,7 +245,6 @@ local function createFrame()
     local scrollView = CreateScrollBoxListLinearView()
     scrollView:SetElementInitializer("BackDropTemplate", itemListInitializer)
     ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
-
     scrollView:SetElementExtent(25)
 
     function scrollView:UpdateTree(data)

@@ -10,9 +10,11 @@ local function extractPreClick(self)
     if not misc:IsAllowedForClick("EXTRACT_PRECLICK") then return end
     if not self.info then return end
     local info = self.info
-    if info.locType == "SOCKET" then
+    if info.locType == "EQUIP_SOCKET" then
         SocketInventoryItem(info.locIndex)
-    elseif info.locType == "BAG" then
+    elseif info.locType == "BAG_SOCKET" then
+        C_Container.SocketContainerItem(info.locIndex, info.locSlot)
+    elseif info.locType == "BAG_GEM" then
         local equipSlot, equipSocket = select(3, gemUtil:GetSocketsInfo(info.gemType))
         C_Container.PickupContainerItem(info.locIndex, info.locSlot)
         SocketInventoryItem(equipSlot)
@@ -24,7 +26,7 @@ local function extractPostClick(self)
     if not misc:IsAllowedForClick("EXTRACT_POSTCLICK") then return end
     if not self.info then return end
     local info = self.info
-    if info.locType == "BAG" then
+    if info.locType == "BAG_GEM" then
         ClearCursor()
         if not info.freeSlot then
             misc:PrintError("You don't have a valid free Slot for this Gem")
@@ -39,7 +41,7 @@ local function extractPostClick(self)
 end
 function uiElements:CreateExtractButton(parent)
     ---@class ExtractButton : Button
-    ---@field UpdateInfo fun(self:ExtractButton, infoType:"BAG_GEM"|"BAG_SOCKET"|"EQUIP_SOCKET", infoIndex:number, infoSlot:number, infoGemType:"Meta"|"Cogwheel"|"Tinker"|"Prismatic"|"Primordial")
+    ---@field UpdateInfo fun(self:ExtractButton, infoType:"BAG_GEM"|"BAG_SOCKET"|"EQUIP_SOCKET"|table, infoIndex:number|?, infoSlot:number|?, infoGemType:"Meta"|"Cogwheel"|"Tinker"|"Prismatic"|"Primordial"|?)
     local extractButton = CreateFrame("Button", nil, parent, "InsecureActionButtonTemplate")
     extractButton:SetAllPoints()
     extractButton:SetScript("PreClick", extractPreClick)
@@ -49,21 +51,26 @@ function uiElements:CreateExtractButton(parent)
     extractButton:SetAttribute("type", "macro")
 
     function extractButton:UpdateInfo(newType, newIndex, newSlot, newGemType)
-        self.info = {
-            locType = newType,
-            locIndex = newIndex,
-            locSlot = newSlot,
-            gemType = newGemType,
-
-            gemSlot = 0,
-        }
+        if type(newType) == "table" then
+            self.info = newType
+        else
+            self.info = {
+                locType = newType,
+                locIndex = newIndex,
+                locSlot = newSlot,
+                gemType = newGemType,
+                gemSlot = 0,
+            }
+        end
+        local locType = self.info.locType
+        local locSlot = self.info.locSlot
         local txt = ""
-        if newType == "SOCKET" then
+        if locType == "EQUIP_SOCKET" or locType == "BAG_SOCKET" then
             txt = "/cast " .. const.EXTRACT_GEM_SPELL
-            if newSlot == "Primordial" then
+            if locSlot == "Primordial" then
                 txt = "/click ExtraActionButton1"
             end
-            txt = string.format("%s\n/click ItemSocketingSocket%s", txt, newSlot)
+            txt = string.format("%s\n/click ItemSocketingSocket%s", txt, locSlot)
         end
         self:SetAttribute("macrotext", txt)
     end

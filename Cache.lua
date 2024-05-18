@@ -36,6 +36,7 @@ function cache:CacheItemInfo(itemID, loadedCallback)
         self.itemInfo[itemID] = {
             name = itemInfo[1],
             link = itemInfo[2],
+            quality = itemInfo[3],
             icon = itemInfo[10],
             type = itemInfo[12],
             subType = itemInfo[13],
