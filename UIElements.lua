@@ -13,7 +13,7 @@ local function extractPreClick(self)
     if info.locType == "SOCKET" then
         SocketInventoryItem(info.locIndex)
     elseif info.locType == "BAG" then
-        local equipSlot, equipSocket = gemUtil:GetFreeSocket(info.gemType)
+        local equipSlot, equipSocket = select(3, self:GetSocketsInfo(info.gemType))
         C_Container.PickupContainerItem(info.locIndex, info.locSlot)
         SocketInventoryItem(equipSlot)
         info.freeSlot = equipSocket

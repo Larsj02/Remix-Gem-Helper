@@ -32,13 +32,6 @@ function gemUtil:GetSocketTypeName(key)
 end
 
 ---@param socketTypeName string
----@return integer|? equipmentSlot
----@return integer|? socketSlot
-function gemUtil:GetFreeSocket(socketTypeName) -- This should just be replaced i guess
-    return select(3, self:GetSocketsInfo(socketTypeName))
-end
-
----@param socketTypeName string
 ---@return integer usedSlots
 ---@return integer maxSlots
 ---@return integer|? freeEquipmentSlot
@@ -148,7 +141,7 @@ function gemUtil:GetItemGems(itemLink)
     return gemsList
 end
 
-local function passesFilter(itemID, filter)
+local function isMatchingFilter(itemID, filter)
     filter = filter:gsub("%%", "%%%%"):gsub("%+", "%%+")
     local gemItemInfo = Private.Cache:GetItemInfo(itemID)
     local gemNameAndDesc = (gemItemInfo and gemItemInfo.name or "") ..
@@ -178,7 +171,7 @@ function gemUtil:GetFilteredGems(category, nameFilter)
         local gemCategory = self:GetGemSocketType(gemInfo.itemID)
         if category == "ALL" or gemCategory == category then
             if gemCategory ~= "PRIMORDIAL" or Private.Settings:GetSetting("show_primordial") then
-                if passesFilter(gemInfo.itemID, nameFilter) then
+                if isMatchingFilter(gemInfo.itemID, nameFilter) then
                     tinsert(validGems[gemCategory], gemInfo)
                 end
             end
@@ -188,7 +181,7 @@ function gemUtil:GetFilteredGems(category, nameFilter)
     if Private.Settings:GetSetting("show_unowned") then
         for gemItemID, gemCategory in pairs(const.GEM_SOCKET_TYPE) do
             if category == "ALL" or gemCategory == category then
-                if passesFilter(gemItemID, nameFilter) then
+                if isMatchingFilter(gemItemID, nameFilter) then
                     local dupeID = false
                     for _, gemInf in ipairs(self.owned_gems) do
                         if gemInf.itemID == gemItemID then

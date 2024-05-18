@@ -9,6 +9,7 @@ local constants = {}
 Private.constants = constants
 
 constants.ADDON_NAME = ADDON_NAME
+constants.LOCALE = GetLocale()
 constants.ADDON_VERSION = C_AddOns.GetAddOnMetadata(ADDON_NAME, "Version")
 constants.EXTRACT_GEM_SPELL = GetSpellInfo(433397)
 constants.SOCKET_TYPES_INDEX = {
@@ -226,6 +227,17 @@ constants.FONT_OBJECTS = {
   NORMAL = constants.ADDON_NAME .. 'Normal',
   HEADING = constants.ADDON_NAME .. 'Heading'
 }
+
+constants.UNSUPPORTED_FONT_LANG = {
+    ["koKR"] = true,
+    ["zhCN"] = true,
+    ["zhTW"] = true,
+    ["ruRU"] = true,
+}
+
+if constants.UNSUPPORTED_FONT_LANG[constants.LOCALE] then
+    constants.MEDIA.FONTS.DEFAULT = "Fonts\\FRIZQT__.TTF"
+end
 
 do
   local font = CreateFont(constants.FONT_OBJECTS.NORMAL)
