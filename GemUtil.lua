@@ -1,6 +1,7 @@
 ---@class RemixGemHelperPrivate
 local Private = select(2, ...)
 local const = Private.constants
+local misc = Private.Misc
 
 ---@class SocketTypeInfo
 ---@field name string
@@ -34,6 +35,7 @@ end
 ---@return integer|? equipmentSlot
 ---@return integer|? socketSlot
 function gemUtil:GetFreeSocket(socketTypeName)
+    misc:MuteSounds()
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
         SocketInventoryItem(equipmentSlot)
         for socketSlot = 1, GetNumSockets() do
@@ -43,12 +45,14 @@ function gemUtil:GetFreeSocket(socketTypeName)
         end
         CloseSocketInfo()
     end
+    misc:UnmuteSounds()
 end
 
 ---@param socketTypeName string
 ---@return integer usedSlots
 ---@return integer maxSlots
 function gemUtil:GetSocketsInfo(socketTypeName)
+    misc:MuteSounds()
     local usedSlots, maxSlots = 0, 0
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
         SocketInventoryItem(equipmentSlot)
@@ -62,6 +66,7 @@ function gemUtil:GetSocketsInfo(socketTypeName)
         end
         CloseSocketInfo()
     end
+    misc:UnmuteSounds()
     return usedSlots, maxSlots
 end
 
@@ -135,6 +140,17 @@ function gemUtil:GetItemGems(itemLink)
     return gemsList
 end
 
+local function passesFilter(itemID, filter)
+    filter = filter:gsub("%%", "%%%%"):gsub("%+", "%%+")
+    local gemItemInfo = Private.Cache:GetItemInfo(itemID)
+    local gemNameAndDesc = (gemItemInfo and gemItemInfo.name or "") ..
+    (gemItemInfo and gemItemInfo.description or ""):lower()
+    if not (filter and not gemNameAndDesc:match(filter)) then
+        return true
+    end
+    return false
+end
+
 ---@param category string|number|?
 ---@param nameFilter string|?
 ---@return table
@@ -154,9 +170,7 @@ function gemUtil:GetFilteredGems(category, nameFilter)
         local gemCategory = self:GetGemSocketType(gemInfo.itemID)
         if category == "ALL" or gemCategory == category then
             if gemCategory ~= "PRIMORDIAL" or Private.Settings:GetSetting("show_primordial") then
-                local gemItemInfo = Private.Cache:GetItemInfo(gemInfo.itemID)
-                local gemName = (gemItemInfo and gemItemInfo.name or ""):lower()
-                if not (nameFilter and not gemName:match(nameFilter)) then
+                if passesFilter(gemInfo.itemID, nameFilter) then
                     tinsert(validGems[gemCategory], gemInfo)
                 end
             end
@@ -166,9 +180,7 @@ function gemUtil:GetFilteredGems(category, nameFilter)
     if Private.Settings:GetSetting("show_unowned") then
         for gemItemID, gemCategory in pairs(const.GEM_SOCKET_TYPE) do
             if category == "ALL" or gemCategory == category then
-                local gemItemInfo = Private.Cache:GetItemInfo(gemItemID)
-                local gemName = (gemItemInfo and gemItemInfo.name or ""):lower()
-                if not (nameFilter and not gemName:match(nameFilter)) then
+                if passesFilter(gemItemID, nameFilter) then
                     local dupeID = false
                     for _, gemInf in ipairs(self.owned_gems) do
                         if gemInf.itemID == gemItemID then

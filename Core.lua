@@ -8,10 +8,6 @@ local settings = Private.Settings
 local uiElements = Private.UIElements
 local misc = Private.Misc
 
-for itemID in pairs(const.GEM_SOCKET_TYPE) do
-    cache:CacheItemInfo(itemID)
-end
-
 local highlightSlot = CreateFrame("Frame", nil, UIParent)
 highlightSlot:SetFrameStrata("TOOLTIP")
 local hsTex = highlightSlot:CreateTexture()
@@ -273,6 +269,7 @@ local function createFrame()
     scrollView:SetElementExtent(25)
 
     function scrollView:UpdateTree(data)
+        if not scrollBox:IsVisible() then return end
         if not data then return end
         local scrollPercent = scrollBox:GetScrollPercentage()
         self:Flush()
@@ -288,8 +285,10 @@ local function createFrame()
                         icon = typeInfo.icon,
                         index = 0
                     })
-                    sort(socketTypeData, function(a, b)
-                        return a.itemID > b.itemID
+                    sort(socketTypeData, function(a, b) -- TODO: Sorting Function
+                        local cachedA = cache:GetItemInfo(a.itemID)
+                        local cachedB = cache:GetItemInfo(b.itemID)
+                        return cachedA.name < cachedB.name
                     end)
                     for itemIndex, itemInfo in ipairs(socketTypeData) do
                         local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
@@ -351,10 +350,10 @@ local function createFrame()
             frameToggle:Show()
         end
     end)
-    gems:SetScript("OnHide", function ()
+    gems:SetScript("OnHide", function()
         scrollView:UpdateTree({})
     end)
-    gems:SetScript("OnShow", function (self)
+    gems:SetScript("OnShow", function(self)
         selectionTreeUpdate()
         if _G["CCSf"] then -- Chonky Character Sheets Frame
             self:ClearAllPoints()
@@ -383,6 +382,10 @@ eventFrame:SetScript("OnEvent", function(_, event)
         end)
     end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
+
+    for itemID in pairs(const.GEM_SOCKET_TYPE) do
+        cache:CacheItemInfo(itemID)
+    end
     eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     createFrame()
 end)

@@ -7,12 +7,26 @@ local Private = select(2, ...)
 ---@field icon number
 ---@field type number
 ---@field subType number
+---@field description string
 
 local cache = {
     itemInfo = {}
 }
 Private.Cache = cache
 
+local function itemLinkToDescription(itemLink)
+    GameTooltip:SetHyperlink(itemLink)
+    local data = GameTooltip:GetTooltipData()
+    local description = ""
+    if data and data.lines then
+        for _, line in ipairs(data.lines) do
+            local lText = line.leftText or ""
+            local rText = line.rightText or ""
+            description = string.format("%s%s %s\n", description, lText, rText)
+        end
+    end
+    return description
+end
 
 ---@param itemID number
 ---@param loadedCallback fun(itemID:integer)|?
@@ -26,6 +40,7 @@ function cache:CacheItemInfo(itemID, loadedCallback)
             icon = itemInfo[10],
             type = itemInfo[12],
             subType = itemInfo[13],
+            description = itemLinkToDescription(item:GetItemLink())
         }
         if loadedCallback and type(loadedCallback) == "function" then
             loadedCallback(self.itemInfo[itemID])
