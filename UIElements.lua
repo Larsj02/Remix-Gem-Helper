@@ -87,3 +87,62 @@ function uiElements:CreateCheckButton(parent, data)
     checkButton:SetPushedAtlas("checkbox-minimal")
     return checkButton
 end
+
+function uiElements:HighlightEquipmentSlot(equipmentSlot)
+    if not self.highlightFrame then
+        local highlightSlot = CreateFrame("Frame", nil, UIParent)
+        highlightSlot:SetFrameStrata("TOOLTIP")
+        local hsTex = highlightSlot:CreateTexture()
+        hsTex:SetAllPoints()
+        hsTex:SetAtlas("CosmeticIconFrame")
+        self.highlightFrame = highlightSlot
+    end
+    local eqSlotName = const.SOCKET_EQUIPMENT_SLOTS_FRAMES[equipmentSlot]
+    local eqSlot = _G[eqSlotName]
+    if not eqSlot then return end
+    self.highlightFrame:Show()
+    self.highlightFrame:ClearAllPoints()
+    self.highlightFrame:SetAllPoints(eqSlot)
+end
+
+function uiElements:CreateDropdown(parent, data)
+    ---@class Dropdown : Frame
+    ---@field SetValue fun(self:Dropdown, ...:any)
+    ---@field Text FontString
+    local dropDown = CreateFrame("Frame", nil, parent, "UIDropDownMenuTemplate")
+    dropDown.initializer = data.initializer
+    dropDown.selectionCallback = data.selectionCallback
+    dropDown.selection = nil
+    for _, point in ipairs(data.points) do
+        dropDown:SetPoint(unpack(point))
+    end
+
+    function dropDown.UpdateSelection(dd, selectionIndex, selectionValue)
+        selectionIndex = selectionIndex or 0
+        if selectionIndex == dd.selection then return end
+        dd.selection = selectionIndex
+        UIDropDownMenu_SetSelectedID(dd, selectionIndex + 1)
+        CloseDropDownMenus()
+        if dd.selectionCallback then
+            dd:selectionCallback(selectionValue, selectionIndex)
+        end
+    end
+    dropDown.SetValue = function (selectionValue, selectionIndex)
+        dropDown:UpdateSelection(selectionIndex, selectionValue.value)
+    end
+
+    UIDropDownMenu_Initialize(dropDown, function(...)
+        local info = UIDropDownMenu_CreateInfo()
+        if dropDown.initializer then
+            dropDown:initializer(info, ...)
+        end
+        if not dropDown.selection then
+            dropDown:UpdateSelection(dropDown.selection)
+        end
+    end)
+
+    function dropDown.SetCallback(dd, name, func)
+        dd[name] = func
+    end
+    return dropDown
+end

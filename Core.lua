@@ -8,12 +8,6 @@ local settings = Private.Settings
 local uiElements = Private.UIElements
 local misc = Private.Misc
 
-local highlightSlot = CreateFrame("Frame", nil, UIParent)
-highlightSlot:SetFrameStrata("TOOLTIP")
-local hsTex = highlightSlot:CreateTexture()
-hsTex:SetAllPoints()
-hsTex:SetAtlas("CosmeticIconFrame")
-
 local function itemListInitializer(frame, data)
     ---@class GemListEntry : Frame
     ---@field Name FontString
@@ -63,18 +57,15 @@ local function itemListInitializer(frame, data)
                 if not self.Extract then return end
                 local info = self.Extract.info
                 if not info then return end
-                if not info.locType == "SOCKET" then return end
-                local eqSlotName = const.SOCKET_EQUIPMENT_SLOTS_FRAMES[info.locIndex]
-                local eqSlot = _G[eqSlotName]
-                if not eqSlot then return end
-                highlightSlot:Show()
-                highlightSlot:ClearAllPoints()
-                highlightSlot:SetAllPoints(eqSlot)
+                if info.locType ~= "SOCKET" then return end
+                uiElements:HighlightEquipmentSlot(info.locIndex)
             end
         end)
 
         frame:SetScript("OnLeave", function(self)
-            highlightSlot:Hide()
+            if uiElements.highlightFrame then
+                uiElements.highlightFrame:Hide()
+            end
             self.Highlight:Hide()
             if self.id then
                 GameTooltip:Hide()
@@ -195,17 +186,24 @@ local function createFrame()
     search:SetPoint("TOPRIGHT", gems.TopTileStreaks, -5, -15)
     search:SetPoint("BOTTOMLEFT", gems.TopTileStreaks, "BOTTOM", 0, 15)
 
-    ---@class Dropdown : Frame
-    ---@field SetValue fun(self:Dropdown, ...:any)
-    ---@field Text FontString
-    local dropDown = CreateFrame("Frame", nil, gems, "UIDropDownMenuTemplate")
-    dropDown:SetPoint("TOPLEFT", gems.TopTileStreaks, -10, -10)
-    dropDown:SetPoint("RIGHT", search, "LEFT", -15, 0)
-    function dropDown:UpdateSelection(selection)
-        self.selection = selection
-        self.Text:SetText(gemUtil:GetSocketTypeName(selection))
-        CloseDropDownMenus()
-    end
+    local dropDown = uiElements:CreateDropdown(gems, {
+        points = {
+            { "TOPLEFT", gems.TopTileStreaks, -10,    -10 },
+            { "RIGHT",   search,              "LEFT", -15, 0 }
+        },
+        initializer = function(self, info)
+            for i = 0, #const.SOCKET_TYPES_INDEX do
+                local socketType = gemUtil:GetSocketTypeName(i)
+                if socketType ~= "Primordial" or settings:GetSetting("show_primordial") then
+                    info.func = self.SetValue
+                    info.arg1 = i
+                    info.checked = self.selection == i
+                    info.text = socketType
+                    UIDropDownMenu_AddButton(info)
+                end
+            end
+        end
+    })
 
     local version = gems:CreateFontString(nil, "ARTWORK", "GameFontDisableSmallLeft")
     version:SetPoint("BOTTOMLEFT", 22, 15)
@@ -232,21 +230,6 @@ local function createFrame()
             settings:UpdateSetting("show_primordial", self:GetChecked())
         end
     })
-
-    UIDropDownMenu_Initialize(dropDown, function(self)
-        local info = UIDropDownMenu_CreateInfo()
-        for i = 0, #const.SOCKET_TYPES_INDEX do
-            local socketType = gemUtil:GetSocketTypeName(i)
-            if socketType ~= "Primordial" or settings:GetSetting("show_primordial") then
-                info.func = self.SetValue
-                info.arg1 = i
-                info.checked = dropDown.selection == i
-                info.text = socketType
-                UIDropDownMenu_AddButton(info)
-            end
-        end
-        dropDown:UpdateSelection(dropDown.selection or 0)
-    end)
 
     ---@class ScrollBox : Frame
     ---@field GetScrollPercentage fun(self:ScrollBox)
@@ -307,10 +290,7 @@ local function createFrame()
         scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
     end
 
-    function dropDown:SetValue(selIndex)
-        dropDown:UpdateSelection(selIndex)
-        selectionTreeUpdate()
-    end
+    dropDown:SetCallback("selectionCallback", selectionTreeUpdate)
 
     search:HookScript("OnTextChanged", selectionTreeUpdate)
 

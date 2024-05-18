@@ -94,6 +94,8 @@
         "ScrappingMachineFrame",
         "LinkUtil",
         "RunNextFrame",
-        "CharacterFrameBg"
+        "CharacterFrameBg",
+        "UIDropDownMenu_SetSelectedID",
+        "UIDropDownMenu_GetSelectedName"
     ]
 }
