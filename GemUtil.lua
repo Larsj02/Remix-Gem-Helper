@@ -34,41 +34,44 @@ end
 ---@param socketTypeName string
 ---@return integer|? equipmentSlot
 ---@return integer|? socketSlot
-function gemUtil:GetFreeSocket(socketTypeName)
-    misc:MuteSounds()
-    for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
-        SocketInventoryItem(equipmentSlot)
-        for socketSlot = 1, GetNumSockets() do
-            if (not GetExistingSocketInfo(socketSlot)) and (GetSocketTypes(socketSlot) == socketTypeName) then
-                return equipmentSlot, socketSlot
-            end
-        end
-        CloseSocketInfo()
-    end
-    misc:UnmuteSounds()
+function gemUtil:GetFreeSocket(socketTypeName) -- This should just be replaced i guess
+    return select(3, self:GetSocketsInfo(socketTypeName))
 end
 
 ---@param socketTypeName string
 ---@return integer usedSlots
 ---@return integer maxSlots
+---@return integer|? freeEquipmentSlot
+---@return integer|? freeSocketSlot
 function gemUtil:GetSocketsInfo(socketTypeName)
     local usedSlots, maxSlots = 0, 0
+    local freeEquipmentSlot, freeSocketSlot
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
         local itemLoc = ItemLocation:CreateFromEquipmentSlot(equipmentSlot)
         if itemLoc:IsValid() then
             local itemLink = C_Item.GetItemLink(itemLoc)
             if itemLink then
                 local itemStats = C_Item.GetItemStats(itemLink)
-                for stat, count in pairs(itemStats) do
-                    if stat:match("EMPTY_SOCKET_"..socketTypeName:upper()) then
-                        maxSlots = maxSlots + count
-                        usedSlots = usedSlots + #gemUtil:GetItemGems(itemLink)
+                for stat, itemMaxSlots in pairs(itemStats) do
+                    if stat:match("EMPTY_SOCKET_" .. socketTypeName:upper()) then
+                        local itemGems = gemUtil:GetItemGems(itemLink)
+                        local itemUsedSlots = #itemGems
+                        maxSlots = maxSlots + itemMaxSlots
+                        usedSlots = usedSlots + itemUsedSlots
+
+                        if itemUsedSlots < itemMaxSlots then
+                            freeEquipmentSlot = equipmentSlot
+                            for fss in pairs(itemGems.freeSpots) do
+                                freeSocketSlot = fss
+                                break
+                            end
+                        end
                     end
                 end
             end
         end
     end
-    return usedSlots, maxSlots
+    return usedSlots, maxSlots, freeEquipmentSlot, freeSocketSlot
 end
 
 ---@param itemInfo table
@@ -131,11 +134,15 @@ end
 function gemUtil:GetItemGems(itemLink)
     local _, linkOptions = LinkUtil.ExtractLink(itemLink)
     local item = { strsplit(":", linkOptions) }
-    local gemsList = {}
+    local gemsList = {
+        freeSpots = {}
+    }
     for i = 1, 4 do
         local gem = tonumber(item[i + 2])
         if gem then
             tinsert(gemsList, gem)
+        else
+            gemsList.freeSpots[i] = true
         end
     end
     return gemsList
