@@ -52,21 +52,22 @@ end
 ---@return integer usedSlots
 ---@return integer maxSlots
 function gemUtil:GetSocketsInfo(socketTypeName)
-    misc:MuteSounds()
     local usedSlots, maxSlots = 0, 0
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
-        SocketInventoryItem(equipmentSlot)
-        for socketSlot = 1, GetNumSockets() do
-            if GetSocketTypes(socketSlot) == socketTypeName then
-                if GetExistingSocketInfo(socketSlot) then
-                    usedSlots = usedSlots + 1
+        local itemLoc = ItemLocation:CreateFromEquipmentSlot(equipmentSlot)
+        if itemLoc:IsValid() then
+            local itemLink = C_Item.GetItemLink(itemLoc)
+            if itemLink then
+                local itemStats = C_Item.GetItemStats(itemLink)
+                for stat, count in pairs(itemStats) do
+                    if stat:match("EMPTY_SOCKET_"..socketTypeName:upper()) then
+                        maxSlots = maxSlots + count
+                        usedSlots = usedSlots + #gemUtil:GetItemGems(itemLink)
+                    end
                 end
-                maxSlots = maxSlots + 1
             end
         end
-        CloseSocketInfo()
     end
-    misc:UnmuteSounds()
     return usedSlots, maxSlots
 end
 
@@ -144,7 +145,7 @@ local function passesFilter(itemID, filter)
     filter = filter:gsub("%%", "%%%%"):gsub("%+", "%%+")
     local gemItemInfo = Private.Cache:GetItemInfo(itemID)
     local gemNameAndDesc = (gemItemInfo and gemItemInfo.name or "") ..
-    (gemItemInfo and gemItemInfo.description or ""):lower()
+        (gemItemInfo and gemItemInfo.description or ""):lower()
     if not (filter and not gemNameAndDesc:match(filter)) then
         return true
     end
