@@ -100,7 +100,7 @@ local function itemListInitializer(frame, data)
     frame.Name:SetTextColor(rowColor:GetRGBA())
     if isHeader then
         local used, maxS = gemUtil:GetSocketsInfo(name)
-        local col = misc:getPercentColor(used / maxS * 100)
+        local col = misc:GetPercentColor(used / maxS * 100)
         frame.Icon:SetDesaturated(false)
         frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
         frame.Name:SetText(string.format("%s (%s%d/%d|r)", name, col:GenerateHexColorMarkup(), used, maxS))

@@ -2,10 +2,14 @@
 local Private = select(2, ...)
 local const = Private.constants
 
-local misc = {}
+local misc = {
+    clickThrottles = {}
+}
 Private.Misc = misc
 
-function misc:getPercentColor(percent)
+---@param percent number
+---@return ColorMixin
+function misc:GetPercentColor(percent)
     if percent == 100 then
         return const.COLORS.POSITIVE
     end
@@ -15,14 +19,18 @@ function misc:getPercentColor(percent)
     return const.COLORS.NEGATIVE
 end
 
-function misc:MuteSounds() -- This doesn't seem to work on PlaySound() rn
-    MuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
-    MuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
-    MuteSoundFile(SOUNDKIT.MAP_PING)
-end
-
-function misc:UnmuteSounds()
-    UnmuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_OPEN)
-    UnmuteSoundFile(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
-    UnmuteSoundFile(SOUNDKIT.MAP_PING)
+---@param clickType any
+---@return boolean
+function misc:IsAllowedForClick(clickType)
+    local currentTime = GetTime()
+    if not self.clickThrottles[clickType] then
+        self.clickThrottles[clickType] = currentTime
+        return true
+    end
+    if self.clickThrottles[clickType] + .5 < currentTime then
+        self.clickThrottles[clickType] = currentTime
+        return true
+    end
+    UIErrorsFrame:AddExternalErrorMessage("You're clicking too fast")
+    return false
 end

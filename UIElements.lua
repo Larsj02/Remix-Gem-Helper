@@ -2,10 +2,12 @@
 local Private = select(2, ...)
 local const = Private.constants
 local gemUtil = Private.GemUtil
+local misc = Private.Misc
 
 local uiElements = {}
 Private.UIElements = uiElements
 local function extractPreClick(self)
+    if not misc:IsAllowedForClick("EXTRACT_PRECLICK") then return end
     if not self.info then return end
     local info = self.info
     if info.locType == "SOCKET" then
@@ -19,6 +21,7 @@ local function extractPreClick(self)
 end
 
 local function extractPostClick(self)
+    if not misc:IsAllowedForClick("EXTRACT_POSTCLICK") then return end
     if not self.info then return end
     local info = self.info
     if info.locType == "BAG" then
@@ -41,7 +44,7 @@ function uiElements:CreateExtractButton(parent)
     extractButton:SetAllPoints()
     extractButton:SetScript("PreClick", extractPreClick)
     extractButton:SetScript("PostClick", extractPostClick)
-    extractButton:RegisterForClicks("AnyDown")
+    extractButton:RegisterForClicks("AnyDown", "AnyUp")
     extractButton:SetAttribute("type", "macro")
 
     function extractButton:UpdateInfo(newType, newIndex, newSlot, newGemType)
