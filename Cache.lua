@@ -4,6 +4,7 @@ local Private = select(2, ...)
 ---@class CacheItemInfo
 ---@field name string
 ---@field link string
+---@field quality string
 ---@field icon number
 ---@field type number
 ---@field subType number

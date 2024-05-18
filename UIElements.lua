@@ -80,6 +80,7 @@ end
 
 function uiElements:CreateCheckButton(parent, data)
     local checkButton = CreateFrame("CheckButton", nil, parent, "ChatConfigCheckButtonTemplate")
+---@diagnostic disable-next-line: deprecated
     checkButton:SetPoint(unpack(data.point))
     checkButton.Text:SetText(data.text)
     checkButton.tooltip = data.tooltip
@@ -121,6 +122,7 @@ function uiElements:CreateDropdown(parent, data)
     dropDown.selectionCallback = data.selectionCallback
     dropDown.selection = nil
     for _, point in ipairs(data.points) do
+---@diagnostic disable-next-line: deprecated
         dropDown:SetPoint(unpack(point))
     end
 
@@ -135,6 +137,9 @@ function uiElements:CreateDropdown(parent, data)
         end
     end
     dropDown.SetValue = function (selectionValue, selectionIndex)
+        ---@class dropdownRow
+        ---@field value number
+        ---@cast selectionValue dropdownRow
         dropDown:UpdateSelection(selectionIndex, selectionValue.value)
     end
 

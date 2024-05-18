@@ -268,12 +268,17 @@ local function createFrame()
                     for itemIndex, itemInfo in ipairs(socketTypeData) do
                         local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
                         if not cachedInfo then return end
+                        local txt = cachedInfo.name
+                        if itemInfo.gemType == "Prismatic" then
+                            txt = gemUtil:GetGemStats(cachedInfo.description)
+                        end
                         dataProvider:Insert({
                             id = itemInfo.itemID,
                             icon = cachedInfo.icon,
-                            text = cachedInfo.name,
+                            text = txt or "",
                             index = itemIndex,
-                            info = itemInfo
+                            info = itemInfo,
+                            cachedInfo = cachedInfo,
                         })
                     end
                 end
@@ -338,6 +343,7 @@ end
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+---@diagnostic disable-next-line: param-type-mismatch
 eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
 eventFrame:SetScript("OnEvent", function(_, event)
     if event == "SCRAPPING_MACHINE_ITEM_ADDED" then

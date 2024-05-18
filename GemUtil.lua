@@ -233,3 +233,11 @@ function gemUtil:GetFilteredGems(socketTypeFilter, nameFilter)
     end
     return validGems
 end
+
+function gemUtil:GetGemStats(description)
+    local stat = ""
+    if description and type(description) == "string" then
+        stat = description:match("%++[^\n]+")
+    end
+    return stat
+end

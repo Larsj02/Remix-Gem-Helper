@@ -46,5 +46,8 @@ end
 function misc.ItemSorting(a, b)
     local cachedA = cache:GetItemInfo(a.itemID)
     local cachedB = cache:GetItemInfo(b.itemID)
+    if cachedA.quality ~= cachedB.quality then
+        return cachedA.quality > cachedB.quality
+    end
     return cachedA.name < cachedB.name
 end
