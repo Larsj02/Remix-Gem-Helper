@@ -1,6 +1,7 @@
 ---@class RemixGemHelperPrivate
 local Private = select(2, ...)
 local const = Private.constants
+local cache = Private.Cache
 
 local misc = {
     clickThrottles = {}
@@ -40,4 +41,10 @@ function misc:IsAllowedForClick(clickType)
         self:PrintError("You're clicking too fast")
     end
     return false
+end
+
+function misc.ItemSorting(a, b)
+    local cachedA = cache:GetItemInfo(a.itemID)
+    local cachedB = cache:GetItemInfo(b.itemID)
+    return cachedA.name < cachedB.name
 end

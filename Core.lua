@@ -285,11 +285,7 @@ local function createFrame()
                         icon = typeInfo.icon,
                         index = 0
                     })
-                    sort(socketTypeData, function(a, b) -- TODO: Sorting Function
-                        local cachedA = cache:GetItemInfo(a.itemID)
-                        local cachedB = cache:GetItemInfo(b.itemID)
-                        return cachedA.name < cachedB.name
-                    end)
+                    sort(socketTypeData, misc.ItemSorting)
                     for itemIndex, itemInfo in ipairs(socketTypeData) do
                         local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
                         if not cachedInfo then return end
