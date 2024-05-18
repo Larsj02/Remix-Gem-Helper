@@ -45,20 +45,22 @@ function gemUtil:GetSocketsInfo(socketTypeName)
             local itemLink = C_Item.GetItemLink(itemLoc)
             if itemLink then
                 local itemStats = C_Item.GetItemStats(itemLink)
-                for stat, itemMaxSlots in pairs(itemStats) do
-                    if stat:match("EMPTY_SOCKET_" .. socketTypeName:upper()) then
-                        local itemGems = gemUtil:GetItemGems(itemLink)
-                        local itemUsedSlots = #itemGems
-                        maxSlots = maxSlots + itemMaxSlots
-                        usedSlots = usedSlots + itemUsedSlots
+                if itemStats then
+                    for stat, itemMaxSlots in pairs(itemStats) do
+                        if stat:match("EMPTY_SOCKET_" .. socketTypeName:upper()) then
+                            local itemGems = gemUtil:GetItemGems(itemLink)
+                            local itemUsedSlots = #itemGems
+                            maxSlots = maxSlots + itemMaxSlots
+                            usedSlots = usedSlots + itemUsedSlots
 
-                        if itemUsedSlots < itemMaxSlots then
-                            freeEquipmentSlot = equipmentSlot
-                            for slotIndex = 1, 3 do
-                                local fss = itemGems.freeSpots[slotIndex]
-                                if fss then
-                                    freeSocketSlot = slotIndex
-                                    break
+                            if itemUsedSlots < itemMaxSlots then
+                                freeEquipmentSlot = equipmentSlot
+                                for slotIndex = 1, 3 do
+                                    local fss = itemGems.freeSpots[slotIndex]
+                                    if fss then
+                                        freeSocketSlot = slotIndex
+                                        break
+                                    end
                                 end
                             end
                         end

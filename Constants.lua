@@ -228,14 +228,14 @@ constants.FONT_OBJECTS = {
   HEADING = constants.ADDON_NAME .. 'Heading'
 }
 
-constants.UNSUPPORTED_FONT_LANG = {
-    ["koKR"] = true,
-    ["zhCN"] = true,
-    ["zhTW"] = true,
-    ["ruRU"] = true,
+constants.LANG_TO_FONT = {
+    ["koKR"] = "Fonts\\2002.TTF",
+    ["zhCN"] = "Fonts\\blei00d.TTF",
+    ["zhTW"] = "Fonts\\ARKai_T.ttf",
+    ["ruRU"] = "Fonts\\FRIZQT___CYR.TTF",
 }
 
-if constants.UNSUPPORTED_FONT_LANG[constants.LOCALE] then
+if constants.LANG_TO_FONT[constants.LOCALE] then
     constants.MEDIA.FONTS.DEFAULT = "Fonts\\FRIZQT__.TTF"
 end
 
