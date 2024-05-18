@@ -57,7 +57,7 @@ function gemUtil:GetSocketsInfo(socketTypeName)
                             for slotIndex = 1, 3 do
                                 local fss = itemGems.freeSpots[slotIndex]
                                 if fss then
-                                    freeSocketSlot = fss
+                                    freeSocketSlot = slotIndex
                                     break
                                 end
                             end

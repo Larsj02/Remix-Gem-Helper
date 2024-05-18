@@ -31,6 +31,8 @@ function misc:IsAllowedForClick(clickType)
         self.clickThrottles[clickType] = currentTime
         return true
     end
-    UIErrorsFrame:AddExternalErrorMessage("You're clicking too fast")
+    if self.clickThrottles[clickType] + .25 < currentTime then
+        UIErrorsFrame:AddExternalErrorMessage("You're clicking too fast")
+    end
     return false
 end
