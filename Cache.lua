@@ -15,8 +15,7 @@ local cache = {
 Private.Cache = cache
 
 local function itemLinkToDescription(itemLink)
-    GameTooltip:SetHyperlink(itemLink)
-    local data = GameTooltip:GetTooltipData()
+    local data = C_TooltipInfo.GetHyperlink(itemLink)
     local description = ""
     if data and data.lines then
         for _, line in ipairs(data.lines) do
