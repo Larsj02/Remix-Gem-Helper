@@ -54,12 +54,14 @@ function gemUtil:GetSocketsInfo(socketTypeName)
                             usedSlots = usedSlots + itemUsedSlots
 
                             if itemUsedSlots < itemMaxSlots then
-                                freeEquipmentSlot = equipmentSlot
-                                for slotIndex = 1, 3 do
-                                    local fss = itemGems.freeSpots[slotIndex]
-                                    if fss then
-                                        freeSocketSlot = slotIndex
-                                        break
+                                if not freeEquipmentSlot then
+                                    freeEquipmentSlot = equipmentSlot
+                                    for slotIndex = 1, 3 do
+                                        local fss = itemGems.freeSpots[slotIndex]
+                                        if fss then
+                                            freeSocketSlot = slotIndex
+                                            break
+                                        end
                                     end
                                 end
                             end
