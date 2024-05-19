@@ -96,6 +96,7 @@
         "RunNextFrame",
         "CharacterFrameBg",
         "UIDropDownMenu_SetSelectedID",
-        "UIDropDownMenu_GetSelectedName"
+        "UIDropDownMenu_GetSelectedName",
+        "PaperDollFrame"
     ]
 }
