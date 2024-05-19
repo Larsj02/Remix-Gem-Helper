@@ -38,7 +38,7 @@ end
 ---@return integer|? freeSocketSlot
 function gemUtil:GetSocketsInfo(socketTypeName)
     local usedSlots, maxSlots = 0, 0
-    local freeEquipmentSlot, freeSocketSlot
+    local freeEquipmentSlot, freeSocketSlot, freeIlvl
     for _, equipmentSlot in ipairs(const.SOCKET_EQUIPMENT_SLOTS) do
         local itemLoc = ItemLocation:CreateFromEquipmentSlot(equipmentSlot)
         if itemLoc:IsValid() then
@@ -54,8 +54,10 @@ function gemUtil:GetSocketsInfo(socketTypeName)
                             usedSlots = usedSlots + itemUsedSlots
 
                             if itemUsedSlots < itemMaxSlots then
-                                if not freeEquipmentSlot then
+                                local itemLevel = C_Item.GetCurrentItemLevel(itemLoc)
+                                if not freeEquipmentSlot or freeIlvl < itemLevel then
                                     freeEquipmentSlot = equipmentSlot
+                                    freeIlvl = itemLevel
                                     for slotIndex = 1, 3 do
                                         local fss = itemGems.freeSpots[slotIndex]
                                         if fss then
