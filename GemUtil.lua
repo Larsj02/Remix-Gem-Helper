@@ -104,8 +104,8 @@ function gemUtil:AddGemData(dataTable, itemInfo, locType, locIndex, locSlot, gem
         for gemSlot, gemID in ipairs(gems) do
             if type(gemID) == "number" then
                 local cacheInfo = Private.Cache:GetItemInfo(gemID)
-                local hyperlink = cacheInfo.link
-                if hyperlink then
+                if cacheInfo and cacheInfo.link then
+                    local hyperlink = cacheInfo.link
                     self:AddGemData(dataTable, {
                         itemID = gemID,
                         stackCount = 1,
