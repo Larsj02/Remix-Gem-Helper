@@ -354,21 +354,22 @@ end
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 ---@diagnostic disable-next-line: param-type-mismatch
-eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
+--eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
 eventFrame:SetScript("OnEvent", function(_, event)
-    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-        RunNextFrame(function()
-            local mun = ScrappingMachineFrame
-            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-                if f.itemLink then
-                    local gemsList = gemUtil:GetItemGems(f.itemLink)
-                    if #gemsList > 0 then
-                        misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
-                    end
-                end
-            end
-        end)
-    end
+    -- Apparently Gems go into your bags so this is not longer needed
+    --if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
+        --RunNextFrame(function()
+        --    local mun = ScrappingMachineFrame
+        --    for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+        --        if f.itemLink then
+        --            local gemsList = gemUtil:GetItemGems(f.itemLink)
+        --            if #gemsList > 0 then
+        --                misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
+        --            end
+        --        end
+        --    end
+        --end)
+    --end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do
