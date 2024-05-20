@@ -1,7 +1,6 @@
 ---@class RemixGemHelperPrivate
 local Private = select(2, ...)
 local const = Private.constants
-local misc = Private.Misc
 
 ---@class SocketTypeInfo
 ---@field name string
@@ -223,8 +222,8 @@ function gemUtil:GetFilteredGems(socketTypeFilter, nameFilter)
                     end
                     if (not dupeID) and (gemType ~= "PRIMORDIAL" or Private.Settings:GetSetting("show_primordial")) then
                         local cacheInfo = Private.Cache:GetItemInfo(gemItemID)
-                        local hyperlink = cacheInfo.link
-                        if hyperlink then
+                        if cacheInfo and cacheInfo.link then
+                            local hyperlink = cacheInfo.link
                             self:AddGemData(validGems[gemType],
                                 {
                                     itemID = gemItemID,

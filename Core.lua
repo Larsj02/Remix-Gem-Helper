@@ -7,6 +7,10 @@ local cache = Private.Cache
 local settings = Private.Settings
 local uiElements = Private.UIElements
 local misc = Private.Misc
+local timeFormatter = CreateFromMixins(SecondsFormatterMixin);
+timeFormatter:Init(1, 3, true, true);
+
+Private.TimeFormatter = timeFormatter
 
 local function itemListInitializer(frame, data)
     ---@class GemListEntry : Frame
@@ -226,6 +230,51 @@ local function createFrame()
         end
     })
 
+    local openLootbox = uiElements:CreateIcon(gems, {
+        points = {
+            {"TOPLEFT", gems, "BOTTOMLEFT", 5, -5}
+        },
+        isClickable = true,
+        actionType = "ITEM",
+        actionID = 211279
+    })
+
+    local openRandomGemP = uiElements:CreateIcon(gems, {
+        points = {
+            {"LEFT", openLootbox, "RIGHT", 5, 0}
+        },
+        isClickable = true,
+        actionType = "ITEM",
+        actionID = 223907
+    })
+
+    local openRandomGemT = uiElements:CreateIcon(gems, {
+        points = {
+            {"LEFT", openRandomGemP, "RIGHT", 5, 0}
+        },
+        isClickable = true,
+        actionType = "ITEM",
+        actionID = 223906
+    })
+
+    local openRandomGemC = uiElements:CreateIcon(gems, {
+        points = {
+            {"LEFT", openRandomGemT, "RIGHT", 5, 0}
+        },
+        isClickable = true,
+        actionType = "ITEM",
+        actionID = 223904
+    })
+
+    local openRandomGemM = uiElements:CreateIcon(gems, {
+        points = {
+            {"LEFT", openRandomGemC, "RIGHT", 5, 0}
+        },
+        isClickable = true,
+        actionType = "ITEM",
+        actionID = 223905
+    })
+
     ---@class ScrollBox : Frame
     ---@field GetScrollPercentage fun(self:ScrollBox)
     ---@field SetScrollPercentage fun(self:ScrollBox, percentage:number)
@@ -353,7 +402,6 @@ end
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
----@diagnostic disable-next-line: param-type-mismatch
 --eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
 eventFrame:SetScript("OnEvent", function(_, event)
     -- Apparently Gems go into your bags so this is not longer needed

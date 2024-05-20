@@ -99,6 +99,7 @@
         "UIDropDownMenu_GetSelectedName",
         "PaperDollFrame",
         "TooltipDataProcessor",
-        "ACHIEVEMENT"
+        "ACHIEVEMENT",
+        "SecondsFormatterMixin"
     ]
 }
