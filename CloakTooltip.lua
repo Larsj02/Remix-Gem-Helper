@@ -16,6 +16,7 @@ local function getCloakStats()
     local cloakAura = C_UnitAuras.GetPlayerAuraBySpellID(const.CLOAK_BUFF.AURA_ID)
     if not cloakAura then return end
     local cloakTooltip = C_TooltipInfo.GetUnitBuffByAuraInstanceID("player", cloakAura.auraInstanceID)
+    if not cloakTooltip.lines or not cloakTooltip.lines[2] then return "" end
     return cloakTooltip.lines[2].leftText
 end
 

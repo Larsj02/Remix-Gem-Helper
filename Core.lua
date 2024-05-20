@@ -232,7 +232,7 @@ local function createFrame()
 
     local openLootbox = uiElements:CreateIcon(gems, {
         points = {
-            {"TOPLEFT", gems, "BOTTOMLEFT", 5, -5}
+            { "TOPLEFT", gems, "BOTTOMLEFT", 5, -5 }
         },
         isClickable = true,
         actionType = "ITEM",
@@ -241,7 +241,7 @@ local function createFrame()
 
     local openRandomGemP = uiElements:CreateIcon(gems, {
         points = {
-            {"LEFT", openLootbox, "RIGHT", 5, 0}
+            { "LEFT", openLootbox, "RIGHT", 5, 0 }
         },
         isClickable = true,
         actionType = "ITEM",
@@ -250,7 +250,7 @@ local function createFrame()
 
     local openRandomGemT = uiElements:CreateIcon(gems, {
         points = {
-            {"LEFT", openRandomGemP, "RIGHT", 5, 0}
+            { "LEFT", openRandomGemP, "RIGHT", 5, 0 }
         },
         isClickable = true,
         actionType = "ITEM",
@@ -259,7 +259,7 @@ local function createFrame()
 
     local openRandomGemC = uiElements:CreateIcon(gems, {
         points = {
-            {"LEFT", openRandomGemT, "RIGHT", 5, 0}
+            { "LEFT", openRandomGemT, "RIGHT", 5, 0 }
         },
         isClickable = true,
         actionType = "ITEM",
@@ -268,12 +268,37 @@ local function createFrame()
 
     local openRandomGemM = uiElements:CreateIcon(gems, {
         points = {
-            {"LEFT", openRandomGemC, "RIGHT", 5, 0}
+            { "LEFT", openRandomGemC, "RIGHT", 5, 0 }
         },
         isClickable = true,
         actionType = "ITEM",
         actionID = 223905
     })
+
+    local helpText =
+        "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
+        "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
+        "'In Bag' indicates that the Gem is in your bag and ready to be socketed.\n\n" ..
+        "When hovering over a Gem that is 'Socketed' you will see the item highlighted in your character panel.\n" ..
+        "You can use the dropdown or the search bar at the top to filter your list.\n" ..
+        "This Addon also adds the current Rank and stats of your cloak inside the cloak tooltip.\n" ..
+        "You should see an icon in the top right of your character frame which can be used to hide or show this frame.\n" ..
+        "Below the Gem list you should have some clickable buttons to quickly open Chests or combine Gems\n\n" ..
+        "And to get rid of this frame simply shift click it.\nHave fun!"
+
+    local helpButton = CreateFrame("Button", nil, gems, "MainHelpPlateButton")
+    helpButton:SetScript("OnEnter", function(self)
+        HelpTip:Show(self, { text = helpText })
+    end)
+    helpButton:SetScript("OnLeave", function (self)
+        HelpTip:Hide(self)
+    end)
+    helpButton:SetScript("OnClick", function (self)
+        if IsLeftShiftKeyDown() then
+            settings:UpdateSetting("show_helpframe", false)
+        end
+    end)
+    helpButton:SetPoint("TOPRIGHT", 25, 25)
 
     ---@class ScrollBox : Frame
     ---@field GetScrollPercentage fun(self:ScrollBox)
@@ -350,11 +375,7 @@ local function createFrame()
 
     selectionTreeUpdate()
     settings:CreateSettingCallback("show_frame", function(_, newState)
-        if newState then
-            gems:Show()
-        else
-            gems:Hide()
-        end
+        gems:SetShown(newState)
     end)
     settings:CreateSettingCallback("show_unowned", function(_, newState)
         selectionTreeUpdate()
@@ -364,6 +385,10 @@ local function createFrame()
         selectionTreeUpdate()
         showPrimordial:SetChecked(newState)
     end)
+    settings:CreateSettingCallback("show_helpframe", function(_, newState)
+        helpButton:SetShown(newState)
+    end)
+
 
     hooksecurefunc("CharacterFrameTab_OnClick", function()
         if CharacterFrame.selectedTab ~= 1 then
@@ -379,13 +404,13 @@ local function createFrame()
     end)
     gems:SetScript("OnShow", function(self)
         selectionTreeUpdate()
-         -- Chonky Character Sheets Frame
+        -- Chonky Character Sheets Frame
         if _G["CCSf"] then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", CharacterFrameBg, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", CharacterFrameBg, "TOPRIGHT")
             self.defaultPosition = false
-        -- TinyInspect
+            -- TinyInspect
         elseif C_AddOns.IsAddOnLoaded("TinyInspect") and PaperDollFrame.inspectFrame and PaperDollFrame.inspectFrame:IsVisible() then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", PaperDollFrame.inspectFrame, "BOTTOMRIGHT")
@@ -406,17 +431,17 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:SetScript("OnEvent", function(_, event)
     -- Apparently Gems go into your bags so this is not longer needed
     --if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-        --RunNextFrame(function()
-        --    local mun = ScrappingMachineFrame
-        --    for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-        --        if f.itemLink then
-        --            local gemsList = gemUtil:GetItemGems(f.itemLink)
-        --            if #gemsList > 0 then
-        --                misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
-        --            end
-        --        end
-        --    end
-        --end)
+    --RunNextFrame(function()
+    --    local mun = ScrappingMachineFrame
+    --    for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+    --        if f.itemLink then
+    --            local gemsList = gemUtil:GetItemGems(f.itemLink)
+    --            if #gemsList > 0 then
+    --                misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
+    --            end
+    --        end
+    --    end
+    --end)
     --end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
 
