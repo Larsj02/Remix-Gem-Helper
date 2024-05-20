@@ -19,15 +19,17 @@ local function getCloakStats()
     return cloakTooltip.lines[2].leftText
 end
 
-local function updateItemTooltip(tooltip)
-    if not tooltip or not tooltip.GetItem then return end
-    local link = select(2, tooltip:GetItem())
-    if not link then return end
-    local itemID = C_Item.GetItemInfoInstant(link)
-    if itemID == const.CLOAK_BUFF.ITEM_ID then
-        tooltip.TextLeft1:SetText((tooltip.TextLeft1:GetText() or "") .. getCloakLevel())
-        tooltip.TextLeft2:SetText((tooltip.TextLeft2:GetText() or "").. "\n" .. getCloakStats())
+local function updateItemTooltip(tooltip, tooltipData)
+    if tooltipData.id ~= const.CLOAK_BUFF.ITEM_ID or not tooltipData.guid then return end
+    local guid = tooltipData.guid
+    if not guid or not C_Item.IsItemGUIDInInventory(guid) then return end
+
+    tooltip.TextLeft1:SetText((tooltip.TextLeft1:GetText() or "") .. getCloakLevel())
+    local stats = getCloakStats()
+    if stats then
+        tooltip.TextLeft2:SetText((tooltip.TextLeft2:GetText() or "").. "\n|cFFFFFFFF" .. stats)
     end
 end
+
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, updateItemTooltip)
