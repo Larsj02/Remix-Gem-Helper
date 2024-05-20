@@ -178,7 +178,6 @@ constants.SOCKET_EQUIPMENT_SLOTS_FRAMES = {
     [INVSLOT_TRINKET1] = "CharacterTrinket0Slot",
     [INVSLOT_TRINKET2] = "CharacterTrinket1Slot",
 }
-
 -- https://github.com/Gethe/wow-ui-source/blob/55a42b7a1dc672ebb8e6f19eea3b1d377afe53b9/Interface/AddOns/Blizzard_ItemSocketingUI/Blizzard_ItemSocketingUI.lua#L7
 constants.SOCKET_TYPE_INFO = {
     META = {
@@ -207,6 +206,13 @@ constants.SOCKET_TYPE_INFO = {
         color = CreateColor(1, 1, 1)
     }
 }
+constants.CLOAK_BUFF = {
+    AURA_ID = 440393,
+    ITEM_ID = 210333,
+    ACHIEVEMENT_ID_START = 20527,
+    ACHIEVEMENT_ID_END = 20538,
+}
+
 constants.COLORS = {
     POSITIVE = CreateColorFromHexString("FF2ecc71"),
     NEUTRAL = CreateColorFromHexString("FFf1c40f"),

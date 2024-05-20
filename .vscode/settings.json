@@ -97,6 +97,8 @@
         "CharacterFrameBg",
         "UIDropDownMenu_SetSelectedID",
         "UIDropDownMenu_GetSelectedName",
-        "PaperDollFrame"
+        "PaperDollFrame",
+        "TooltipDataProcessor",
+        "ACHIEVEMENT"
     ]
 }
