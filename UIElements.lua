@@ -235,11 +235,13 @@ local function getBagSlotString(itemID)
 end
 
 local function updateSpellCount(self)
+    if not self:IsVisible() then return end
     local charges, maxCharges = GetSpellCharges(self.id)
     if not charges then maxCharges = 0 end
     self.count:SetText(maxCharges > 1 and charges or "")
 end
 local function updateItemCountOrSlot(self, event)
+    if not self:IsVisible() then return end
     if not event or event == "ITEM_COUNT_CHANGED" then
         local count = C_Item.GetItemCount(self.id)
         self.count:SetText(count)
@@ -322,6 +324,10 @@ function uiElements:CreateIcon(parent, data)
     button:SetScript("OnUpdate", updateCooldown)
     button:SetScript("OnEnter", iconHoverEnter)
     button:SetScript("OnLeave", iconHoverLeave)
+    button:SetScript("OnShow", function ()
+        updateSpellCount(button)
+        updateItemCountOrSlot(button)
+    end)
     button:SetNormalTexture(icon)
 
     if data.actionType == "SPELL" then
