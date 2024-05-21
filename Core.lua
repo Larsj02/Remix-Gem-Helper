@@ -11,6 +11,7 @@ local timeFormatter = CreateFromMixins(SecondsFormatterMixin);
 timeFormatter:Init(1, 3, true, true);
 
 Private.TimeFormatter = timeFormatter
+Private.Frames = {}
 
 local function itemListInitializer(frame, data)
     ---@class GemListEntry : Frame
@@ -137,6 +138,56 @@ local function createFrame()
         width = 300
     })
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
+
+    ---@class ResocketPopup:BaseFrame
+    local resocketPopup = uiElements:CreateBaseFrame(UIParent, {
+        title = "Resocket Gems",
+        height = 150,
+        width = 300,
+        points = { { "CENTER" } },
+        frameStrata = "DIALOG",
+        frameStyle = "Flat",
+    })
+    Private.Frames.ResocketPopup = resocketPopup
+    local closePopup = uiElements:CreateButton(resocketPopup, {
+        text = DONE,
+        width = resocketPopup:GetWidth() / 1.25,
+        height = 25,
+        points = {
+            { "BOTTOM", 0, 15 },
+        }
+    })
+    closePopup:SetScript("OnClick", function(self)
+        self:GetParent():Hide()
+    end)
+    local resocketButtons = {}
+    for i = 1, 3 do
+        local castButton = uiElements:CreateIcon(resocketPopup, {
+            height = 45,
+            width = 45,
+        })
+        castButton:Hide()
+        tinsert(resocketButtons, castButton)
+    end
+
+    function resocketPopup:FillPopup(gemInfos)
+        for _, btn in ipairs(resocketButtons) do
+            btn:Hide()
+            btn:UpdateClickable()
+            btn:ClearAllPoints()
+        end
+        local gemsStart = (#gemInfos * 50) / 2 * -1
+        for gemIndex, gemID in ipairs(gemInfos) do
+            local castButton = resocketButtons[gemIndex]
+            if castButton then
+                castButton:UpdateClickable(true, "ITEM", gemID)
+                castButton:SetPoint("LEFT", self, "CENTER", gemsStart + (gemIndex - 1 ) * 50, 5)
+                castButton:Show()
+            end
+        end
+        self:Show()
+    end
+    resocketPopup:Hide()
 
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
@@ -407,22 +458,21 @@ end
 
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
---eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
+eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
 eventFrame:SetScript("OnEvent", function(_, event)
-    -- Apparently Gems go into your bags so this is not longer needed
-    --if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-    --RunNextFrame(function()
-    --    local mun = ScrappingMachineFrame
-    --    for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-    --        if f.itemLink then
-    --            local gemsList = gemUtil:GetItemGems(f.itemLink)
-    --            if #gemsList > 0 then
-    --                misc:PrintError("YOU ARE ABOUT TO DESTROY A SOCKETED ITEM!")
-    --            end
-    --        end
-    --    end
-    --end)
-    --end
+    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
+    RunNextFrame(function()
+        local mun = ScrappingMachineFrame
+        for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+            if f.itemLink then
+                local gemsList = gemUtil:GetItemGems(f.itemLink)
+                if #gemsList > 0 then
+                    Private.Frames.ResocketPopup:FillPopup(gemsList)
+                end
+            end
+        end
+    end)
+    end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do

@@ -7,8 +7,8 @@ local misc = Private.Misc
 local uiElements = {}
 Private.UIElements = uiElements
 local function extractPreClick(self)
-    if not misc:IsAllowedForClick("EXTRACT_PRECLICK") then return end
     if not self.info then return end
+    if not misc:IsAllowedForClick("EXTRACT_PRECLICK") then return end
     local info = self.info
     if info.locType == "EQUIP_SOCKET" then
         SocketInventoryItem(info.locIndex)
@@ -23,8 +23,8 @@ local function extractPreClick(self)
 end
 
 local function extractPostClick(self)
-    if not misc:IsAllowedForClick("EXTRACT_POSTCLICK") then return end
     if not self.info then return end
+    if not misc:IsAllowedForClick("EXTRACT_POSTCLICK") then return end
     local info = self.info
     if info.locType == "BAG_GEM" then
         ClearCursor()
@@ -190,13 +190,13 @@ local function updateCooldown(self)
     if self.lastUpdate + 0.1 < now then
         local start, duration, modRate
         if self.type == "SPELL" then
-            start, duration, _, modRate = GetSpellCooldown(self.info)
-            local charges = { GetSpellCharges(self.info) }
+            start, duration, _, modRate = GetSpellCooldown(self.infoC)
+            local charges = { GetSpellCharges(self.infoC) }
             if charges[1] and charges[1] ~= charges[2] and charges[4] > 60 then
                 start, duration, modRate = select(3, unpack(charges))
             end
         elseif self.type == "ITEM" then
-            start, duration, modRate = C_Item.GetItemCooldown(self.info)
+            start, duration, modRate = C_Item.GetItemCooldown(self.infoC)
         end
         if not start then return end
         if type(modRate) ~= "number" then
@@ -222,16 +222,16 @@ local function iconHoverLeave(self)
 end
 
 local function getBagSlotString(itemID)
-    local bagSlotString = ""
+    local bagSlotString, bagIndex, slotIndex = "", 0, 0
     for bag = BACKPACK_CONTAINER, NUM_TOTAL_EQUIPPED_BAG_SLOTS do
         for slot = 1, C_Container.GetContainerNumSlots(bag) do
             local containerItemID = C_Container.GetContainerItemID(bag, slot)
             if containerItemID and containerItemID == itemID then
-                return string.format("%d %d", bag, slot)
+                return string.format("%d %d", bag, slot), bag, slot
             end
         end
     end
-    return bagSlotString
+    return bagSlotString, bagIndex, slotIndex
 end
 
 local function updateSpellCount(self)
@@ -247,7 +247,15 @@ local function updateItemCountOrSlot(self, event)
         self.count:SetText(count)
         self.icon:SetDesaturated(count < 1)
     elseif event and event == "BAG_UPDATE_DELAYED" and self.isClickable then
-        self:SetAttribute("item", getBagSlotString(self.id))
+        local bagSlotString, bag, slot = getBagSlotString(self.id)
+        self:SetAttribute("item", bagSlotString)
+        local gemType = const.GEM_SOCKET_TYPE[self.id]
+        self.info = {
+            locIndex = bag,
+            locSlot = slot,
+            gemType = gemType,
+            locType = gemType and "BAG_GEM" or "",
+        }
     end
 end
 
@@ -263,17 +271,15 @@ end
 ---@param parent Frame
 ---@param data IconSettings
 function uiElements:CreateIcon(parent, data)
-    local template = "BackdropTemplate"
-    if data.isClickable then
-        template = template .. ",InsecureActionButtonTemplate"
-    end
+    data.width         = data.width or 40
+    data.height        = data.height or 40
     ---@class IconButton:Button,BackdropTemplate
-    local button = CreateFrame("Button", nil, parent, template)
-    local textFrame = CreateFrame("Frame", nil, button)
-    local icon = button:CreateTexture(nil, "BACKGROUND")
-    local mask = button:CreateMaskTexture(nil, "BACKGROUND")
-    local count = textFrame:CreateFontString()
-    local cooldown = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
+    local button       = CreateFrame("Button", nil, parent, "InsecureActionButtonTemplate,BackdropTemplate")
+    local textFrame    = CreateFrame("Frame", nil, button)
+    local icon         = button:CreateTexture(nil, "BACKGROUND")
+    local mask         = button:CreateMaskTexture(nil, "BACKGROUND")
+    local count        = textFrame:CreateFontString()
+    local cooldown     = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
     local cooldownText = textFrame:CreateFontString()
 
     button:SetBackdrop({ edgeFile = "interface/buttons/white8x8.blp" })
@@ -298,9 +304,11 @@ function uiElements:CreateIcon(parent, data)
     mask:SetAtlas("UI-Frame-IconMask")
 
     icon:AddMaskTexture(mask)
-
-    if data.actionType == "SPELL" then
-        data.actionID = FindBaseSpellByID(data.actionID)
+    button:SetSize(data.width, data.height)
+    if data.points then
+        for _, point in ipairs(data.points) do
+            button:SetPoint(unpack(point))
+        end
     end
 
     button.cooldown = cooldown
@@ -308,19 +316,60 @@ function uiElements:CreateIcon(parent, data)
     button.count = count
     button.icon = icon
     button.lastUpdate = 0
-    button.isClickable = data.isClickable
-    button.type = data.actionType
-    button.id = data.actionID
-    button.info = data.actionID
-    button:SetSize(data.width or 40, data.height or 40)
 
-    if data.isClickable then
-        button:RegisterForClicks("AnyUp", "AnyDown")
-        button:SetAttribute("type", data.actionType:lower())
+    function button:UpdateClickable(isClickable, actionType, actionID)
+        self:UnregisterAllEvents()
+        self:SetScript("OnEvent", nil)
+        self:SetScript("PreClick", nil)
+        self:SetScript("PostClick", nil)
+        if actionType == "SPELL" then
+            actionID = FindBaseSpellByID(actionID)
+        end
+        self.isClickable = isClickable
+        self.type = actionType
+        self.id = actionID
+        self.infoC = actionID
+        if isClickable and actionType then
+            self:RegisterForClicks("AnyUp", "AnyDown")
+            self:SetAttribute("type", actionType:lower())
+        end
+        if not actionID then
+            icon:SetAtlas("bags-item-slot64")
+        end
+
+        if actionType == "SPELL" then
+            icon:SetTexture(GetSpellTexture(actionID))
+            icon:SetDesaturated(not IsSpellKnown(actionID))
+            if data.isClickable then
+                self:SetAttribute("spell", actionID)
+            end
+            Private.Cache:GetSpellInfo(actionID, function(spellInfo)
+                uiElements:AddTooltip(self,
+                    string.format("%s\n%s%s", spellInfo.name, const.COLORS.GREY:GenerateHexColorMarkup(),
+                        spellInfo.description))
+            end)
+            self:RegisterEvent("SPELL_UPDATE_CHARGES")
+            self:SetScript("OnEvent", updateSpellCount)
+            updateSpellCount(self)
+        elseif actionType == "ITEM" then
+            icon:SetTexture(select(5, C_Item.GetItemInfoInstant(actionID)))
+            Private.Cache:GetItemInfo(actionID, function(itemInfo)
+                uiElements:AddTooltip(self,
+                    string.format("%s%s", const.COLORS.GREY:GenerateHexColorMarkup(), itemInfo
+                        .description))
+                self.infoC = itemInfo.link
+            end)
+            self:RegisterEvent("ITEM_COUNT_CHANGED")
+            self:RegisterEvent("BAG_UPDATE_DELAYED")
+            self:SetScript("OnEvent", updateItemCountOrSlot)
+            self:SetScript("PreClick", extractPreClick)
+            self:SetScript("PostClick", extractPostClick)
+            updateItemCountOrSlot(self)
+        end
     end
-    for _, point in ipairs(data.points) do
-        button:SetPoint(unpack(point))
-    end
+
+    button:UpdateClickable(data.isClickable, data.actionType, data.actionID)
+
     button:SetScript("OnUpdate", updateCooldown)
     button:SetScript("OnEnter", iconHoverEnter)
     button:SetScript("OnLeave", iconHoverLeave)
@@ -333,34 +382,6 @@ function uiElements:CreateIcon(parent, data)
         updateItemCountOrSlot(button)
     end)
     button:SetNormalTexture(icon)
-
-    if data.actionType == "SPELL" then
-        icon:SetTexture(GetSpellTexture(data.actionID))
-        icon:SetDesaturated(not IsSpellKnown(data.actionID))
-        if data.isClickable then
-            button:SetAttribute("spell", data.actionID)
-        end
-        Private.Cache:GetSpellInfo(data.actionID, function(spellInfo)
-            self:AddTooltip(button,
-                string.format("%s\n%s%s", spellInfo.name, const.COLORS.GREY:GenerateHexColorMarkup(),
-                    spellInfo.description))
-        end)
-        button:RegisterEvent("SPELL_UPDATE_CHARGES")
-        button:SetScript("OnEvent", updateSpellCount)
-        updateSpellCount(button)
-    elseif data.actionType == "ITEM" then
-        icon:SetTexture(select(5, C_Item.GetItemInfoInstant(data.actionID)))
-        Private.Cache:GetItemInfo(data.actionID, function(itemInfo)
-            self:AddTooltip(button,
-                string.format("%s%s", const.COLORS.GREY:GenerateHexColorMarkup(), itemInfo
-                    .description))
-            button.info = itemInfo.link
-        end)
-        button:RegisterEvent("ITEM_COUNT_CHANGED")
-        button:RegisterEvent("BAG_UPDATE_DELAYED")
-        button:SetScript("OnEvent", updateItemCountOrSlot)
-        updateItemCountOrSlot(button)
-    end
     return button
 end
 
@@ -474,17 +495,26 @@ end
 ---@field points table?
 ---@field title string?
 ---@field showPortrait boolean?
+---@field frameStyle "Flat"|"Default"|"DefaultBase"|?
 ---@field isClosable boolean?
+---@field frameStrata FrameStrata?
+
+local frameStyles = {
+    Flat = "PortraitFrameFlatTemplate",
+    Default = "ButtonFrameTemplate",
+    DefaultBase = "ButtonFrameBaseTemplate"
+}
 
 ---@param parent Frame
 ---@param data BaseFrameSettings
 function uiElements:CreateBaseFrame(parent, data)
+    local template = frameStyles[data.frameStyle or "Default"]
     ---@class BaseFrame : Frame
     ---@field CloseButton Button
     ---@field SetTitle fun(self:BaseFrame, title:string)
-    ---@field Inset Frame
+    ---@field Inset Frame?
     ---@field TopTileStreaks Frame
-    local frame = CreateFrame("Frame", nil, parent, "ButtonFrameTemplate")
+    local frame = CreateFrame("Frame", nil, parent, template)
     frame:SetTitle(data.title)
     frame:SetSize(data.width or 100, data.height or 100)
     if data.points then
@@ -492,17 +522,42 @@ function uiElements:CreateBaseFrame(parent, data)
             frame:SetPoint(unpack(point))
         end
     end
+    if data.frameStrata then
+        frame:SetFrameStrata(data.frameStrata)
+    end
     if not data.showPortrait then
         ButtonFrameTemplate_HidePortrait(frame)
     end
     if not data.isClosable then
         frame.CloseButton:Hide()
     end
-    frame.Inset:ClearAllPoints()
-    frame.Inset:SetPoint("TOP", 0, -65)
-    frame.Inset:SetPoint("BOTTOM", 0, 35)
-    frame.Inset:SetPoint("LEFT", 20, 0)
-    frame.Inset:SetPoint("RIGHT", -20, 0)
+    if frame.Inset then
+        frame.Inset:ClearAllPoints()
+        frame.Inset:SetPoint("TOP", 0, -65)
+        frame.Inset:SetPoint("BOTTOM", 0, 35)
+        frame.Inset:SetPoint("LEFT", 20, 0)
+        frame.Inset:SetPoint("RIGHT", -20, 0)
+    end
 
     return frame
+end
+
+---@class ButtonFrameSettings
+---@field width number?
+---@field height number?
+---@field points table?
+---@field text string?
+
+---@param parent Frame
+---@param data ButtonFrameSettings
+function uiElements:CreateButton(parent, data)
+    local button = CreateFrame("Button", nil, parent, "MagicButtonTemplate")
+    button:SetText(data.text)
+    button:SetSize(data.width or 100, data.height or 100)
+    if data.points then
+        for _, point in ipairs(data.points) do
+            button:SetPoint(unpack(point))
+        end
+    end
+    return button
 end

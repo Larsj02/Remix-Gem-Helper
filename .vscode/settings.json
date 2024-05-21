@@ -104,6 +104,10 @@
         "HelpPlateTooltip",
         "HelpTip",
         "CreateScrollBoxListGridView",
-        "CreateAnchor"
+        "CreateAnchor",
+        "CLOSE",
+        "ButtonFrameTemplate_ShowButtonBar",
+        "ButtonFrameTemplate_HideAttic",
+        "DONE"
     ]
 }
