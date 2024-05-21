@@ -324,10 +324,10 @@ function uiElements:CreateIcon(parent, data)
     button:SetScript("OnUpdate", updateCooldown)
     button:SetScript("OnEnter", iconHoverEnter)
     button:SetScript("OnLeave", iconHoverLeave)
-    button:SetScript("OnHide", function ()
+    button:SetScript("OnHide", function()
         button:EnableMouse(false)
     end)
-    button:SetScript("OnShow", function ()
+    button:SetScript("OnShow", function()
         button:EnableMouse(true)
         updateSpellCount(button)
         updateItemCountOrSlot(button)
@@ -363,18 +363,6 @@ function uiElements:CreateIcon(parent, data)
     end
     return button
 end
-
----@class Anchor
-
----@param point FramePoint
----@param relativeTo? any
----@param relativePoint? FramePoint
----@param offsetX? uiUnit
----@param offsetY? uiUnit
----@return Anchor
----@overload fun(point: AnchorPoint, relativeTo?: any, ofsx?: number, ofsy?: number):Anchor
----@overload fun(point: AnchorPoint, ofsx?: number, ofsy?: number):Anchor
-function CreateAnchor(point, relativeTo, relativePoint, offsetX, offsetY) return {} end
 
 ---@class ScrollableAnchorSettings
 ---@field with_scroll_bar Anchor
@@ -429,7 +417,7 @@ function uiElements:CreateScrollable(parent, data)
         local fillWidth = (parent:GetWidth() - (data.elements_per_row - 1) * data.element_padding) /
             data.elements_per_row
         scrollView = CreateScrollBoxListGridView(data.elements_per_row, 0, 0, 0, 0, data.element_padding,
-        data.element_padding);
+            data.element_padding);
         scrollView:SetElementInitializer(data.template, function(button, elementData)
             button:SetSize(data.fill_width and fillWidth or data.element_height, data.element_height)
             data.initializer(button, elementData)
@@ -460,6 +448,7 @@ function uiElements:CreateScrollable(parent, data)
 
     function scrollView:UpdateContentData(contentData, keepOldData)
         if not contentData then return end
+        if not scrollBox:IsVisible() then return end
         local scrollPercent = scrollBox:GetScrollPercentage()
         local dataProvider = self:GetDataProvider()
         if not dataProvider then
@@ -477,4 +466,43 @@ function uiElements:CreateScrollable(parent, data)
     end
 
     return scrollBox, scrollView, scrollBar
+end
+
+---@class BaseFrameSettings
+---@field width number?
+---@field height number?
+---@field points table?
+---@field title string?
+---@field showPortrait boolean?
+---@field isClosable boolean?
+
+---@param parent Frame
+---@param data BaseFrameSettings
+function uiElements:CreateBaseFrame(parent, data)
+    ---@class BaseFrame : Frame
+    ---@field CloseButton Button
+    ---@field SetTitle fun(self:BaseFrame, title:string)
+    ---@field Inset Frame
+    ---@field TopTileStreaks Frame
+    local frame = CreateFrame("Frame", nil, parent, "ButtonFrameTemplate")
+    frame:SetTitle(data.title)
+    frame:SetSize(data.width or 100, data.height or 100)
+    if data.points then
+        for _, point in ipairs(data.points) do
+            frame:SetPoint(unpack(point))
+        end
+    end
+    if not data.showPortrait then
+        ButtonFrameTemplate_HidePortrait(frame)
+    end
+    if not data.isClosable then
+        frame.CloseButton:Hide()
+    end
+    frame.Inset:ClearAllPoints()
+    frame.Inset:SetPoint("TOP", 0, -65)
+    frame.Inset:SetPoint("BOTTOM", 0, 35)
+    frame.Inset:SetPoint("LEFT", 20, 0)
+    frame.Inset:SetPoint("RIGHT", -20, 0)
+
+    return frame
 end

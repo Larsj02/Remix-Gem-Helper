@@ -132,15 +132,11 @@ local function itemListInitializer(frame, data)
 end
 
 local function createFrame()
-    ---@class GemsFrame : Frame
-    ---@field CloseButton Button
-    ---@field SetTitle fun(self:GemsFrame, title:string)
-    ---@field Inset Frame
-    ---@field TopTileStreaks Frame
-    local gems = CreateFrame("Frame", nil, CharacterFrame, "ButtonFrameTemplate")
-    gems:SetTitle(const.ADDON_NAME)
+    local gems = uiElements:CreateBaseFrame(CharacterFrame, {
+        title = const.ADDON_NAME,
+        width = 300
+    })
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
-    gems:SetWidth(300)
 
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
     frameToggle:SetFrameStrata("HIGH")
@@ -167,14 +163,6 @@ local function createFrame()
     frameToggle:SetScript("OnMouseDown", function()
         settings:UpdateSetting("show_frame", not settings:GetSetting("show_frame"))
     end)
-
-    ButtonFrameTemplate_HidePortrait(gems)
-    gems.CloseButton:Hide()
-    gems.Inset:ClearAllPoints()
-    gems.Inset:SetPoint("TOP", 0, -65)
-    gems.Inset:SetPoint("BOTTOM", 0, 35)
-    gems.Inset:SetPoint("LEFT", 20, 0)
-    gems.Inset:SetPoint("RIGHT", -20, 0)
 
     ---@class SearchFrame : EditBox
     ---@field Instructions FontString
@@ -290,52 +278,45 @@ local function createFrame()
     helpButton:SetScript("OnEnter", function(self)
         HelpTip:Show(self, { text = helpText })
     end)
-    helpButton:SetScript("OnLeave", function (self)
+    helpButton:SetScript("OnLeave", function(self)
         HelpTip:Hide(self)
     end)
-    helpButton:SetScript("OnClick", function (self)
+    helpButton:SetScript("OnClick", function(self)
         if IsLeftShiftKeyDown() then
             settings:UpdateSetting("show_helpframe", false)
         end
     end)
     helpButton:SetPoint("TOPRIGHT", 25, 25)
 
-    ---@class ScrollBox : Frame
-    ---@field GetScrollPercentage fun(self:ScrollBox)
-    ---@field SetScrollPercentage fun(self:ScrollBox, percentage:number)
-    local scrollBox = CreateFrame("Frame", nil, gems, "WowScrollBoxList")
-    scrollBox:SetAllPoints(gems.Inset)
+    local insetAnchorPoints = {
+        CreateAnchor("TOPLEFT", gems.Inset, "TOPLEFT"),
+        CreateAnchor("BOTTOMRIGHT", gems.Inset, "BOTTOMRIGHT")
+    }
+    local scrollBox, scrollView = uiElements:CreateScrollable(gems, {
+        anchors = {
+            with_scroll_bar = insetAnchorPoints,
+            without_scroll_bar = insetAnchorPoints,
+        },
+        initializer = itemListInitializer,
+        element_height = 25,
+        template = "BackDropTemplate",
+        type = "LIST",
+    })
 
-    ---@class MinimalScrollBar : EventFrame
-    ---@field SetHideIfUnscrollable fun(self:MinimalScrollBar, state:boolean)
-    local scrollBar = CreateFrame("EventFrame", nil, gems, "MinimalScrollBar")
-    scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 5, 0)
-    scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT")
-    scrollBar:SetHideIfUnscrollable(true)
-
-
-    local scrollView = CreateScrollBoxListLinearView()
-    scrollView:SetElementInitializer("BackDropTemplate", itemListInitializer)
-    ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
-    scrollView:SetElementExtent(25)
-
-    function scrollView:UpdateTree(data)
+    local function updateTree(data)
         if not scrollBox:IsVisible() then return end
         if not data then return end
-        local scrollPercent = scrollBox:GetScrollPercentage()
-        self:Flush()
-        local dataProvider = CreateDataProvider()
-        self:SetDataProvider(dataProvider)
+        scrollView:UpdateContentData({})
         for socketType, socketTypeData in pairs(data) do
             if #socketTypeData > 0 then
                 local typeInfo = gemUtil:GetSocketTypeInfo(socketType)
                 if typeInfo then
-                    dataProvider:Insert({
+                    scrollView:UpdateContentData({ {
                         text = typeInfo.name,
                         isHeader = true,
                         icon = typeInfo.icon,
                         index = 0
-                    })
+                    } }, true)
                     sort(socketTypeData, misc.ItemSorting)
                     for itemIndex, itemInfo in ipairs(socketTypeData) do
                         local cachedInfo = cache:GetItemInfo(itemInfo.itemID)
@@ -344,23 +325,22 @@ local function createFrame()
                         if itemInfo.gemType == "Prismatic" then
                             txt = gemUtil:GetGemStats(cachedInfo.description)
                         end
-                        dataProvider:Insert({
+                        scrollView:UpdateContentData({ {
                             id = itemInfo.itemID,
                             icon = cachedInfo.icon,
                             text = txt or "",
                             index = itemIndex,
                             info = itemInfo,
                             cachedInfo = cachedInfo,
-                        })
+                        } }, true)
                     end
                 end
             end
         end
-        scrollBox:SetScrollPercentage(scrollPercent or 1)
     end
 
     local function selectionTreeUpdate()
-        scrollView:UpdateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
+        updateTree(gemUtil:GetFilteredGems(dropDown.selection, search:GetText() or ""))
     end
 
     dropDown:SetCallback("selectionCallback", selectionTreeUpdate)
@@ -400,7 +380,7 @@ local function createFrame()
         end
     end)
     gems:SetScript("OnHide", function()
-        scrollView:UpdateTree({})
+        updateTree({})
     end)
     gems:SetScript("OnShow", function(self)
         selectionTreeUpdate()
