@@ -363,3 +363,118 @@ function uiElements:CreateIcon(parent, data)
     end
     return button
 end
+
+---@class Anchor
+
+---@param point FramePoint
+---@param relativeTo? any
+---@param relativePoint? FramePoint
+---@param offsetX? uiUnit
+---@param offsetY? uiUnit
+---@return Anchor
+---@overload fun(point: AnchorPoint, relativeTo?: any, ofsx?: number, ofsy?: number):Anchor
+---@overload fun(point: AnchorPoint, ofsx?: number, ofsy?: number):Anchor
+function CreateAnchor(point, relativeTo, relativePoint, offsetX, offsetY) return {} end
+
+---@class ScrollableAnchorSettings
+---@field with_scroll_bar Anchor
+---@field without_scroll_bar Anchor
+
+---@class ScrollableSettings
+---@field width number?
+---@field height number?
+---@field element_height number?
+---@field extent_calculator fun(dataIndex:number, node:table)?
+---@field type "LIST"|"GRID"|?
+---@field template string?
+---@field elements_per_row number?
+---@field element_padding number?
+---@field fill_width boolean?
+---@field anchors ScrollableAnchorSettings
+---@field initializer fun(frame:Frame, data:table)
+
+---@param parent Frame
+---@param data ScrollableSettings
+function uiElements:CreateScrollable(parent, data)
+    parent = parent or UIParent
+    data.element_height = data.element_height or 25
+    data.type = data.type or "LIST"
+    data.template = data.template or "BackdropTemplate"
+
+    ---@class ScrollBoxFrame : Frame
+    ---@field GetScrollPercentage fun(self:ScrollBoxFrame)
+    ---@field SetScrollPercentage fun(self:ScrollBoxFrame, percentage:number)
+    local scrollBox = CreateFrame("Frame", nil, parent, "WowScrollBoxList")
+    scrollBox:SetSize(data.width or 100, data.height or 100)
+
+    ---@class ScrollBar : EventFrame
+    ---@field SetHideIfUnscrollable fun(self:ScrollBar, hideScrollBar:boolean)
+    local scrollBar = CreateFrame("EventFrame", nil, parent, "MinimalScrollBar")
+    scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 5, 0)
+    scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT")
+    scrollBar:SetHideIfUnscrollable(true)
+
+    ---@class ScrollView : Frame
+    ---@field SetElementExtentCalculator fun(self:ScrollView, extentCalculator:fun(dataIndex:number, node:table))
+    ---@field SetElementExtent fun(self:ScrollView, extent:number)
+    ---@field Flush fun(self:ScrollView)
+    ---@field SetDataProvider fun(self:ScrollView, dataProvider:table)
+    ---@field GetDataProvider fun(self:ScrollView)
+    local scrollView = nil
+    if data.type == "LIST" then
+        scrollView = CreateScrollBoxListLinearView()
+        scrollView:SetElementInitializer(data.template, data.initializer)
+        ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView)
+    elseif data.type == "GRID" then
+        local fillWidth = (parent:GetWidth() - (data.elements_per_row - 1) * data.element_padding) /
+            data.elements_per_row
+        scrollView = CreateScrollBoxListGridView(data.elements_per_row, 0, 0, 0, 0, data.element_padding,
+        data.element_padding);
+        scrollView:SetElementInitializer(data.template, function(button, elementData)
+            button:SetSize(data.fill_width and fillWidth or data.element_height, data.element_height)
+            data.initializer(button, elementData)
+        end)
+        ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, scrollView);
+    end
+    if data.extent_calculator then
+        scrollView:SetElementExtentCalculator(data.extent_calculator)
+    else
+        scrollView:SetElementExtent(data.element_height)
+    end
+    -- seems buggy so write my own func for this
+    --ScrollUtil.AddManagedScrollBarVisibilityBehavior(scrollBox, scrollBar, options.anchors.with_scroll_bar,
+    --options.anchors.without_scroll_bar)
+    local function setAnchors(withScrollBar)
+        scrollBox:ClearAllPoints()
+        for _, anchor in ipairs(withScrollBar and data.anchors.with_scroll_bar or data.anchors.without_scroll_bar) do
+            scrollBox:SetPoint(anchor:Get())
+        end
+    end
+    scrollBar:HookScript("OnShow", function()
+        setAnchors(true)
+    end)
+    scrollBar:HookScript("OnHide", function()
+        setAnchors()
+    end)
+    setAnchors()
+
+    function scrollView:UpdateContentData(contentData, keepOldData)
+        if not contentData then return end
+        local scrollPercent = scrollBox:GetScrollPercentage()
+        local dataProvider = self:GetDataProvider()
+        if not dataProvider then
+            dataProvider = CreateDataProvider()
+            self:SetDataProvider(dataProvider)
+        end
+        if not keepOldData then
+            dataProvider:Flush()
+        else
+        end
+        for _, part in ipairs(contentData) do
+            dataProvider:Insert(part)
+        end
+        scrollBox:SetScrollPercentage(scrollPercent or 1)
+    end
+
+    return scrollBox, scrollView, scrollBar
+end

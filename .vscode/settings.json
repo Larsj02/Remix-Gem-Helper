@@ -102,6 +102,8 @@
         "ACHIEVEMENT",
         "SecondsFormatterMixin",
         "HelpPlateTooltip",
-        "HelpTip"
+        "HelpTip",
+        "CreateScrollBoxListGridView",
+        "CreateAnchor"
     ]
 }
