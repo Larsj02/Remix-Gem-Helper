@@ -4,12 +4,12 @@ local Private = select(2, ...)
 local const = Private.constants
 local gemUtil = Private.GemUtil
 local cache = Private.Cache
-local settings = Private.Settings
 local uiElements = Private.UIElements
 local misc = Private.Misc
 local scrapUtil = Private.ScrapUtil
-local timeFormatter = CreateFromMixins(SecondsFormatterMixin);
-timeFormatter:Init(1, 3, true, true);
+local addon = Private.Addon
+local timeFormatter = CreateFromMixins(SecondsFormatterMixin)
+timeFormatter:Init(1, 3, true, true)
 
 Private.TimeFormatter = timeFormatter
 Private.Frames = {}
@@ -159,7 +159,7 @@ local function createScrapFrame()
     })
     local scrapItemsText = scrapBagItems:CreateFontString()
     scrapItemsText:SetFontObject(const.FONT_OBJECTS.HEADING)
-    scrapItemsText:SetText("NOTHING TO USE")
+    scrapItemsText:SetText("NOTHING TO SCRAP")
     scrapItemsText:SetPoint("CENTER", 0, -10)
     scrapItemsText:Hide()
     local allPointsScrap = {
@@ -183,7 +183,7 @@ local function createScrapFrame()
         local scrappableItems = scrapUtil:GetScrappableItems()
         for _, itemInfo in ipairs(scrappableItems) do
             scrapItemScrollView:UpdateContentData(
-            { { itemID = itemInfo.itemID, hideCount = true, itemLink = itemInfo.itemLink } }, true)
+                { { itemID = itemInfo.itemID, hideCount = true, itemLink = itemInfo.itemLink } }, true)
         end
         scrapBagItems:SetHeight(#scrappableItems > 0 and 250 or 75)
         scrapItemsText:SetShown(#scrappableItems < 1)
@@ -196,7 +196,7 @@ end
 local function createFrame()
     local gems = uiElements:CreateBaseFrame(CharacterFrame, {
         title = const.ADDON_NAME,
-        width = 300
+        width = 375
     })
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
 
@@ -274,7 +274,7 @@ local function createFrame()
         GameTooltip:Hide()
     end)
     frameToggle:SetScript("OnMouseDown", function()
-        settings:UpdateSetting("show_frame", not settings:GetSetting("show_frame"))
+        addon:ToggleDatabaseValue("show_frame")
     end)
 
     ---@class SearchFrame : EditBox
@@ -294,7 +294,7 @@ local function createFrame()
         initializer = function(self, info)
             for i = 0, #const.SOCKET_TYPES_INDEX do
                 local socketType = gemUtil:GetSocketTypeName(i)
-                if socketType ~= "Primordial" or settings:GetSetting("show_primordial") then
+                if socketType ~= "Primordial" or addon:GetDatabaseValue("show_primordial") then
                     info.func = self.SetValue
                     info.arg1 = i
                     info.checked = self.selection == i
@@ -318,7 +318,7 @@ local function createFrame()
         text = "Unowned",
         tooltip = "Show Unowned Gems in the List.",
         onClick = function(self)
-            settings:UpdateSetting("show_unowned", self:GetChecked())
+            addon:SetDatabaseValue("show_unowned", self:GetChecked())
         end
     })
 
@@ -327,7 +327,7 @@ local function createFrame()
         text = "Primordial",
         tooltip = "Show Primordial Gems in the List.",
         onClick = function(self)
-            settings:UpdateSetting("show_primordial", self:GetChecked())
+            addon:SetDatabaseValue("show_primordial", self:GetChecked())
         end
     })
 
@@ -378,27 +378,16 @@ local function createFrame()
     bagItemScrollBox:SetScript("OnEvent", updateBagItems)
     bagItemScrollBox:SetScript("OnShow", updateBagItems)
 
-    local helpText =
-        "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
-        "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
-        "'In Bag' indicates that the Gem is in your bag and ready to be socketed.\n\n" ..
-        "When hovering over a Gem that is 'Socketed' you will see the item highlighted in your character panel.\n" ..
-        "You can use the dropdown or the search bar at the top to filter your list.\n" ..
-        "This Addon also adds the current Rank and stats of your cloak inside the cloak tooltip.\n" ..
-        "You should see an icon in the top right of your character frame which can be used to hide or show this frame.\n" ..
-        "Below the Gem list you should have some clickable buttons to quickly open Chests or combine Gems\n\n" ..
-        "And to get rid of this frame simply shift click it.\nHave fun!"
-
     local helpButton = CreateFrame("Button", nil, gems, "MainHelpPlateButton")
     helpButton:SetScript("OnEnter", function(self)
-        HelpTip:Show(self, { text = helpText })
+        HelpTip:Show(self, { text = addon.Loc["HelpText"] })
     end)
     helpButton:SetScript("OnLeave", function(self)
         HelpTip:Hide(self)
     end)
-    helpButton:SetScript("OnClick", function(self)
+    helpButton:SetScript("OnClick", function()
         if IsLeftShiftKeyDown() then
-            settings:UpdateSetting("show_helpframe", false)
+            addon:SetDatabaseValue("show_helpframe", false)
         end
     end)
     helpButton:SetPoint("TOPRIGHT", 25, 25)
@@ -469,19 +458,19 @@ local function createFrame()
     end)
 
     selectionTreeUpdate()
-    settings:CreateSettingCallback("show_frame", function(_, newState)
-        gems:SetShown(newState)
+    addon:CreateDatabaseCallback("show_frame", function (_, value)
+        gems:SetShown(value)
     end)
-    settings:CreateSettingCallback("show_unowned", function(_, newState)
+    addon:CreateDatabaseCallback("show_unowned", function (_, value)
         selectionTreeUpdate()
-        showUnowned:SetChecked(newState)
+        showUnowned:SetChecked(value)
     end)
-    settings:CreateSettingCallback("show_primordial", function(_, newState)
+    addon:CreateDatabaseCallback("show_primordial", function (_, value)
         selectionTreeUpdate()
-        showPrimordial:SetChecked(newState)
+        showPrimordial:SetChecked(value)
     end)
-    settings:CreateSettingCallback("show_helpframe", function(_, newState)
-        helpButton:SetShown(newState)
+    addon:CreateDatabaseCallback("show_helpframe", function (_, value)
+        helpButton:SetShown(value)
     end)
 
 

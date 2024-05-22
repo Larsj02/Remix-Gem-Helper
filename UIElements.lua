@@ -335,6 +335,7 @@ function uiElements:CreateIcon(parent, data)
         self.id = actionID
         self.infoC = actionID
         self.hideCount = hyperLink and true or false
+        self.info = nil
         if isClickable and actionType then
             self:RegisterForClicks("AnyUp", "AnyDown")
             self:SetAttribute("type", actionType == "SPELL" and "spell" or "macro")
@@ -342,6 +343,7 @@ function uiElements:CreateIcon(parent, data)
         if not actionID then
             icon:SetAtlas("bags-item-slot64")
         end
+        
 
         if actionType == "SPELL" then
             icon:SetTexture(GetSpellTexture(actionID))

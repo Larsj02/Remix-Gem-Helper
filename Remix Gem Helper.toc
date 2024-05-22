@@ -8,9 +8,14 @@
 ## X-Curse-Project-ID: 1017030
 ## X-Wago-ID: mKOvJW6x
 
-Cache.lua
+libs.xml
+
+Locales\embed.xml
 Constants.lua
-Settings.lua
+
+Init.lua
+
+Cache.lua
 Misc.lua
 GemUtil.lua
 UIElements.lua

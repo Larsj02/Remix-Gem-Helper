@@ -108,6 +108,10 @@
         "CLOSE",
         "ButtonFrameTemplate_ShowButtonBar",
         "ButtonFrameTemplate_HideAttic",
-        "DONE"
+        "DONE",
+        "SlashCmdList",
+        "hash_SlashCmdList",
+        "PVEFrame_ShowFrame",
+        "PVEFrame"
     ]
 }
