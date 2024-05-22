@@ -3,7 +3,7 @@ local Private = select(2, ...)
 Private.Locales = Private.Locales or {}
 
 Private.Locales["deDE"] = {
-    isEditing = true,
+    --isEditing = true,
 
     -- CloakTooltip.lua
     ["Rank"] = "Rang",

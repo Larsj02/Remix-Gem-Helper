@@ -349,12 +349,13 @@ local function createFrame()
         CreateAnchor("TOPLEFT", openBagItems, "TOPLEFT", 25, -35),
         CreateAnchor("BOTTOMRIGHT", openBagItems, "BOTTOMRIGHT", -25, 15)
     }
+    local openBagRowCount = math.floor((gems:GetWidth() - 50) / 50)
     local bagItemScrollBox, bagItemScrollView = uiElements:CreateScrollable(openBagItems, {
         element_height = 45,
         type = "GRID",
         initializer = bagItemInitiliazer,
         element_padding = 5,
-        elements_per_row = math.floor((gems:GetWidth() - 50) / 50),
+        elements_per_row = openBagRowCount,
         anchors = {
             with_scroll_bar = allPointsAnchorPoints,
             without_scroll_bar = allPointsAnchorPoints,
@@ -372,7 +373,7 @@ local function createFrame()
                 added = added + 1
             end
         end
-        openBagItems:SetHeight(added > 0 and 150 or 75)
+        openBagItems:SetHeight(added > openBagRowCount and 150 or added > 0 and 100 or 75)
         openBagText:SetShown(added < 1)
     end
     bagItemScrollBox:RegisterEvent("BAG_UPDATE_DELAYED")
