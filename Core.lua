@@ -369,6 +369,7 @@ local function createFrame()
             local threshold = itemType == "GEM" and 3 or 1
             if count >= threshold then
                 bagItemScrollView:UpdateContentData({ { itemID = itemID } }, true)
+                added = added + 1
             end
         end
         openBagItems:SetHeight(added > 0 and 150 or 75)
