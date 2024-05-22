@@ -12,6 +12,7 @@ Private.Locales["enUS"] = {
     ["Socketed"] = "Socketed",
     ["In Bag"] = "In Bag",
     ["In Bag Item!"] = "In Bag Item!",
+    ["Uncollected"] = "Uncollected",
     ["Scrappable Items"] = "Scrappable Items",
     ["NOTHING TO SCRAP"] = "NOTHING TO SCRAP",
     ["Resocket Gems"] = "Resocket Gems",
@@ -23,7 +24,8 @@ Private.Locales["enUS"] = {
     ["Show Primordial Gems in the List."] = "Show Primordial Gems in the List.",
     ["Open, Use and Combine"] = "Open, Use and Combine",
     ["NOTHING TO USE"] = "NOTHING TO USE",
-    ["HelpText"] = "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
+    ["HelpText"] =
+        "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
         "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
         "'In Bag' indicates that the Gem is in your bag and ready to be socketed.\n\n" ..
         "When hovering over a Gem that is 'Socketed' you will see the item highlighted in your character panel.\n" ..

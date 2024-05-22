@@ -122,7 +122,7 @@ local function itemListInitializer(frame, data)
         elseif exInf.locType == "BAG_SOCKET" then
             state, color = addon.Loc["In Bag Item!"], const.COLORS.NEGATIVE
         else
-            state, color = "Uncollected", const.COLORS.GREY
+            state, color = addon.Loc["Uncollected"], const.COLORS.GREY
             name = color:WrapTextInColorCode(name)
         end
         frame.Name:SetText(string.format("%s (%s)", name, color:WrapTextInColorCode(state)))
