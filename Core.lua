@@ -331,24 +331,6 @@ local function createFrame()
     bagItemScrollBox:SetScript("OnEvent", updateBagItems)
     bagItemScrollBox:SetScript("OnShow", updateBagItems)
 
-    local openRandomGemC = uiElements:CreateIcon(gems, {
-        points = {
-            { "LEFT", openRandomGemT, "RIGHT", 5, 0 }
-        },
-        isClickable = true,
-        actionType = "ITEM",
-        actionID = 223904
-    })
-
-    local openRandomGemM = uiElements:CreateIcon(gems, {
-        points = {
-            { "LEFT", openRandomGemC, "RIGHT", 5, 0 }
-        },
-        isClickable = true,
-        actionType = "ITEM",
-        actionID = 223905
-    })
-
     local helpText =
         "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
         "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
