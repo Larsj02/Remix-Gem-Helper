@@ -491,6 +491,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
         end)
     end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
+    if 1 ~= PlayerGetTimerunningSeasonID() then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do
         cache:CacheItemInfo(itemID)
