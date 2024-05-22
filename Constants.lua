@@ -283,8 +283,13 @@ constants.USABLE_BAG_ITEMS = {
     [219274] = "THREAD", -- Infinite Thread of Power
     [219275] = "THREAD", -- Infinite Thread of Stamina
 
-    -- Chest
-    [211279] = "CHEST", -- Cache of Infinite Treasure
+    -- Cache
+    [211279] = "CACHE", -- Cache of Infinite Treasure
+    [211932] = "CACHE", -- Cache of Infinite Treasure
+    [223908] = "CACHE", -- Minor Bronze Cache
+    [223909] = "CACHE", -- Lesser Bronze Cache
+    [223910] = "CACHE", -- Bronze Cache
+    [223911] = "CACHE", -- Greater Bronze Cache
 }
 
 constants.COLORS = {
