@@ -169,13 +169,18 @@ function uiElements:CreateDropdown(parent, data)
     return dropDown
 end
 
-function uiElements:AddTooltip(parent, tooltipText)
+function uiElements:AddTooltip(parent, tooltipText, isHyperlink)
     parent.tooltipText = tooltipText
+    parent.isHyperlink = isHyperlink
     if parent.hasTooltip then return end
     parent:HookScript("OnEnter", function(frame)
         GameTooltip:SetOwner(frame, "ANCHOR_CURSOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(frame.tooltipText, const.COLORS.WHITE:GetRGBA())
+        if frame.isHyperlink then
+            GameTooltip:SetHyperlink(frame.tooltipText)
+        else
+            GameTooltip:AddLine(frame.tooltipText, const.COLORS.WHITE:GetRGBA())
+        end
         GameTooltip:Show()
     end)
     parent:HookScript("OnLeave", function()
@@ -244,11 +249,11 @@ local function updateItemCountOrSlot(self, event)
     if not self:IsVisible() then return end
     if not event or event == "ITEM_COUNT_CHANGED" then
         local count = C_Item.GetItemCount(self.id)
-        self.count:SetText(count)
+        self.count:SetText((not self.hideCount and count > 1) and count or "")
         self.icon:SetDesaturated(count < 1)
     elseif event and event == "BAG_UPDATE_DELAYED" and self.isClickable then
         local bagSlotString, bag, slot = getBagSlotString(self.id)
-        self:SetAttribute("item", bagSlotString)
+        self:SetAttribute("macrotext", "/use " .. bagSlotString)
         local gemType = const.GEM_SOCKET_TYPE[self.id]
         self.info = {
             locIndex = bag,
@@ -317,7 +322,7 @@ function uiElements:CreateIcon(parent, data)
     button.icon = icon
     button.lastUpdate = 0
 
-    function button:UpdateClickable(isClickable, actionType, actionID, noExtract)
+    function button:UpdateClickable(isClickable, actionType, actionID, noExtract, hyperLink)
         self:UnregisterAllEvents()
         self:SetScript("OnEvent", nil)
         self:SetScript("PreClick", nil)
@@ -329,9 +334,10 @@ function uiElements:CreateIcon(parent, data)
         self.type = actionType
         self.id = actionID
         self.infoC = actionID
+        self.hideCount = hyperLink and true or false
         if isClickable and actionType then
             self:RegisterForClicks("AnyUp", "AnyDown")
-            self:SetAttribute("type", actionType:lower())
+            self:SetAttribute("type", actionType == "SPELL" and "spell" or "macro")
         end
         if not actionID then
             icon:SetAtlas("bags-item-slot64")
@@ -344,9 +350,7 @@ function uiElements:CreateIcon(parent, data)
                 self:SetAttribute("spell", actionID)
             end
             Private.Cache:GetSpellInfo(actionID, function(spellInfo)
-                uiElements:AddTooltip(self,
-                    string.format("%s\n%s%s", spellInfo.name, const.COLORS.GREY:GenerateHexColorMarkup(),
-                        spellInfo.description))
+                uiElements:AddTooltip(self, spellInfo.link, true)
             end)
             self:RegisterEvent("SPELL_UPDATE_CHARGES")
             self:SetScript("OnEvent", updateSpellCount)
@@ -354,10 +358,15 @@ function uiElements:CreateIcon(parent, data)
         elseif actionType == "ITEM" then
             icon:SetTexture(select(5, C_Item.GetItemInfoInstant(actionID)))
             Private.Cache:GetItemInfo(actionID, function(itemInfo)
-                uiElements:AddTooltip(self,
-                    string.format("%s%s", const.COLORS.GREY:GenerateHexColorMarkup(), itemInfo
-                        .description))
-                self.infoC = itemInfo.link
+                if hyperLink then
+                    uiElements:AddTooltip(self, hyperLink, true)
+                    self.infoC = hyperLink
+                else
+                    uiElements:AddTooltip(self,
+                        string.format("%s%s", const.COLORS.GREY:GenerateHexColorMarkup(), itemInfo
+                            .description))
+                    self.infoC = itemInfo.link
+                end
             end)
             self:RegisterEvent("ITEM_COUNT_CHANGED")
             self:RegisterEvent("BAG_UPDATE_DELAYED")

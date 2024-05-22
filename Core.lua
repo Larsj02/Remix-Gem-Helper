@@ -7,6 +7,7 @@ local cache = Private.Cache
 local settings = Private.Settings
 local uiElements = Private.UIElements
 local misc = Private.Misc
+local scrapUtil = Private.ScrapUtil
 local timeFormatter = CreateFromMixins(SecondsFormatterMixin);
 timeFormatter:Init(1, 3, true, true);
 
@@ -143,7 +144,53 @@ local function bagItemInitiliazer(frame, data)
         frame.clickable = clickable
         frame.initialized = true
     end
-    frame.clickable:UpdateClickable(true, "ITEM", data.itemID, true)
+    frame.clickable:UpdateClickable(true, "ITEM", data.itemID, true, data.itemLink)
+end
+
+local function createScrapFrame()
+    local scrapBagItems = uiElements:CreateBaseFrame(ScrappingMachineFrame, {
+        frameStyle = "Flat",
+        height = 250,
+        title = "Scrappable ",
+        points = {
+            { "TOPLEFT",  ScrappingMachineFrame, "BOTTOMLEFT",  0, -2 },
+            { "TOPRIGHT", ScrappingMachineFrame, "BOTTOMRIGHT", 0, -2 },
+        }
+    })
+    local scrapItemsText = scrapBagItems:CreateFontString()
+    scrapItemsText:SetFontObject(const.FONT_OBJECTS.HEADING)
+    scrapItemsText:SetText("NOTHING TO USE")
+    scrapItemsText:SetPoint("CENTER", 0, -10)
+    scrapItemsText:Hide()
+    local allPointsScrap = {
+        CreateAnchor("TOPLEFT", scrapBagItems, "TOPLEFT", 25, -35),
+        CreateAnchor("BOTTOMRIGHT", scrapBagItems, "BOTTOMRIGHT", -25, 15)
+    }
+    local scrapItemScrollBox, scrapItemScrollView = uiElements:CreateScrollable(scrapBagItems, {
+        element_height = 45,
+        type = "GRID",
+        initializer = bagItemInitiliazer,
+        element_padding = 5,
+        elements_per_row = math.floor((ScrappingMachineFrame:GetWidth() - 50) / 50),
+        anchors = {
+            with_scroll_bar = allPointsScrap,
+            without_scroll_bar = allPointsScrap,
+        }
+    })
+    local function updateScrapItems()
+        if not scrapItemScrollBox:IsVisible() then return end
+        scrapItemScrollView:UpdateContentData({})
+        local scrappableItems = scrapUtil:GetScrappableItems()
+        for _, itemInfo in ipairs(scrappableItems) do
+            scrapItemScrollView:UpdateContentData(
+            { { itemID = itemInfo.itemID, hideCount = true, itemLink = itemInfo.itemLink } }, true)
+        end
+        scrapBagItems:SetHeight(#scrappableItems > 0 and 250 or 75)
+        scrapItemsText:SetShown(#scrappableItems < 1)
+    end
+    scrapItemScrollBox:RegisterEvent("BAG_UPDATE_DELAYED")
+    scrapItemScrollBox:SetScript("OnEvent", updateScrapItems)
+    scrapItemScrollBox:SetScript("OnShow", updateScrapItems)
 end
 
 local function createFrame()
@@ -476,7 +523,8 @@ end
 local eventFrame = CreateFrame("Frame")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
-eventFrame:SetScript("OnEvent", function(_, event)
+eventFrame:RegisterEvent("ADDON_LOADED")
+eventFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
         RunNextFrame(function()
             local mun = ScrappingMachineFrame
@@ -489,6 +537,11 @@ eventFrame:SetScript("OnEvent", function(_, event)
                 end
             end
         end)
+    elseif event == "ADDON_LOADED" then
+        local addonName = ...
+        if addonName == "Blizzard_ScrappingMachineUI" then
+            createScrapFrame()
+        end
     end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
 
