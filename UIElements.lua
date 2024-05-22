@@ -317,7 +317,7 @@ function uiElements:CreateIcon(parent, data)
     button.icon = icon
     button.lastUpdate = 0
 
-    function button:UpdateClickable(isClickable, actionType, actionID)
+    function button:UpdateClickable(isClickable, actionType, actionID, noExtract)
         self:UnregisterAllEvents()
         self:SetScript("OnEvent", nil)
         self:SetScript("PreClick", nil)
@@ -362,9 +362,12 @@ function uiElements:CreateIcon(parent, data)
             self:RegisterEvent("ITEM_COUNT_CHANGED")
             self:RegisterEvent("BAG_UPDATE_DELAYED")
             self:SetScript("OnEvent", updateItemCountOrSlot)
-            self:SetScript("PreClick", extractPreClick)
-            self:SetScript("PostClick", extractPostClick)
+            if not noExtract then
+                self:SetScript("PreClick", extractPreClick)
+                self:SetScript("PostClick", extractPostClick)
+            end
             updateItemCountOrSlot(self)
+            updateItemCountOrSlot(self, "BAG_UPDATE_DELAYED")
         end
     end
 

@@ -132,6 +132,20 @@ local function itemListInitializer(frame, data)
     frame.Stripe:SetShown(data.index % 2 == 1)
 end
 
+local function bagItemInitiliazer(frame, data)
+    if not frame.initialized then
+        local clickable = uiElements:CreateIcon(frame, {
+            points = {
+                { "TOPLEFT" },
+                { "BOTTOMRIGHT" }
+            },
+        })
+        frame.clickable = clickable
+        frame.initialized = true
+    end
+    frame.clickable:UpdateClickable(true, "ITEM", data.itemID, true)
+end
+
 local function createFrame()
     local gems = uiElements:CreateBaseFrame(CharacterFrame, {
         title = const.ADDON_NAME,
@@ -181,12 +195,13 @@ local function createFrame()
             local castButton = resocketButtons[gemIndex]
             if castButton then
                 castButton:UpdateClickable(true, "ITEM", gemID)
-                castButton:SetPoint("LEFT", self, "CENTER", gemsStart + (gemIndex - 1 ) * 50, 5)
+                castButton:SetPoint("LEFT", self, "CENTER", gemsStart + (gemIndex - 1) * 50, 5)
                 castButton:Show()
             end
         end
         self:Show()
     end
+
     resocketPopup:Hide()
 
     local frameToggle = CreateFrame("Frame", nil, CharacterFrame)
@@ -269,32 +284,52 @@ local function createFrame()
         end
     })
 
-    local openLootbox = uiElements:CreateIcon(gems, {
+    local openBagItems = uiElements:CreateBaseFrame(gems, {
+        frameStyle = "Flat",
+        height = 150,
+        title = "Open, Use and Combine",
         points = {
-            { "TOPLEFT", gems, "BOTTOMLEFT", 5, -5 }
-        },
-        isClickable = true,
-        actionType = "ITEM",
-        actionID = 211279
+            { "TOPLEFT",  gems, "BOTTOMLEFT",  0, -2 },
+            { "TOPRIGHT", gems, "BOTTOMRIGHT", 0, -2 },
+        }
     })
-
-    local openRandomGemP = uiElements:CreateIcon(gems, {
-        points = {
-            { "LEFT", openLootbox, "RIGHT", 5, 0 }
-        },
-        isClickable = true,
-        actionType = "ITEM",
-        actionID = 223907
+    local openBagText = openBagItems:CreateFontString()
+    openBagText:SetFontObject(const.FONT_OBJECTS.HEADING)
+    openBagText:SetText("NOTHING TO USE")
+    openBagText:SetPoint("CENTER", 0, -10)
+    openBagText:Hide()
+    local allPointsAnchorPoints = {
+        CreateAnchor("TOPLEFT", openBagItems, "TOPLEFT", 25, -35),
+        CreateAnchor("BOTTOMRIGHT", openBagItems, "BOTTOMRIGHT", -25, 15)
+    }
+    local bagItemScrollBox, bagItemScrollView = uiElements:CreateScrollable(openBagItems, {
+        element_height = 45,
+        type = "GRID",
+        initializer = bagItemInitiliazer,
+        element_padding = 5,
+        elements_per_row = math.floor((gems:GetWidth() - 50) / 50),
+        anchors = {
+            with_scroll_bar = allPointsAnchorPoints,
+            without_scroll_bar = allPointsAnchorPoints,
+        }
     })
-
-    local openRandomGemT = uiElements:CreateIcon(gems, {
-        points = {
-            { "LEFT", openRandomGemP, "RIGHT", 5, 0 }
-        },
-        isClickable = true,
-        actionType = "ITEM",
-        actionID = 223906
-    })
+    local function updateBagItems()
+        if not bagItemScrollBox:IsVisible() then return end
+        bagItemScrollView:UpdateContentData({})
+        local added = 0
+        for itemID, itemType in pairs(const.USABLE_BAG_ITEMS) do
+            local count = C_Item.GetItemCount(itemID)
+            local threshold = itemType == "GEM" and 3 or 1
+            if count >= threshold then
+                bagItemScrollView:UpdateContentData({ { itemID = itemID } }, true)
+            end
+        end
+        openBagItems:SetHeight(added > 0 and 150 or 75)
+        openBagText:SetShown(added < 1)
+    end
+    bagItemScrollBox:RegisterEvent("BAG_UPDATE_DELAYED")
+    bagItemScrollBox:SetScript("OnEvent", updateBagItems)
+    bagItemScrollBox:SetScript("OnShow", updateBagItems)
 
     local openRandomGemC = uiElements:CreateIcon(gems, {
         points = {
@@ -461,17 +496,17 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
 eventFrame:SetScript("OnEvent", function(_, event)
     if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-    RunNextFrame(function()
-        local mun = ScrappingMachineFrame
-        for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-            if f.itemLink then
-                local gemsList = gemUtil:GetItemGems(f.itemLink)
-                if #gemsList > 0 then
-                    Private.Frames.ResocketPopup:FillPopup(gemsList)
+        RunNextFrame(function()
+            local mun = ScrappingMachineFrame
+            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+                if f.itemLink then
+                    local gemsList = gemUtil:GetItemGems(f.itemLink)
+                    if #gemsList > 0 then
+                        Private.Frames.ResocketPopup:FillPopup(gemsList)
+                    end
                 end
             end
-        end
-    end)
+        end)
     end
     if event ~= "PLAYER_ENTERING_WORLD" then return end
 
