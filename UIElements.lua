@@ -3,6 +3,7 @@ local Private = select(2, ...)
 local const = Private.constants
 local gemUtil = Private.GemUtil
 local misc = Private.Misc
+local addon = Private.Addon
 
 local uiElements = {}
 Private.UIElements = uiElements
@@ -29,7 +30,7 @@ local function extractPostClick(self)
     if info.locType == "BAG_GEM" then
         ClearCursor()
         if not info.freeSlot then
-            misc:PrintError("You don't have a valid free Slot for this Gem")
+            misc:PrintError(addon.Loc["You don't have a valid free Slot for this Gem"])
             CloseSocketInfo()
             return
         end

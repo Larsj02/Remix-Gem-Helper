@@ -9,6 +9,20 @@ Private.Locales["enUS"] = {
     ["Rank"] = "Rank",
 
     -- Core.lua
+    ["Socketed"] = "Socketed",
+    ["In Bag"] = "In Bag",
+    ["In Bag Item!"] = "In Bag Item!",
+    ["Scrappable Items"] = "Scrappable Items",
+    ["NOTHING TO SCRAP"] = "NOTHING TO SCRAP",
+    ["Resocket Gems"] = "Resocket Gems",
+    ["Toggle the %s UI"] = "Toggle the %s UI", -- %s is the Addon name and needs to be included!
+    ["Search Gems"] = "Search Gems",
+    ["Unowned"] = "Unowned",
+    ["Show Unowned Gems in the List."] = "Show Unowned Gems in the List.",
+    ["Primordial"] = "Primordial",
+    ["Show Primordial Gems in the List."] = "Show Primordial Gems in the List.",
+    ["Open, Use and Combine"] = "Open, Use and Combine",
+    ["NOTHING TO USE"] = "NOTHING TO USE",
     ["HelpText"] = "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
         "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
         "'In Bag' indicates that the Gem is in your bag and ready to be socketed.\n\n" ..
@@ -18,4 +32,7 @@ Private.Locales["enUS"] = {
         "You should see an icon in the top right of your character frame which can be used to hide or show this frame.\n" ..
         "Below the Gem list you should have some clickable buttons to quickly open Chests or combine Gems\n\n" ..
         "And to get rid of this frame simply shift click it.\nHave fun!",
+
+    -- UIElements.lua
+    ["You don't have a valid free Slot for this Gem"] = "You don't have a valid free Slot for this Gem",
 }

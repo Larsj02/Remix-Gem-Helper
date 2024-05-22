@@ -116,11 +116,11 @@ local function itemListInitializer(frame, data)
 
         local state, color
         if exInf.locType == "EQUIP_SOCKET" then
-            state, color = "Socketed", const.COLORS.POSITIVE
+            state, color = addon.Loc["Socketed"], const.COLORS.POSITIVE
         elseif exInf.locType == "BAG_GEM" then
-            state, color = "In Bag", const.COLORS.NEUTRAL
+            state, color = addon.Loc["In Bag"], const.COLORS.NEUTRAL
         elseif exInf.locType == "BAG_SOCKET" then
-            state, color = "In Bag Item!", const.COLORS.NEGATIVE
+            state, color = addon.Loc["In Bag Item!"], const.COLORS.NEGATIVE
         else
             state, color = "Uncollected", const.COLORS.GREY
             name = color:WrapTextInColorCode(name)
@@ -151,7 +151,7 @@ local function createScrapFrame()
     local scrapBagItems = uiElements:CreateBaseFrame(ScrappingMachineFrame, {
         frameStyle = "Flat",
         height = 250,
-        title = "Scrappable ",
+        title = addon.Loc["Scrappable Items"],
         points = {
             { "TOPLEFT",  ScrappingMachineFrame, "BOTTOMLEFT",  0, -2 },
             { "TOPRIGHT", ScrappingMachineFrame, "BOTTOMRIGHT", 0, -2 },
@@ -159,7 +159,7 @@ local function createScrapFrame()
     })
     local scrapItemsText = scrapBagItems:CreateFontString()
     scrapItemsText:SetFontObject(const.FONT_OBJECTS.HEADING)
-    scrapItemsText:SetText("NOTHING TO SCRAP")
+    scrapItemsText:SetText(addon.Loc["NOTHING TO SCRAP"])
     scrapItemsText:SetPoint("CENTER", 0, -10)
     scrapItemsText:Hide()
     local allPointsScrap = {
@@ -202,7 +202,7 @@ local function createFrame()
 
     ---@class ResocketPopup:BaseFrame
     local resocketPopup = uiElements:CreateBaseFrame(UIParent, {
-        title = "Resocket Gems",
+        title = addon.Loc["Resocket Gems"],
         height = 150,
         width = 300,
         points = { { "CENTER" } },
@@ -267,7 +267,7 @@ local function createFrame()
     frameToggle:SetScript("OnEnter", function(self)
         GameTooltip:ClearLines()
         GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT")
-        GameTooltip:AddLine(string.format("Toggle the %s UI", const.ADDON_NAME), 1, 1, 1)
+        GameTooltip:AddLine(string.format(addon.Loc["Toggle the %s UI"], const.ADDON_NAME), 1, 1, 1)
         GameTooltip:Show()
     end)
     frameToggle:SetScript("OnLeave", function()
@@ -280,7 +280,7 @@ local function createFrame()
     ---@class SearchFrame : EditBox
     ---@field Instructions FontString
     local search = CreateFrame("EditBox", nil, gems, "InputBoxInstructionsTemplate")
-    search.Instructions:SetText("Search Gems")
+    search.Instructions:SetText(addon.Loc["Search Gems"])
     search:ClearFocus()
     search:SetAutoFocus(false)
     search:SetPoint("TOPRIGHT", gems.TopTileStreaks, -5, -15)
@@ -315,8 +315,8 @@ local function createFrame()
 
     local showUnowned = uiElements:CreateCheckButton(gems, {
         point = { "BOTTOMRIGHT", -75, 7.5 },
-        text = "Unowned",
-        tooltip = "Show Unowned Gems in the List.",
+        text = addon.Loc["Unowned"],
+        tooltip = addon.Loc["Show Unowned Gems in the List."],
         onClick = function(self)
             addon:SetDatabaseValue("show_unowned", self:GetChecked())
         end
@@ -324,8 +324,8 @@ local function createFrame()
 
     local showPrimordial = uiElements:CreateCheckButton(gems, {
         point = { "BOTTOMRIGHT", -175, 7.5 },
-        text = "Primordial",
-        tooltip = "Show Primordial Gems in the List.",
+        text = addon.Loc["Primordial"],
+        tooltip = addon.Loc["Show Primordial Gems in the List."],
         onClick = function(self)
             addon:SetDatabaseValue("show_primordial", self:GetChecked())
         end
@@ -334,7 +334,7 @@ local function createFrame()
     local openBagItems = uiElements:CreateBaseFrame(gems, {
         frameStyle = "Flat",
         height = 150,
-        title = "Open, Use and Combine",
+        title = addon.Loc["Open, Use and Combine"],
         points = {
             { "TOPLEFT",  gems, "BOTTOMLEFT",  0, -2 },
             { "TOPRIGHT", gems, "BOTTOMRIGHT", 0, -2 },
@@ -342,7 +342,7 @@ local function createFrame()
     })
     local openBagText = openBagItems:CreateFontString()
     openBagText:SetFontObject(const.FONT_OBJECTS.HEADING)
-    openBagText:SetText("NOTHING TO USE")
+    openBagText:SetText(addon.Loc["NOTHING TO USE"])
     openBagText:SetPoint("CENTER", 0, -10)
     openBagText:Hide()
     local allPointsAnchorPoints = {
