@@ -460,18 +460,18 @@ local function createFrame()
     end)
 
     selectionTreeUpdate()
-    addon:CreateDatabaseCallback("show_frame", function (_, value)
+    addon:CreateDatabaseCallback("show_frame", function(_, value)
         gems:SetShown(value)
     end)
-    addon:CreateDatabaseCallback("show_unowned", function (_, value)
+    addon:CreateDatabaseCallback("show_unowned", function(_, value)
         selectionTreeUpdate()
         showUnowned:SetChecked(value)
     end)
-    addon:CreateDatabaseCallback("show_primordial", function (_, value)
+    addon:CreateDatabaseCallback("show_primordial", function(_, value)
         selectionTreeUpdate()
         showPrimordial:SetChecked(value)
     end)
-    addon:CreateDatabaseCallback("show_helpframe", function (_, value)
+    addon:CreateDatabaseCallback("show_helpframe", function(_, value)
         helpButton:SetShown(value)
     end)
 
@@ -511,35 +511,36 @@ local function createFrame()
     end)
 end
 
-local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-eventFrame:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED")
-eventFrame:RegisterEvent("ADDON_LOADED")
-eventFrame:SetScript("OnEvent", function(_, event, ...)
-    if event == "SCRAPPING_MACHINE_ITEM_ADDED" then
-        RunNextFrame(function()
-            local mun = ScrappingMachineFrame
-            for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
-                if f.itemLink then
-                    local gemsList = gemUtil:GetItemGems(f.itemLink)
-                    if #gemsList > 0 then
-                        Private.Frames.ResocketPopup:FillPopup(gemsList)
-                    end
-                end
-            end
-        end)
-    elseif event == "ADDON_LOADED" then
-        local addonName = ...
-        if addonName == "Blizzard_ScrappingMachineUI" then
-            createScrapFrame()
-        end
-    end
-    if event ~= "PLAYER_ENTERING_WORLD" then return end
+function addon:OnInitialize(...)
+    -- On Init
+end
+
+function addon:OnEnable(...)
     if 1 ~= PlayerGetTimerunningSeasonID() then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do
         cache:CacheItemInfo(itemID)
     end
-    eventFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
     createFrame()
+end
+
+addon:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED", "Core.lua", function()
+    RunNextFrame(function()
+        local mun = ScrappingMachineFrame
+        for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+            if f.itemLink then
+                local gemsList = gemUtil:GetItemGems(f.itemLink)
+                if #gemsList > 0 then
+                    Private.Frames.ResocketPopup:FillPopup(gemsList)
+                end
+            end
+        end
+    end)
+end)
+
+addon:RegisterEvent("ADDON_LOADED", "Core.lua", function(...)
+    local addonName = select(3, ...)
+    if addonName == "Blizzard_ScrappingMachineUI" then
+        createScrapFrame()
+    end
 end)

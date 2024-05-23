@@ -87,7 +87,7 @@ end
 
 ---@param event string
 ---@param name string
----@param callbackFunc function
+---@param callbackFunc fun(self:RasuAddonBase, event:string, ...:any)
 ---@param args table|?
 ---@param cleuSubEvents table|?
 ---@return string
@@ -131,7 +131,7 @@ end
 
 ---@param event string
 ---@param callbackName string
----@param func string|function|?
+---@param func string|fun(self:RasuAddonBase, event:string, ...:any)|?
 ---@param args table|?
 ---@param cleuSubEvents table|?
 function AddonBase:RegisterEvent(event, callbackName, func, args, cleuSubEvents)
