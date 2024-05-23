@@ -9,13 +9,6 @@ local defaultDatabase = {
     show_helpframe = true
 }
 
-for lang, langInfo in pairs(Private.Locales) do
-    if langInfo.isEditing then
-        print(string.format("You're currently Editing: '%s'", lang))
-        function GetLocale() return lang end
-    end
-end
-
 local addon = LibStub("RasuAddon"):CreateAddon(
     const.ADDON_NAME,
     "RemixGemHelperDB",

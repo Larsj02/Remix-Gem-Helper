@@ -50,8 +50,17 @@ function lib:CreateAddon(name, db, defaultDB, loc, defaultLoc)
     addon.DisplayName = C_AddOns.GetAddOnMetadata(name, "Title") or name
     addon.Database = db
     addon.DefaultDatabase = defaultDB
+
     if loc and (loc[GetLocale()] or defaultLoc) then
-        addon.Loc = loc[GetLocale()] or loc[defaultLoc]
+        for lang, langInfo in pairs(loc) do
+            if langInfo.isEditing then
+                addon:FPrint("You're currently editing the localization for '%s'", lang)
+                addon.Loc = langInfo
+            end
+        end
+        if not addon.Loc then
+            addon.Loc = loc[GetLocale()] or loc[defaultLoc]
+        end
     end
 
     local addonEvents = CreateFrame("Frame")
