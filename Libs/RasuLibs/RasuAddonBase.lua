@@ -52,13 +52,15 @@ function lib:CreateAddon(name, db, defaultDB, loc, defaultLoc)
     addon.DefaultDatabase = defaultDB
 
     if loc and (loc[GetLocale()] or defaultLoc) then
+        local isLocSet = false
         for lang, langInfo in pairs(loc) do
             if langInfo.isEditing then
                 addon:FPrint("You're currently editing the localization for '%s'", lang)
                 addon.Loc = langInfo
+                isLocSet = true
             end
         end
-        if not addon.Loc then
+        if not isLocSet then
             addon.Loc = loc[GetLocale()] or loc[defaultLoc]
         end
     end
