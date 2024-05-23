@@ -3,14 +3,15 @@ local Private = select(2, ...)
 local addon = Private.Addon
 local const = Private.constants
 local function getCloakLevel()
-    local level = 0
+    local level, highest = 0, 0
     for achievementID = const.CLOAK_BUFF.ACHIEVEMENT_ID_START, const.CLOAK_BUFF.ACHIEVEMENT_ID_END do
         local completed = select(4, GetAchievementInfo(achievementID))
+        level = level + 1
         if completed then
-            level = level + 1
+            highest = level
         end
     end
-    return string.format(" [%s %d/12]", addon.Loc["Rank"], level)
+    return string.format(" [%s %d/%d]", addon.Loc["Rank"], highest, level)
 end
 
 local function getCloakStats()
