@@ -485,29 +485,27 @@ local function createFrame()
             frameToggle:Show()
         end
     end)
-    gems:SetScript("OnHide", function()
+    gems:SetScript("OnHide", function(self)
+        self:ClearAllPoints()
         updateTree({})
     end)
     gems:SetScript("OnShow", function(self)
-        selectionTreeUpdate()
         -- Chonky Character Sheets Frame
         if _G["CCSf"] then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", CharacterFrameBg, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", CharacterFrameBg, "TOPRIGHT")
-            self.defaultPosition = false
-            -- TinyInspect
+        -- TinyInspect
         elseif C_AddOns.IsAddOnLoaded("TinyInspect") and PaperDollFrame.inspectFrame and PaperDollFrame.inspectFrame:IsVisible() then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", PaperDollFrame.inspectFrame, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", PaperDollFrame.inspectFrame, "TOPRIGHT")
-            self.defaultPosition = false
-        elseif not self.defaultPosition then
+        else
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
-            self.defaultPosition = true
         end
+        selectionTreeUpdate()
     end)
 end
 
