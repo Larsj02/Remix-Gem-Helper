@@ -21,4 +21,6 @@ GemUtil.lua
 UIElements.lua
 ScrapUtil.lua
 Core.lua
-CloakTooltip.lua
+ItemUpgradeUtil.lua
+MerchantUtil.lua
+ItemTooltips.lua

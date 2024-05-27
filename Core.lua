@@ -515,7 +515,7 @@ function addon:OnInitialize(...)
     -- On Init
 end
 
-function addon:OnEnable(...)
+function addon:OnEnable(...) -- This gotta be moved as this login event doesn't occur on reload
     if 1 ~= PlayerGetTimerunningSeasonID() then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do

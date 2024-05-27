@@ -21,94 +21,94 @@ constants.SOCKET_TYPES_INDEX = {
     [0] = "ALL"
 }
 constants.GEM_SOCKET_TYPE = {
-    [221982] = "META",       -- Bulwark of the Black Ox
-    [221977] = "META",       -- Funeral Pyre
-    [220211] = "META",       -- Precipice of Madness
-    [220120] = "META",       -- Soul Tether
-    [220117] = "META",       -- Ward of Salvation
-    [219878] = "META",       -- Tireless Spirit
-    [219386] = "META",       -- Locus of Power
+    [221982] = "META",      -- Bulwark of the Black Ox
+    [221977] = "META",      -- Funeral Pyre
+    [220211] = "META",      -- Precipice of Madness
+    [220120] = "META",      -- Soul Tether
+    [220117] = "META",      -- Ward of Salvation
+    [219878] = "META",      -- Tireless Spirit
+    [219386] = "META",      -- Locus of Power
     --[216974] = "META",      -- Morphing Elements
-    [216711] = "META",       -- Chi-ji, the Red Crane
-    [216695] = "META",       -- Lifestorm
-    [216671] = "META",       -- Thundering Orb
-    [216663] = "META",       -- Oblivion Sphere
+    [216711] = "META",      -- Chi-ji, the Red Crane
+    [216695] = "META",      -- Lifestorm
+    [216671] = "META",      -- Thundering Orb
+    [216663] = "META",      -- Oblivion Sphere
 
-    [218110] = "COGWHEEL",   -- Soulshape
-    [218109] = "COGWHEEL",   -- Death's Advance
-    [218108] = "COGWHEEL",   -- Dark Pact
-    [218082] = "COGWHEEL",   -- Spiritwalker's Grace
-    [218046] = "COGWHEEL",   -- Spirit Walk
-    [218045] = "COGWHEEL",   -- Door of Shadows
-    [218044] = "COGWHEEL",   -- Pursuit of Justice
-    [218043] = "COGWHEEL",   -- Wild Charge
-    [218005] = "COGWHEEL",   -- Stampeding Roar
-    [218004] = "COGWHEEL",   -- Vanish
-    [218003] = "COGWHEEL",   -- Leap of Faith
-    [217989] = "COGWHEEL",   -- Trailblazer
-    [217983] = "COGWHEEL",   -- Disengage
-    [216632] = "COGWHEEL",   -- Sprint
-    [216631] = "COGWHEEL",   -- Roll
-    [216630] = "COGWHEEL",   -- Heroic Leap
-    [216629] = "COGWHEEL",   -- Blink
+    [218110] = "COGWHEEL",  -- Soulshape
+    [218109] = "COGWHEEL",  -- Death's Advance
+    [218108] = "COGWHEEL",  -- Dark Pact
+    [218082] = "COGWHEEL",  -- Spiritwalker's Grace
+    [218046] = "COGWHEEL",  -- Spirit Walk
+    [218045] = "COGWHEEL",  -- Door of Shadows
+    [218044] = "COGWHEEL",  -- Pursuit of Justice
+    [218043] = "COGWHEEL",  -- Wild Charge
+    [218005] = "COGWHEEL",  -- Stampeding Roar
+    [218004] = "COGWHEEL",  -- Vanish
+    [218003] = "COGWHEEL",  -- Leap of Faith
+    [217989] = "COGWHEEL",  -- Trailblazer
+    [217983] = "COGWHEEL",  -- Disengage
+    [216632] = "COGWHEEL",  -- Sprint
+    [216631] = "COGWHEEL",  -- Roll
+    [216630] = "COGWHEEL",  -- Heroic Leap
+    [216629] = "COGWHEEL",  -- Blink
 
-    [219801] = "TINKER",     -- Ankh of Reincarnation
-    [212366] = "TINKER",     -- Arcanist's Edge
-    [219944] = "TINKER",     -- Bloodthirsty Coral
-    [219818] = "TINKER",     -- Brilliance
-    [216649] = "TINKER",     -- Brittle
-    [216648] = "TINKER",     -- Cold Front
-    [217957] = "TINKER",     -- Deliverance
-    [212694] = "TINKER",     -- Enkindle
-    [212749] = "TINKER",     -- Explosive Barrage
-    [212365] = "TINKER",     -- Fervor
-    [219817] = "TINKER",     -- Freedom
-    [212916] = "TINKER",     -- Frost Armor
-    [219777] = "TINKER",     -- Grounding
-    [217964] = "TINKER",     -- Holy Martyr
-    [216647] = "TINKER",     -- Hailstorm
-    [212758] = "TINKER",     -- Incendiary Terror
-    [219389] = "TINKER",     -- Lightning Rod
-    [216624] = "TINKER",     -- Mark of Arrogance
-    [216650] = "TINKER",     -- Memory of Vengeance
-    [212759] = "TINKER",     -- Meteor Storm
-    [212361] = "TINKER",     -- Opportunist
-    [216625] = "TINKER",     -- Quick Strike
-    [217961] = "TINKER",     -- Righteous Frenzy
-    [217927] = "TINKER",     -- Savior
-    [216651] = "TINKER",     -- Searing Light
-    [216626] = "TINKER",     -- Slay
-    [219452] = "TINKER",     -- Static Charge
-    [219523] = "TINKER",     -- Storm Overload
-    [212362] = "TINKER",     -- Sunstrider's Flourish
-    [216627] = "TINKER",     -- Tinkmaster's Shield
-    [219527] = "TINKER",     -- Vampiric Aura
-    [216628] = "TINKER",     -- Victory Fire
-    [217903] = "TINKER",     -- Vindication
-    [217907] = "TINKER",     -- Warmth
-    [212760] = "TINKER",     -- Wildfire
-    [219516] = "TINKER",     -- Windweaver
+    [219801] = "TINKER",    -- Ankh of Reincarnation
+    [212366] = "TINKER",    -- Arcanist's Edge
+    [219944] = "TINKER",    -- Bloodthirsty Coral
+    [219818] = "TINKER",    -- Brilliance
+    [216649] = "TINKER",    -- Brittle
+    [216648] = "TINKER",    -- Cold Front
+    [217957] = "TINKER",    -- Deliverance
+    [212694] = "TINKER",    -- Enkindle
+    [212749] = "TINKER",    -- Explosive Barrage
+    [212365] = "TINKER",    -- Fervor
+    [219817] = "TINKER",    -- Freedom
+    [212916] = "TINKER",    -- Frost Armor
+    [219777] = "TINKER",    -- Grounding
+    [217964] = "TINKER",    -- Holy Martyr
+    [216647] = "TINKER",    -- Hailstorm
+    [212758] = "TINKER",    -- Incendiary Terror
+    [219389] = "TINKER",    -- Lightning Rod
+    [216624] = "TINKER",    -- Mark of Arrogance
+    [216650] = "TINKER",    -- Memory of Vengeance
+    [212759] = "TINKER",    -- Meteor Storm
+    [212361] = "TINKER",    -- Opportunist
+    [216625] = "TINKER",    -- Quick Strike
+    [217961] = "TINKER",    -- Righteous Frenzy
+    [217927] = "TINKER",    -- Savior
+    [216651] = "TINKER",    -- Searing Light
+    [216626] = "TINKER",    -- Slay
+    [219452] = "TINKER",    -- Static Charge
+    [219523] = "TINKER",    -- Storm Overload
+    [212362] = "TINKER",    -- Sunstrider's Flourish
+    [216627] = "TINKER",    -- Tinkmaster's Shield
+    [219527] = "TINKER",    -- Vampiric Aura
+    [216628] = "TINKER",    -- Victory Fire
+    [217903] = "TINKER",    -- Vindication
+    [217907] = "TINKER",    -- Warmth
+    [212760] = "TINKER",    -- Wildfire
+    [219516] = "TINKER",    -- Windweaver
 
-    [210715] = "PRISMATIC",  -- Chipped Masterful Amethyst
-    [216640] = "PRISMATIC",  -- Flawed Masterful Amethyst
-    [211106] = "PRISMATIC",  -- Masterful Amethyst
-    [211108] = "PRISMATIC",  -- Perfect Masterful Amethyst
-    [210714] = "PRISMATIC",  -- Chipped Deadly Sapphire
-    [216644] = "PRISMATIC",  -- Flawed Deadly Sapphire
-    [211123] = "PRISMATIC",  -- Deadly Sapphire
-    [211102] = "PRISMATIC",  -- Perfect Deadly Sapphire
-    [210681] = "PRISMATIC",  -- Chipped Quick Topaz
-    [216643] = "PRISMATIC",  -- Flawed Quick Topaz
-    [211107] = "PRISMATIC",  -- Quick Topaz
-    [211110] = "PRISMATIC",  -- Perfect Quick Topaz
-    [220371] = "PRISMATIC",  -- Chipped Versatile Diamond
-    [220372] = "PRISMATIC",  -- Flawed Versatile Diamond
-    [220374] = "PRISMATIC",  -- Versatile Diamond
-    [220373] = "PRISMATIC",  -- Perfect Versatile Diamond
-    [220367] = "PRISMATIC",  -- Chipped Stalwart Pearl
-    [220368] = "PRISMATIC",  -- Flawed Stalwart Pearl
-    [220370] = "PRISMATIC",  -- Stalwart Pearl
-    [220369] = "PRISMATIC",  -- Perfect Stalwart Pearl
+    [210715] = "PRISMATIC", -- Chipped Masterful Amethyst
+    [216640] = "PRISMATIC", -- Flawed Masterful Amethyst
+    [211106] = "PRISMATIC", -- Masterful Amethyst
+    [211108] = "PRISMATIC", -- Perfect Masterful Amethyst
+    [210714] = "PRISMATIC", -- Chipped Deadly Sapphire
+    [216644] = "PRISMATIC", -- Flawed Deadly Sapphire
+    [211123] = "PRISMATIC", -- Deadly Sapphire
+    [211102] = "PRISMATIC", -- Perfect Deadly Sapphire
+    [210681] = "PRISMATIC", -- Chipped Quick Topaz
+    [216643] = "PRISMATIC", -- Flawed Quick Topaz
+    [211107] = "PRISMATIC", -- Quick Topaz
+    [211110] = "PRISMATIC", -- Perfect Quick Topaz
+    [220371] = "PRISMATIC", -- Chipped Versatile Diamond
+    [220372] = "PRISMATIC", -- Flawed Versatile Diamond
+    [220374] = "PRISMATIC", -- Versatile Diamond
+    [220373] = "PRISMATIC", -- Perfect Versatile Diamond
+    [220367] = "PRISMATIC", -- Chipped Stalwart Pearl
+    [220368] = "PRISMATIC", -- Flawed Stalwart Pearl
+    [220370] = "PRISMATIC", -- Stalwart Pearl
+    [220369] = "PRISMATIC", -- Perfect Stalwart Pearl
     --[211109] = "PRISMATIC",  -- Chipped Sustaining Emerald
     --[216642] = "PRISMATIC",  -- Flawed Sustaining Emerald
     --[211125] = "PRISMATIC",  -- Sustaining Emerald
@@ -214,34 +214,34 @@ constants.CLOAK_BUFF = {
 }
 constants.USABLE_BAG_ITEMS = {
     -- Prismatic Gems for Combining
-    [210715] = "GEM",  -- Chipped Masterful Amethyst
-    [216640] = "GEM",  -- Flawed Masterful Amethyst
-    [211106] = "GEM",  -- Masterful Amethyst
-    [211108] = "GEM",  -- Perfect Masterful Amethyst
-    [210714] = "GEM",  -- Chipped Deadly Sapphire
-    [216644] = "GEM",  -- Flawed Deadly Sapphire
-    [211123] = "GEM",  -- Deadly Sapphire
-    [211102] = "GEM",  -- Perfect Deadly Sapphire
-    [210681] = "GEM",  -- Chipped Quick Topaz
-    [216643] = "GEM",  -- Flawed Quick Topaz
-    [211107] = "GEM",  -- Quick Topaz
-    [211110] = "GEM",  -- Perfect Quick Topaz
-    [220371] = "GEM",  -- Chipped Versatile Diamond
-    [220372] = "GEM",  -- Flawed Versatile Diamond
-    [220374] = "GEM",  -- Versatile Diamond
-    [220373] = "GEM",  -- Perfect Versatile Diamond
-    [220367] = "GEM",  -- Chipped Stalwart Pearl
-    [220368] = "GEM",  -- Flawed Stalwart Pearl
-    [220370] = "GEM",  -- Stalwart Pearl
-    [220369] = "GEM",  -- Perfect Stalwart Pearl
-    [210717] = "GEM",  -- Chipped Hungering Ruby
-    [216641] = "GEM",  -- Flawed Hungering Ruby
-    [210718] = "GEM",  -- Hungering Ruby
-    [211103] = "GEM",  -- Perfect Hungering Ruby
-    [210716] = "GEM",  -- Chipped Swift Opal
-    [216639] = "GEM",  -- Flawed Swift Opal
-    [211124] = "GEM",  -- Swift Opal
-    [211101] = "GEM",  -- Perfect Swift Opal
+    [210715] = "GEM", -- Chipped Masterful Amethyst
+    [216640] = "GEM", -- Flawed Masterful Amethyst
+    [211106] = "GEM", -- Masterful Amethyst
+    [211108] = "GEM", -- Perfect Masterful Amethyst
+    [210714] = "GEM", -- Chipped Deadly Sapphire
+    [216644] = "GEM", -- Flawed Deadly Sapphire
+    [211123] = "GEM", -- Deadly Sapphire
+    [211102] = "GEM", -- Perfect Deadly Sapphire
+    [210681] = "GEM", -- Chipped Quick Topaz
+    [216643] = "GEM", -- Flawed Quick Topaz
+    [211107] = "GEM", -- Quick Topaz
+    [211110] = "GEM", -- Perfect Quick Topaz
+    [220371] = "GEM", -- Chipped Versatile Diamond
+    [220372] = "GEM", -- Flawed Versatile Diamond
+    [220374] = "GEM", -- Versatile Diamond
+    [220373] = "GEM", -- Perfect Versatile Diamond
+    [220367] = "GEM", -- Chipped Stalwart Pearl
+    [220368] = "GEM", -- Flawed Stalwart Pearl
+    [220370] = "GEM", -- Stalwart Pearl
+    [220369] = "GEM", -- Perfect Stalwart Pearl
+    [210717] = "GEM", -- Chipped Hungering Ruby
+    [216641] = "GEM", -- Flawed Hungering Ruby
+    [210718] = "GEM", -- Hungering Ruby
+    [211103] = "GEM", -- Perfect Hungering Ruby
+    [210716] = "GEM", -- Chipped Swift Opal
+    [216639] = "GEM", -- Flawed Swift Opal
+    [211124] = "GEM", -- Swift Opal
+    [211101] = "GEM", -- Perfect Swift Opal
 
     -- Random Gem Items
     [223907] = "RANDOM_GEM", -- Asynchronized Prismatic Gem
@@ -291,6 +291,402 @@ constants.USABLE_BAG_ITEMS = {
     [223910] = "CACHE", -- Bronze Cache
     [223911] = "CACHE", -- Greater Bronze Cache
 }
+constants.ITEM_UPGRADES = {
+    [INVSLOT_HEAD] = {
+        { ItemLevel = 31,  LevelRequired = 18,  Rank = 1 },
+        { ItemLevel = 49,  LevelRequired = 23,  Rank = 2 },
+        { ItemLevel = 63,  LevelRequired = 28,  Rank = 3 },
+        { ItemLevel = 78,  LevelRequired = 33,  Rank = 4 },
+        { ItemLevel = 94,  LevelRequired = 38,  Rank = 5 },
+        { ItemLevel = 110, LevelRequired = 43,  Rank = 6 },
+        { ItemLevel = 128, LevelRequired = 48,  Rank = 7 },
+        { ItemLevel = 147, LevelRequired = 53,  Rank = 8 },
+        { ItemLevel = 166, LevelRequired = 58,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_SHOULDER] = {
+        { ItemLevel = 34,  LevelRequired = 18,  Rank = 1 },
+        { ItemLevel = 49,  LevelRequired = 23,  Rank = 2 },
+        { ItemLevel = 63,  LevelRequired = 28,  Rank = 3 },
+        { ItemLevel = 78,  LevelRequired = 33,  Rank = 4 },
+        { ItemLevel = 94,  LevelRequired = 38,  Rank = 5 },
+        { ItemLevel = 110, LevelRequired = 43,  Rank = 6 },
+        { ItemLevel = 128, LevelRequired = 48,  Rank = 7 },
+        { ItemLevel = 147, LevelRequired = 53,  Rank = 8 },
+        { ItemLevel = 166, LevelRequired = 58,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_CHEST] = {
+        { ItemLevel = 13,  LevelRequired = 10,  Rank = 1 },
+        { ItemLevel = 28,  LevelRequired = 15,  Rank = 2 },
+        { ItemLevel = 41,  LevelRequired = 20,  Rank = 3 },
+        { ItemLevel = 54,  LevelRequired = 25,  Rank = 4 },
+        { ItemLevel = 69,  LevelRequired = 30,  Rank = 5 },
+        { ItemLevel = 84,  LevelRequired = 35,  Rank = 6 },
+        { ItemLevel = 100, LevelRequired = 40,  Rank = 7 },
+        { ItemLevel = 117, LevelRequired = 45,  Rank = 8 },
+        { ItemLevel = 135, LevelRequired = 50,  Rank = 9 },
+        { ItemLevel = 154, LevelRequired = 55,  Rank = 10 },
+        { ItemLevel = 174, LevelRequired = 60,  Rank = 11 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 12 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 13 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 14 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 15 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 16 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 17 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 18 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 19 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 20 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 21 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 22 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 23 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 24 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 25 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 26 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 27 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 28 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 29 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 30 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 31 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 32 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 33 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 34 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 35 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 36 },
+    },
+    [INVSLOT_WAIST] = {
+        { ItemLevel = 36,  LevelRequired = 0,   Rank = 1 },
+        { ItemLevel = 52,  LevelRequired = 24,  Rank = 2 },
+        { ItemLevel = 66,  LevelRequired = 29,  Rank = 3 },
+        { ItemLevel = 81,  LevelRequired = 34,  Rank = 4 },
+        { ItemLevel = 97,  LevelRequired = 39,  Rank = 5 },
+        { ItemLevel = 114, LevelRequired = 44,  Rank = 6 },
+        { ItemLevel = 132, LevelRequired = 49,  Rank = 7 },
+        { ItemLevel = 150, LevelRequired = 54,  Rank = 8 },
+        { ItemLevel = 170, LevelRequired = 59,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_LEGS] = {
+        { ItemLevel = 13,  LevelRequired = 10,  Rank = 1 },
+        { ItemLevel = 28,  LevelRequired = 15,  Rank = 2 },
+        { ItemLevel = 41,  LevelRequired = 20,  Rank = 3 },
+        { ItemLevel = 54,  LevelRequired = 25,  Rank = 4 },
+        { ItemLevel = 69,  LevelRequired = 30,  Rank = 5 },
+        { ItemLevel = 84,  LevelRequired = 35,  Rank = 6 },
+        { ItemLevel = 100, LevelRequired = 40,  Rank = 7 },
+        { ItemLevel = 117, LevelRequired = 45,  Rank = 8 },
+        { ItemLevel = 135, LevelRequired = 50,  Rank = 9 },
+        { ItemLevel = 154, LevelRequired = 55,  Rank = 10 },
+        { ItemLevel = 174, LevelRequired = 60,  Rank = 11 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 12 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 13 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 14 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 15 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 16 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 17 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 18 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 19 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 20 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 21 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 22 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 23 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 24 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 25 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 26 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 27 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 28 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 29 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 30 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 31 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 32 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 33 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 34 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 35 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 36 },
+    },
+    [INVSLOT_FEET] = {
+        { ItemLevel = 26,  LevelRequired = 17,  Rank = 1 },
+        { ItemLevel = 46,  LevelRequired = 22,  Rank = 2 },
+        { ItemLevel = 60,  LevelRequired = 27,  Rank = 3 },
+        { ItemLevel = 75,  LevelRequired = 32,  Rank = 4 },
+        { ItemLevel = 90,  LevelRequired = 37,  Rank = 5 },
+        { ItemLevel = 107, LevelRequired = 42,  Rank = 6 },
+        { ItemLevel = 124, LevelRequired = 47,  Rank = 7 },
+        { ItemLevel = 143, LevelRequired = 52,  Rank = 8 },
+        { ItemLevel = 162, LevelRequired = 57,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_WRIST] = {
+        { ItemLevel = 20,  LevelRequired = 16,  Rank = 1 },
+        { ItemLevel = 44,  LevelRequired = 21,  Rank = 2 },
+        { ItemLevel = 57,  LevelRequired = 26,  Rank = 3 },
+        { ItemLevel = 72,  LevelRequired = 31,  Rank = 4 },
+        { ItemLevel = 87,  LevelRequired = 36,  Rank = 5 },
+        { ItemLevel = 104, LevelRequired = 41,  Rank = 6 },
+        { ItemLevel = 121, LevelRequired = 46,  Rank = 7 },
+        { ItemLevel = 139, LevelRequired = 51,  Rank = 8 },
+        { ItemLevel = 158, LevelRequired = 56,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_HAND] = {
+        { ItemLevel = 23,  LevelRequired = 17,  Rank = 1 },
+        { ItemLevel = 46,  LevelRequired = 22,  Rank = 2 },
+        { ItemLevel = 60,  LevelRequired = 27,  Rank = 3 },
+        { ItemLevel = 75,  LevelRequired = 32,  Rank = 4 },
+        { ItemLevel = 90,  LevelRequired = 37,  Rank = 5 },
+        { ItemLevel = 107, LevelRequired = 42,  Rank = 6 },
+        { ItemLevel = 124, LevelRequired = 47,  Rank = 7 },
+        { ItemLevel = 143, LevelRequired = 52,  Rank = 8 },
+        { ItemLevel = 162, LevelRequired = 57,  Rank = 9 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 10 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 11 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 12 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 13 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 14 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 15 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 16 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 17 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 18 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 19 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 20 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 21 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 22 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 23 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 24 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 25 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 26 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 27 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 28 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 29 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 30 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 31 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 32 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 33 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 34 },
+    },
+    [INVSLOT_MAINHAND] = {
+        { ItemLevel = 13,  LevelRequired = 10,  Rank = 1 },
+        { ItemLevel = 28,  LevelRequired = 15,  Rank = 2 },
+        { ItemLevel = 41,  LevelRequired = 20,  Rank = 3 },
+        { ItemLevel = 54,  LevelRequired = 25,  Rank = 4 },
+        { ItemLevel = 69,  LevelRequired = 30,  Rank = 5 },
+        { ItemLevel = 84,  LevelRequired = 35,  Rank = 6 },
+        { ItemLevel = 100, LevelRequired = 40,  Rank = 7 },
+        { ItemLevel = 117, LevelRequired = 45,  Rank = 8 },
+        { ItemLevel = 135, LevelRequired = 50,  Rank = 9 },
+        { ItemLevel = 154, LevelRequired = 55,  Rank = 10 },
+        { ItemLevel = 174, LevelRequired = 60,  Rank = 11 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 12 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 13 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 14 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 15 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 16 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 17 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 18 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 19 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 20 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 21 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 22 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 23 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 24 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 25 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 26 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 27 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 28 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 29 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 30 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 31 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 32 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 33 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 34 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 35 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 36 },
+    },
+    [INVSLOT_OFFHAND] = {
+        { ItemLevel = 13,  LevelRequired = 10,  Rank = 1 },
+        { ItemLevel = 28,  LevelRequired = 15,  Rank = 2 },
+        { ItemLevel = 41,  LevelRequired = 20,  Rank = 3 },
+        { ItemLevel = 54,  LevelRequired = 25,  Rank = 4 },
+        { ItemLevel = 69,  LevelRequired = 30,  Rank = 5 },
+        { ItemLevel = 84,  LevelRequired = 35,  Rank = 6 },
+        { ItemLevel = 100, LevelRequired = 40,  Rank = 7 },
+        { ItemLevel = 117, LevelRequired = 45,  Rank = 8 },
+        { ItemLevel = 135, LevelRequired = 50,  Rank = 9 },
+        { ItemLevel = 154, LevelRequired = 55,  Rank = 10 },
+        { ItemLevel = 174, LevelRequired = 60,  Rank = 11 },
+        { ItemLevel = 220, LevelRequired = 61,  Rank = 12 },
+        { ItemLevel = 234, LevelRequired = 62,  Rank = 13 },
+        { ItemLevel = 248, LevelRequired = 63,  Rank = 14 },
+        { ItemLevel = 262, LevelRequired = 64,  Rank = 15 },
+        { ItemLevel = 276, LevelRequired = 65,  Rank = 16 },
+        { ItemLevel = 290, LevelRequired = 66,  Rank = 17 },
+        { ItemLevel = 304, LevelRequired = 67,  Rank = 18 },
+        { ItemLevel = 318, LevelRequired = 68,  Rank = 19 },
+        { ItemLevel = 332, LevelRequired = 69,  Rank = 20 },
+        { ItemLevel = 346, LevelRequired = 70,  Rank = 21 },
+        { ItemLevel = 360, LevelRequired = 346, Rank = 22 },
+        { ItemLevel = 374, LevelRequired = 360, Rank = 23 },
+        { ItemLevel = 388, LevelRequired = 374, Rank = 24 },
+        { ItemLevel = 402, LevelRequired = 388, Rank = 25 },
+        { ItemLevel = 416, LevelRequired = 402, Rank = 26 },
+        { ItemLevel = 430, LevelRequired = 416, Rank = 27 },
+        { ItemLevel = 444, LevelRequired = 430, Rank = 28 },
+        { ItemLevel = 458, LevelRequired = 444, Rank = 29 },
+        { ItemLevel = 472, LevelRequired = 458, Rank = 30 },
+        { ItemLevel = 486, LevelRequired = 472, Rank = 31 },
+        { ItemLevel = 500, LevelRequired = 486, Rank = 32 },
+        { ItemLevel = 514, LevelRequired = 500, Rank = 33 },
+        { ItemLevel = 528, LevelRequired = 514, Rank = 34 },
+        { ItemLevel = 542, LevelRequired = 528, Rank = 35 },
+        { ItemLevel = 556, LevelRequired = 542, Rank = 36 },
+    }
+}
+constants.ITEM_TYPE_INVSLOT = {
+    [1] = INVSLOT_HEAD,
+    [2] = INVSLOT_NECK,
+    [3] = INVSLOT_SHOULDER,
+    [4] = INVSLOT_BODY,
+    [5] = INVSLOT_CHEST,
+    [6] = INVSLOT_WAIST,
+    [7] = INVSLOT_LEGS,
+    [8] = INVSLOT_FEET,
+    [9] = INVSLOT_WRIST,
+    [10] = INVSLOT_HAND,
+    [11] = INVSLOT_FINGER1,
+    [12] = INVSLOT_TRINKET1,
+    [13] = INVSLOT_MAINHAND,
+    [14] = INVSLOT_OFFHAND,
+    [15] = INVSLOT_MAINHAND,
+    [16] = INVSLOT_BACK,
+    [17] = INVSLOT_MAINHAND,
+    [19] = INVSLOT_TABARD,
+    [20] = INVSLOT_CHEST,
+    [21] = INVSLOT_MAINHAND,
+    [22] = INVSLOT_MAINHAND,
+    [23] = INVSLOT_OFFHAND,
+    [25] = INVSLOT_MAINHAND,
+    [26] =  INVSLOT_MAINHAND,
+}
 
 constants.COLORS = {
     POSITIVE = CreateColorFromHexString("FF2ecc71"),
@@ -309,8 +705,8 @@ constants.MEDIA = {
 }
 
 constants.FONT_OBJECTS = {
-  NORMAL = constants.ADDON_NAME .. 'Normal',
-  HEADING = constants.ADDON_NAME .. 'Heading'
+    NORMAL = constants.ADDON_NAME .. 'Normal',
+    HEADING = constants.ADDON_NAME .. 'Heading'
 }
 
 constants.LANG_TO_FONT = {
@@ -329,20 +725,21 @@ constants.LANG_TO_FONT = {
 
 for fontName, fontPath in pairs(constants.MEDIA.FONTS) do
     local langPath = constants.LANG_TO_FONT[constants.LOCALE]
-    constants.MEDIA.FONTS[fontName] = [[Interface\Addons\]] .. constants.ADDON_NAME .. [[\Media\Fonts\]] .. langPath .. fontPath
+    constants.MEDIA.FONTS[fontName] = [[Interface\Addons\]] ..
+        constants.ADDON_NAME .. [[\Media\Fonts\]] .. langPath .. fontPath
 end
 
 do
-  local font = CreateFont(constants.FONT_OBJECTS.NORMAL)
-  font:SetFont(constants.MEDIA.FONTS.DEFAULT, 12, "OUTLINE")
-  font:SetJustifyH("LEFT")
-  font:SetJustifyV("MIDDLE")
-  font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
+    local font = CreateFont(constants.FONT_OBJECTS.NORMAL)
+    font:SetFont(constants.MEDIA.FONTS.DEFAULT, 12, "OUTLINE")
+    font:SetJustifyH("LEFT")
+    font:SetJustifyV("MIDDLE")
+    font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
 end
 do
-  local font = CreateFont(constants.FONT_OBJECTS.HEADING)
-  font:SetFont(constants.MEDIA.FONTS.DEFAULT, 16, "OUTLINE")
-  font:SetJustifyH("LEFT")
-  font:SetJustifyV("MIDDLE")
-  font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
+    local font = CreateFont(constants.FONT_OBJECTS.HEADING)
+    font:SetFont(constants.MEDIA.FONTS.DEFAULT, 16, "OUTLINE")
+    font:SetJustifyH("LEFT")
+    font:SetJustifyV("MIDDLE")
+    font:SetTextColor(constants.COLORS.WHITE:GetRGBA())
 end

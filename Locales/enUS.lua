@@ -5,8 +5,10 @@ Private.Locales = Private.Locales or {}
 Private.Locales["enUS"] = {
     --isEditing = true,
 
-    -- CloakTooltip.lua
+    -- ItemTooltips.lua
     ["Rank"] = "Rank",
+    ["Upgradeable"] = "Upgradeable",
+    ["Not Upgradeable"] = "Not Upgradeable",
 
     -- Core.lua
     ["Socketed"] = "Socketed",
