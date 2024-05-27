@@ -510,7 +510,12 @@ local function createFrame()
 end
 
 local function createMerchantFrame()
-    print("Create Merchant Frame")
+    print("Create Merchant Frame") -- TODO: actually create the Frame.
+
+    --[[
+        TODO: Instead of again anchoring to another frame just create an Anchor Frame that can have it's points cleared on it's own for the invisible clickables
+        Also Just going through UIElements again and maybe even splitting them into a folder with 1 file per Element for reasons.
+    ]]
 end
 
 local function fillMerchantFrame()
