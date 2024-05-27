@@ -485,43 +485,50 @@ local function createFrame()
             frameToggle:Show()
         end
     end)
-    gems:SetScript("OnHide", function()
+    gems:SetScript("OnHide", function(self)
+        self:ClearAllPoints()
         updateTree({})
     end)
     gems:SetScript("OnShow", function(self)
-        selectionTreeUpdate()
         -- Chonky Character Sheets Frame
         if _G["CCSf"] then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", CharacterFrameBg, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", CharacterFrameBg, "TOPRIGHT")
-            self.defaultPosition = false
             -- TinyInspect
         elseif C_AddOns.IsAddOnLoaded("TinyInspect") and PaperDollFrame.inspectFrame and PaperDollFrame.inspectFrame:IsVisible() then
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", PaperDollFrame.inspectFrame, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", PaperDollFrame.inspectFrame, "TOPRIGHT")
-            self.defaultPosition = false
-        elseif not self.defaultPosition then
+        else
             self:ClearAllPoints()
             self:SetPoint("BOTTOMLEFT", CharacterFrame, "BOTTOMRIGHT")
             self:SetPoint("TOPLEFT", CharacterFrame, "TOPRIGHT")
-            self.defaultPosition = true
         end
+        selectionTreeUpdate()
     end)
+end
+
+local function createMerchantFrame()
+    print("Create Merchant Frame")
+end
+
+local function fillMerchantFrame()
+    DevTools_Dump(Private.MerchantUtil:GetMerchantItems())
 end
 
 function addon:OnInitialize(...)
     -- On Init
 end
 
-function addon:OnEnable(...) -- This gotta be moved as this login event doesn't occur on reload
+function addon:OnEnable(...)
     if 1 ~= PlayerGetTimerunningSeasonID() then return end
 
     for itemID in pairs(const.GEM_SOCKET_TYPE) do
         cache:CacheItemInfo(itemID)
     end
     createFrame()
+    createMerchantFrame()
 end
 
 addon:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED", "Core.lua", function()
@@ -543,4 +550,8 @@ addon:RegisterEvent("ADDON_LOADED", "Core.lua", function(...)
     if addonName == "Blizzard_ScrappingMachineUI" then
         createScrapFrame()
     end
+end)
+
+addon:RegisterEvent("MERCHANT_SHOW", "Core.lua", function()
+    fillMerchantFrame()
 end)

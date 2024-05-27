@@ -1,30 +1,30 @@
-local restrictions = {
-    [21] = "RACECLASS",
-    [22] = "FACTION",
-    [23] = "SKILL",
-    [24] = "PVPMEDAL",
-    [25] = "REPUTATION",
-    [26] = "OWNED",
-    [27] = "LEVEL"
-}
+---@class RemixGemHelperPrivate
+local Private = select(2, ...)
+local const = Private.constants
+local addon = Private.Addon
 
-local function getRestriction(lines)
+local merchantUtil = {}
+Private.MerchantUtil = merchantUtil
+
+---@param lines table
+---@return string
+function merchantUtil:GetRestriction(lines)
     for _, lineData in ipairs(lines) do
-        if restrictions[lineData.type] then
-            return restrictions[lineData.type]
+        if const.MERCHANT_RESTRICTIONS[lineData.type] then
+            return const.MERCHANT_RESTRICTIONS[lineData.type]
         end
     end
     return "NONE"
 end
 
-function GetItemsFromMerchant()
+function merchantUtil:GetMerchantItems()
     local items = {}
 
     for itemIndex = 1, GetMerchantNumItems() do
         local _, itemIcon, itemCopperCost = GetMerchantItemInfo(itemIndex)
         local itemInfo = C_TooltipInfo.GetMerchantItem(itemIndex)
         if itemInfo then
-            local restriction = getRestriction(itemInfo.lines)
+            local restriction = self:GetRestriction(itemInfo.lines)
             if not items[restriction] then items[restriction] = {} end
             local itemCost = {}
             if itemCopperCost > 0 then
@@ -36,7 +36,6 @@ function GetItemsFromMerchant()
                 if not items[restriction].cost["MONEY"] then items[restriction].cost["MONEY"] = 0 end
                 items[restriction].cost["MONEY"] = items[restriction].cost["MONEY"] + itemCopperCost
             end
-            --print(itemInfo.hyperlink, itemIcon, restriction)
             for costIndex = 1, GetMerchantItemCostInfo(itemIndex) do
                 local costIcon, costValue, costLink = GetMerchantItemCostItem(itemIndex, costIndex)
                 tinsert(itemCost, {
@@ -61,10 +60,3 @@ function GetItemsFromMerchant()
 
     return items
 end
-
-
-local f = CreateFrame("Frame")
-f:RegisterEvent("MERCHANT_SHOW")
-f:SetScript("OnEvent", function (...)
-    rasuL = GetItemsFromMerchant()
-end)

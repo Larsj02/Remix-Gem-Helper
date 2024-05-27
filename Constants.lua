@@ -685,7 +685,16 @@ constants.ITEM_TYPE_INVSLOT = {
     [22] = INVSLOT_MAINHAND,
     [23] = INVSLOT_OFFHAND,
     [25] = INVSLOT_MAINHAND,
-    [26] =  INVSLOT_MAINHAND,
+    [26] = INVSLOT_MAINHAND,
+}
+constants.MERCHANT_RESTRICTIONS = {
+    [21] = "RACECLASS",
+    [22] = "FACTION",
+    [23] = "SKILL",
+    [24] = "PVPMEDAL",
+    [25] = "REPUTATION",
+    [26] = "OWNED",
+    [27] = "LEVEL"
 }
 
 constants.COLORS = {
