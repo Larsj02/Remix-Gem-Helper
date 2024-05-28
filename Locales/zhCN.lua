@@ -37,15 +37,15 @@ Private.Locales["zhCN"] = {
     ["Open, Use and Combine"] = "可打开，使用或组合",
     ["NOTHING TO USE"] = "*无*",
     ["HelpText"] =
-        "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a Click a Gem in this list to Socket or Unsocket.\n" ..
-        "'In Bag Item' or 'Socketed' indicates that you unsocket it.\n" ..
-        "'In Bag' indicates that the Gem is in your bag and ready to be socketed.\n\n" ..
-        "When hovering over a Gem that is 'Socketed' you will see the item highlighted in your character panel.\n" ..
-        "You can use the dropdown or the search bar at the top to filter your list.\n" ..
-        "This Addon also adds the current Rank and stats of your cloak inside the cloak tooltip.\n" ..
-        "You should see an icon in the top right of your character frame which can be used to hide or show this frame.\n" ..
-        "Below the Gem list you should have some clickable buttons to quickly open Chests or combine Gems\n\n" ..
-        "And to get rid of this frame simply shift click it.\nHave fun!",
+        "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a 在列表中点击宝石来镶嵌或取出。\n" ..
+        "“镶嵌于背包装备!”或者“已镶嵌”表示你已经镶嵌了此宝石。\n" ..
+        "“在背包”表示宝石在你的背包中可用于镶嵌。\n\n" ..
+        "将鼠标悬停在一个“已镶嵌”的宝石上，可以在角色信息界面突出显示镶嵌了此宝石的装备。\n" ..
+        "你可以使用顶部的下拉菜单或者搜索栏来筛选你的列表。\n" ..
+        "本插件也在鼠标提示里显示你的永恒潜能披风当前的等级和属性。\n" ..
+        "在角色信息界面右上方有一个沙漏图标，可以用来隐藏或显示此插件的界面。\n" ..
+        "在宝石列表下方，你可以点击图标打开宝箱，使用帛线或组合宝石。\n\n" ..
+        "Shift+点击本提示的图标可以关闭本提示。\n希望国服早日重开！",
 
     -- UIElements.lua
     ["You don't have a valid free Slot for this Gem"] = "你没有空插槽来使用这个宝石",

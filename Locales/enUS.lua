@@ -5,6 +5,16 @@ Private.Locales = Private.Locales or {}
 Private.Locales["enUS"] = {
     --isEditing = true,
 
+    -- addon title
+    ["Remix Gem Helper"] = "Remix Gem Helper",
+
+    -- gem types
+    ["All"] = "All",
+    ["Meta"] = "Meta",
+    ["Cogwheel"] = "Cogwheel",
+    ["Tinker"] = "Tinker",
+    ["Prismatic"] = "Prismatic",
+
     -- ItemTooltips.lua
     ["Rank"] = "Rank",
     ["Upgradeable"] = "Upgradeable",
