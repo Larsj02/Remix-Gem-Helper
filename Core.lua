@@ -100,7 +100,7 @@ local function itemListInitializer(frame, data)
         local col = misc:GetPercentColor(used / maxS * 100)
         frame.Icon:SetDesaturated(false)
         frame.Name:SetFontObject(const.FONT_OBJECTS.HEADING)
-        frame.Name:SetText(string.format("%s (%s%d/%d|r)", name, col:GenerateHexColorMarkup(), used, maxS))
+        frame.Name:SetText(string.format("%s (%s%d/%d|r)", addon.Loc[name], col:GenerateHexColorMarkup(), used, maxS))
         frame.Extract:Hide()
     else
         frame.Name:SetFontObject(const.FONT_OBJECTS.NORMAL)
@@ -195,7 +195,7 @@ end
 
 local function createFrame()
     local gems = uiElements:CreateBaseFrame(CharacterFrame, {
-        title = const.ADDON_NAME,
+        title = addon.Loc[const.ADDON_NAME],
         width = 375
     })
     gems:RegisterEvent("BAG_UPDATE_DELAYED")
@@ -298,7 +298,7 @@ local function createFrame()
                     info.func = self.SetValue
                     info.arg1 = i
                     info.checked = self.selection == i
-                    info.text = socketType
+                    info.text = addon.Loc[socketType]
                     UIDropDownMenu_AddButton(info)
                 end
             end
