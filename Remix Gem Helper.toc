@@ -1,5 +1,5 @@
 ## Interface: 100207
-## Version: 1.5.0d
+## Version: 1.5.0b-1
 ## Title: Remix Gem Helper
 ## Author: Rasu | Larsj_02
 ## DefaultState: enabled
