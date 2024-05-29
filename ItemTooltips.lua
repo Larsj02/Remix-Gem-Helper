@@ -22,7 +22,7 @@ local function getCloakStats()
     if not cloakTooltip.lines or not cloakTooltip.lines[2] then return "" end
     return cloakTooltip.lines[2].leftText
 end
---|A:CovenantSanctum-Upgrade-Icon-Available:16:16|a
+
 local function updateItemTooltip(tooltip, tooltipData)
     if not tooltipData.guid then return end
     local guid = tooltipData.guid
@@ -43,17 +43,17 @@ local function updateItemTooltip(tooltip, tooltipData)
         local rankInfo = itemUpgradeUtil:GetRankInfoByItemLevel(invSlot, itemLevel)
         if not rankInfo then return end
         local maxRank = itemUpgradeUtil:GetNumRanks(invSlot)
-        local rankText = string.format(" [%d/%d]", rankInfo.Rank, maxRank)
+        local rankText = string.format("%s [%d/%d]", (tooltip.TextLeft1:GetText() or ""), rankInfo.Rank, maxRank)
         if rankInfo.Rank < maxRank then
             local nextRankInfo = itemUpgradeUtil:GetRankInfoByRank(invSlot, rankInfo.Rank + 1)
             if nextRankInfo then
                 local isUpgradeable = itemUpgradeUtil:CanPlayerUpgrade(nextRankInfo)
                 local color = isUpgradeable and const.COLORS.POSITIVE or const.COLORS.NEGATIVE
-                local upText = isUpgradeable and addon.Loc["Upgradeable"] or addon.Loc["Not Upgradeable"]
+                local upText = isUpgradeable and (addon.Loc["Upgradeable"] .. "|A:CovenantSanctum-Upgrade-Icon-Available:16:16|a") or addon.Loc["Not Upgradeable"]
                 rankText = string.format("%s\n|cFFFFFFFF[%s%s|r]", rankText, color:GenerateHexColorMarkup(), upText)
             end
         end
-        tooltip.TextLeft1:SetText((tooltip.TextLeft1:GetText() or "") .. rankText)
+        tooltip.TextLeft1:SetText(rankText)
     end
 end
 
