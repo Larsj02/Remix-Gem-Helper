@@ -740,6 +740,12 @@ constants.LANG_TO_FONT = {
     ["zhTW"] = "zhTW",
 }
 
+
+for lang, langInfo in pairs(Private.Locales) do
+    if langInfo.isEditing then
+        constants.LOCALE = lang
+    end
+end
 for fontName, fontPath in pairs(constants.MEDIA.FONTS) do
     local langPath = constants.LANG_TO_FONT[constants.LOCALE]
     constants.MEDIA.FONTS[fontName] = [[Interface\Addons\]] ..

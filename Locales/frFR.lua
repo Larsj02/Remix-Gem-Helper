@@ -3,6 +3,11 @@ local Private = select(2, ...)
 Private.Locales = Private.Locales or {}
 
 Private.Locales["frFR"] = {
+    --isEditing = true,
+
+    -- addon title
+    ["Remix Gem Helper"] = "Remix Gem Helper",
+
     -- ItemTooltips.lua
     ["Rank"] = "Rang",
     ["Upgradeable"] = "Améliorable",
@@ -20,6 +25,11 @@ Private.Locales["frFR"] = {
     ["Search Gems"] = "Chercher des gemmes",
     ["Unowned"] = "Non possédé",
     ["Show Unowned Gems in the List."] = "Afficher les gemmes non possédées dans la liste.",
+    ["All"] = "All",
+    ["Meta"] = "Méta-gemme",
+    ["Cogwheel"] = "Roue dentée précieuse",
+    ["Tinker"] = "Gemme de bricolage",
+    ["Prismatic"] = "Gemme prismatique",
     ["Primordial"] = "Primordial",
     ["Show Primordial Gems in the List."] = "Afficher les gemmes primordiales dans la liste.",
     ["Open, Use and Combine"] = "Ouvrir, utiliser et combiner",
