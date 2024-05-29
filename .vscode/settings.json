@@ -142,6 +142,7 @@
         "LFDRoleCheckPopupAcceptButton",
         "LFGDungeonReadyDialogEnterDungeonButton",
         "PLAYER",
-        "SubscriptionInterstitialFrame"
+        "SubscriptionInterstitialFrame",
+        "ColorPickerFrame"
     ]
 }

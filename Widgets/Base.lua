@@ -5,8 +5,8 @@ local gemUtil = Private.GemUtil
 local misc = Private.Misc
 local addon = Private.Addon
 
-local uiElements = {}
-Private.UIElements = uiElements
+local widgets = {}
+Private.Widgets = widgets
 local function extractPreClick(self)
     if not self.info then return end
     if not misc:IsAllowedForClick("EXTRACT_PRECLICK") then return end
@@ -40,7 +40,7 @@ local function extractPostClick(self)
     end
     CloseSocketInfo()
 end
-function uiElements:CreateExtractButton(parent)
+function widgets:CreateExtractButton(parent)
     ---@class ExtractButton : Button
     ---@field UpdateInfo fun(self:ExtractButton, infoType:"BAG_GEM"|"BAG_SOCKET"|"EQUIP_SOCKET"|table, infoIndex:number|?, infoSlot:number|?, infoGemType:"Meta"|"Cogwheel"|"Tinker"|"Prismatic"|"Primordial"|?, newGemSlot:number|?)
     local extractButton = CreateFrame("Button", nil, parent, "InsecureActionButtonTemplate")
@@ -85,7 +85,7 @@ function uiElements:CreateExtractButton(parent)
     return extractButton
 end
 
-function uiElements:CreateCheckButton(parent, data)
+function widgets:CreateCheckButton(parent, data)
     local checkButton = CreateFrame("CheckButton", nil, parent, "ChatConfigCheckButtonTemplate")
     ---@diagnostic disable-next-line: deprecated
     checkButton:SetPoint(unpack(data.point))
@@ -105,7 +105,7 @@ function uiElements:CreateCheckButton(parent, data)
     return checkButton
 end
 
-function uiElements:HighlightEquipmentSlot(equipmentSlot)
+function widgets:HighlightEquipmentSlot(equipmentSlot)
     if not self.highlightFrame then
         local highlightSlot = CreateFrame("Frame", nil, UIParent)
         highlightSlot:SetFrameStrata("TOOLTIP")
@@ -122,7 +122,7 @@ function uiElements:HighlightEquipmentSlot(equipmentSlot)
     self.highlightFrame:SetAllPoints(eqSlot)
 end
 
-function uiElements:CreateDropdown(parent, data)
+function widgets:CreateDropdown(parent, data)
     ---@class Dropdown : Frame
     ---@field SetValue fun(self:Dropdown, ...:any)
     ---@field Text FontString
@@ -170,7 +170,7 @@ function uiElements:CreateDropdown(parent, data)
     return dropDown
 end
 
-function uiElements:AddTooltip(parent, tooltipText, isHyperlink)
+function widgets:AddTooltip(parent, tooltipText, isHyperlink)
     parent.tooltipText = tooltipText
     parent.isHyperlink = isHyperlink
     if parent.hasTooltip then return end
@@ -276,7 +276,7 @@ end
 
 ---@param parent Frame
 ---@param data IconSettings
-function uiElements:CreateIcon(parent, data)
+function widgets:CreateIcon(parent, data)
     data.width         = data.width or 40
     data.height        = data.height or 40
     ---@class IconButton:Button,BackdropTemplate
@@ -353,7 +353,7 @@ function uiElements:CreateIcon(parent, data)
                 self:SetAttribute("spell", actionID)
             end
             Private.Cache:GetSpellInfo(actionID, function(spellInfo)
-                uiElements:AddTooltip(self, spellInfo.link, true)
+                widgets:AddTooltip(self, spellInfo.link, true)
             end)
             self:RegisterEvent("SPELL_UPDATE_CHARGES")
             self:SetScript("OnEvent", updateSpellCount)
@@ -362,10 +362,10 @@ function uiElements:CreateIcon(parent, data)
             icon:SetTexture(select(5, C_Item.GetItemInfoInstant(actionID)))
             Private.Cache:GetItemInfo(actionID, function(itemInfo)
                 if hyperLink then
-                    uiElements:AddTooltip(self, hyperLink, true)
+                    widgets:AddTooltip(self, hyperLink, true)
                     self.infoC = hyperLink
                 else
-                    uiElements:AddTooltip(self,
+                    widgets:AddTooltip(self,
                         string.format("%s%s", const.COLORS.GREY:GenerateHexColorMarkup(), itemInfo
                             .description))
                     self.infoC = itemInfo.link
@@ -419,7 +419,7 @@ end
 
 ---@param parent Frame
 ---@param data ScrollableSettings
-function uiElements:CreateScrollable(parent, data)
+function widgets:CreateScrollable(parent, data)
     parent = parent or UIParent
     data.element_height = data.element_height or 25
     data.type = data.type or "LIST"
@@ -502,77 +502,4 @@ function uiElements:CreateScrollable(parent, data)
     end
 
     return scrollBox, scrollView, scrollBar
-end
-
----@class BaseFrameSettings
----@field width number?
----@field height number?
----@field points table?
----@field title string?
----@field showPortrait boolean?
----@field frameStyle "Flat"|"Default"|"DefaultBase"|?
----@field isClosable boolean?
----@field frameStrata FrameStrata?
-
-local frameStyles = {
-    Flat = "PortraitFrameFlatTemplate",
-    Default = "ButtonFrameTemplate",
-    DefaultBase = "ButtonFrameBaseTemplate"
-}
-
----@param parent Frame
----@param data BaseFrameSettings
-function uiElements:CreateBaseFrame(parent, data)
-    local template = frameStyles[data.frameStyle or "Default"]
-    ---@class BaseFrame : Frame
-    ---@field CloseButton Button
-    ---@field SetTitle fun(self:BaseFrame, title:string)
-    ---@field Inset Frame?
-    ---@field TopTileStreaks Frame
-    local frame = CreateFrame("Frame", nil, parent, template)
-    frame:SetTitle(data.title)
-    frame:SetSize(data.width or 100, data.height or 100)
-    if data.points then
-        for _, point in ipairs(data.points) do
-            frame:SetPoint(unpack(point))
-        end
-    end
-    if data.frameStrata then
-        frame:SetFrameStrata(data.frameStrata)
-    end
-    if not data.showPortrait then
-        ButtonFrameTemplate_HidePortrait(frame)
-    end
-    if not data.isClosable then
-        frame.CloseButton:Hide()
-    end
-    if frame.Inset then
-        frame.Inset:ClearAllPoints()
-        frame.Inset:SetPoint("TOP", 0, -65)
-        frame.Inset:SetPoint("BOTTOM", 0, 35)
-        frame.Inset:SetPoint("LEFT", 20, 0)
-        frame.Inset:SetPoint("RIGHT", -20, 0)
-    end
-
-    return frame
-end
-
----@class ButtonFrameSettings
----@field width number?
----@field height number?
----@field points table?
----@field text string?
-
----@param parent Frame
----@param data ButtonFrameSettings
-function uiElements:CreateButton(parent, data)
-    local button = CreateFrame("Button", nil, parent, "MagicButtonTemplate")
-    button:SetText(data.text)
-    button:SetSize(data.width or 100, data.height or 100)
-    if data.points then
-        for _, point in ipairs(data.points) do
-            button:SetPoint(unpack(point))
-        end
-    end
-    return button
 end

@@ -18,7 +18,7 @@ Init.lua
 Cache.lua
 Misc.lua
 GemUtil.lua
-UIElements.lua
+Widgets\embed.xml
 ScrapUtil.lua
 Core.lua
 ItemUpgradeUtil.lua
