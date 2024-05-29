@@ -8,13 +8,6 @@ Private.Locales["deDE"] = {
     -- addon title
     ["Remix Gem Helper"] = "Remix Gem Helper",
 
-    -- gem types
-    ["All"] = "All",
-    ["Meta"] = "Meta",
-    ["Cogwheel"] = "Cogwheel",
-    ["Tinker"] = "Tinker",
-    ["Prismatic"] = "Prismatic",
-
     -- ItemTooltips.lua
     ["Rank"] = "Rang",
     ["Upgradeable"] = "Aufwertbar",
@@ -32,6 +25,11 @@ Private.Locales["deDE"] = {
     ["Search Gems"] = "Suche Edelstein",
     ["Unowned"] = "Unbekannt",
     ["Show Unowned Gems in the List."] = "Unbekannte Edelsteine anzeigen.",
+    ["All"] = "All",
+    ["Meta"] = "Meta",
+    ["Cogwheel"] = "Cogwheel",
+    ["Tinker"] = "Tinker",
+    ["Prismatic"] = "Prismatic",
     ["Primordial"] = "Urzeitlich",
     ["Show Primordial Gems in the List."] = "Urzeitliche Steine anzeigen.",
     ["Open, Use and Combine"] = "Öffnen, Benutzen und Kombinieren",

@@ -8,13 +8,6 @@ Private.Locales["zhCN"] = {
     -- addon title
     ["Remix Gem Helper"] = "幻彩再造宝石助手",
 
-    -- gem types
-    ["All"] = "全部",
-    ["Meta"] = "多彩宝石",
-    ["Cogwheel"] = "齿轮宝石",
-    ["Tinker"] = "匠械宝石",
-    ["Prismatic"] = "棱彩宝石",
-
     -- ItemTooltips.lua
     ["Rank"] = "等级",
     ["Upgradeable"] = "可升级",
@@ -24,14 +17,19 @@ Private.Locales["zhCN"] = {
     ["Socketed"] = "已镶嵌",
     ["In Bag"] = "在背包",
     ["In Bag Item!"] = "镶嵌于背包装备!",
-    ["Uncollected"] = "未获得",
+    ["Uncollected"] = "未收集",
     ["Scrappable Items"] = "可拆解物品",
     ["NOTHING TO SCRAP"] = "*无可拆解物品*",
     ["Resocket Gems"] = "重新镶嵌宝石",
     ["Toggle the %s UI"] = "切换%s界面", -- %s is the Addon name and needs to be included!
     ["Search Gems"] = "搜索宝石",
-    ["Unowned"] = "未拥有",
-    ["Show Unowned Gems in the List."] = "在列表中显示未拥有的宝石。",
+    ["Unowned"] = "未收集",
+    ["Show Unowned Gems in the List."] = "在列表中显示未收集的宝石。",
+    ["All"] = "全部",
+    ["Meta"] = "多彩宝石",
+    ["Cogwheel"] = "齿轮宝石",
+    ["Tinker"] = "匠械宝石",
+    ["Prismatic"] = "棱彩宝石",
     ["Primordial"] = "始源之石",
     ["Show Primordial Gems in the List."] = "在列表中显示始源之石。",
     ["Open, Use and Combine"] = "可打开，使用或组合",

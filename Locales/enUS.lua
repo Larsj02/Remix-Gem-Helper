@@ -8,13 +8,6 @@ Private.Locales["enUS"] = {
     -- addon title
     ["Remix Gem Helper"] = "Remix Gem Helper",
 
-    -- gem types
-    ["All"] = "All",
-    ["Meta"] = "Meta",
-    ["Cogwheel"] = "Cogwheel",
-    ["Tinker"] = "Tinker",
-    ["Prismatic"] = "Prismatic",
-
     -- ItemTooltips.lua
     ["Rank"] = "Rank",
     ["Upgradeable"] = "Upgradeable",
@@ -32,6 +25,11 @@ Private.Locales["enUS"] = {
     ["Search Gems"] = "Search Gems",
     ["Unowned"] = "Unowned",
     ["Show Unowned Gems in the List."] = "Show Unowned Gems in the List.",
+    ["All"] = "All",
+    ["Meta"] = "Meta",
+    ["Cogwheel"] = "Cogwheel",
+    ["Tinker"] = "Tinker",
+    ["Prismatic"] = "Prismatic",
     ["Primordial"] = "Primordial",
     ["Show Primordial Gems in the List."] = "Show Primordial Gems in the List.",
     ["Open, Use and Combine"] = "Open, Use and Combine",
