@@ -8,10 +8,6 @@ local uiElements = Private.Widgets
 local misc = Private.Misc
 local scrapUtil = Private.ScrapUtil
 local addon = Private.Addon
-local timeFormatter = CreateFromMixins(SecondsFormatterMixin)
-timeFormatter:Init(1, 3, true, true)
-
-Private.TimeFormatter = timeFormatter
 Private.Frames = {}
 
 local function itemListInitializer(frame, data)
@@ -476,15 +472,13 @@ local function createFrame()
     end)
 
 
-    hooksecurefunc("CharacterFrameTab_OnClick", function()
-        if CharacterFrame.selectedTab ~= 1 then
-            gems:Hide()
-            frameToggle:Hide()
-        else
-            gems:Show()
-            frameToggle:Show()
-        end
-    end)
+    local function updateFrameVisibility()
+        gems:SetShown(CharacterFrame.selectedTab == 1)
+        frameToggle:SetShown(CharacterFrame.selectedTab == 1)
+    end
+
+    PaperDollSidebarTabs:HookScript("OnShow", updateFrameVisibility)
+    PaperDollSidebarTabs:HookScript("OnHide", updateFrameVisibility)
     gems:SetScript("OnHide", function(self)
         self:ClearAllPoints()
         updateTree({})
@@ -510,7 +504,7 @@ local function createFrame()
 end
 
 local function createMerchantFrame()
-    print("Create Merchant Frame") -- TODO: actually create the Frame.
+    --print("Create Merchant Frame") -- TODO: actually create the Frame.
 
     --[[
         TODO: Instead of again anchoring to another frame just create an Anchor Frame that can have it's points cleared on it's own for the invisible clickables
@@ -519,7 +513,7 @@ local function createMerchantFrame()
 end
 
 local function fillMerchantFrame()
-    DevTools_Dump(Private.MerchantUtil:GetMerchantItems())
+    --DevTools_Dump(Private.MerchantUtil:GetMerchantItems())
 end
 
 function addon:OnInitialize(...)
