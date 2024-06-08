@@ -45,6 +45,9 @@ Private.Locales["deDE"] = {
         "Unter der Edelsteinliste sollten sich anklickbare Buttons befinden, um schnell Truhen zu öffnen oder Edelsteine zu kombinieren\n\n" ..
         "Und um dieses Hilfe Fenster loszuwerden, klick einfach mit gedrückter Umschalttaste auf das Symbol..\nViel Spaß!",
 
-    -- UIElements.lua
+    -- Misc.lua
+    ["You're clicking too fast"] = "You're clicking too fast",
+
+    -- Base.lua
     ["You don't have a valid free Slot for this Gem"] = "Sie haben keinen gültigen freien Slot für diesen Edelstein",
 }

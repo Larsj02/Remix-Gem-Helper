@@ -45,6 +45,9 @@ Private.Locales["zhCN"] = {
         "在宝石列表下方，你可以点击图标打开宝箱，使用帛线或组合宝石。\n\n" ..
         "Shift+点击本提示的图标可以关闭本提示。\n尽情“幻”乐吧！\n\n（简体中文翻译：季翔枫）",
 
-    -- UIElements.lua
+    -- Misc.lua
+    ["You're clicking too fast"] = "你点得太快了",
+
+    -- Base.lua
     ["You don't have a valid free Slot for this Gem"] = "你没有一个可用的空插槽来使用这个宝石",
 }

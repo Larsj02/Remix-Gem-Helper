@@ -2,6 +2,7 @@
 local Private = select(2, ...)
 local const = Private.constants
 local cache = Private.Cache
+local addon = Private.Addon
 
 local misc = {
     clickThrottles = {}
@@ -38,7 +39,7 @@ function misc:IsAllowedForClick(clickType)
         return true
     end
     if self.clickThrottles[clickType] + .25 < currentTime then
-        self:PrintError("You're clicking too fast")
+        self:PrintError(addon.Loc["You're clicking too fast"])
     end
     return false
 end

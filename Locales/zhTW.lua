@@ -45,6 +45,9 @@ Private.Locales["zhTW"] = {
         "在寶石清單的下方你可以看到一些可點選的按鈕來快速開啟箱子或是組合寶石\n\n" ..
         "Shift + 點選來關閉此視窗.\n祝玩得高興!",
 
-    -- UIElements.lua
+    -- Misc.lua
+    ["You're clicking too fast"] = "你點得太快了",
+
+    -- Base.lua
     ["You don't have a valid free Slot for this Gem"] = "你沒有可使用此寶石的有效空插槽",
 }
