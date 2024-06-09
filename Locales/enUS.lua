@@ -45,6 +45,9 @@ Private.Locales["enUS"] = {
         "Below the Gem list you should have some clickable buttons to quickly open Chests or combine Gems\n\n" ..
         "And to get rid of this frame simply shift click it.\nHave fun!",
 
-    -- UIElements.lua
+    -- Misc.lua
+    ["You're clicking too fast"] = "You're clicking too fast",
+
+    -- Base.lua
     ["You don't have a valid free Slot for this Gem"] = "You don't have a valid free Slot for this Gem",
 }

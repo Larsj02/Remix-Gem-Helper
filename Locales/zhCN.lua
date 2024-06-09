@@ -6,7 +6,7 @@ Private.Locales["zhCN"] = {
     --isEditing = true,
 
     -- addon title
-    ["Remix Gem Helper"] = "幻彩再造宝石助手",
+    ["Remix Gem Helper"] = "幻境新生宝石助手",
 
     -- ItemTooltips.lua
     ["Rank"] = "等级",
@@ -16,7 +16,7 @@ Private.Locales["zhCN"] = {
     -- Core.lua
     ["Socketed"] = "已镶嵌",
     ["In Bag"] = "在背包",
-    ["In Bag Item!"] = "镶嵌于背包装备!",
+    ["In Bag Item!"] = "镶嵌于背包装备！",
     ["Uncollected"] = "未收集",
     ["Scrappable Items"] = "可拆解物品",
     ["NOTHING TO SCRAP"] = "*无可拆解物品*",
@@ -36,15 +36,18 @@ Private.Locales["zhCN"] = {
     ["NOTHING TO USE"] = "*无*",
     ["HelpText"] =
         "|A:newplayertutorial-icon-mouse-leftbutton:16:16|a 在列表中点击宝石来镶嵌或取出。\n" ..
-        "“镶嵌于背包装备!”或者“已镶嵌”表示你已经镶嵌了此宝石。\n" ..
+        "“镶嵌于背包装备！”或者“已镶嵌”表示你已经镶嵌了此宝石。\n" ..
         "“在背包”表示宝石在你的背包中可用于镶嵌。\n\n" ..
-        "将鼠标悬停在一个“已镶嵌”的宝石上，可以在角色信息界面突出显示镶嵌了此宝石的装备。\n" ..
+        "将鼠标悬停在一个“已镶嵌”的宝石上，可以在角色信息界面高亮显示镶嵌了此宝石的装备。\n" ..
         "你可以使用顶部的下拉菜单或者搜索栏来筛选你的列表。\n" ..
         "本插件也在鼠标提示里显示你的永恒潜能披风当前的等级和属性。\n" ..
         "在角色信息界面右上方有一个沙漏图标，可以用来隐藏或显示此插件的界面。\n" ..
         "在宝石列表下方，你可以点击图标打开宝箱，使用帛线或组合宝石。\n\n" ..
-        "Shift+点击本提示的图标可以关闭本提示。\n希望国服早日重开！\n\n（简体中文翻译：季翔枫）",
+        "Shift+点击本提示的图标可以关闭本提示。\n尽情“幻”乐吧！\n\n（简体中文翻译：季翔枫）",
 
-    -- UIElements.lua
-    ["You don't have a valid free Slot for this Gem"] = "你没有空插槽来使用这个宝石",
+    -- Misc.lua
+    ["You're clicking too fast"] = "你点得太快了",
+
+    -- Base.lua
+    ["You don't have a valid free Slot for this Gem"] = "你没有一个可用的空插槽来使用这个宝石",
 }

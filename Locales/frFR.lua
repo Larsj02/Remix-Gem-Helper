@@ -45,6 +45,9 @@ Private.Locales["frFR"] = {
         "Sous la liste des gemmes, vous devriez avoir des boutons cliquables pour ouvrir rapidement des coffres ou combiner des gemmes.\n\n" ..
         "Et pour vous débarrasser de ce cadre, il suffit de le cliquer avec la touche Maj enfoncée.\nAmusez-vous bien !",
 
-    -- UIElements.lua
+    -- Misc.lua
+    ["You're clicking too fast"] = "You're clicking too fast",
+
+    -- Base.lua
     ["You don't have a valid free Slot for this Gem"] = "Vous n'avez pas d'emplacement libre valide pour cette gemme",
 }
