@@ -532,8 +532,8 @@ end
 
 addon:RegisterEvent("SCRAPPING_MACHINE_ITEM_ADDED", "Core.lua", function()
     RunNextFrame(function()
-        local mun = ScrappingMachineFrame
-        for f in pairs(mun.ItemSlots.scrapButtons.activeObjects) do
+        local mun = _G.ScrappingMachineFrame
+        for f in mun.ItemSlots.scrapButtons:EnumerateActive() do
             if f.itemLink then
                 local gemsList = gemUtil:GetItemGems(f.itemLink)
                 if #gemsList > 0 then
